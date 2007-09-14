@@ -1,0 +1,1800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model>
+    <annotation xmlns:mn="http://www.sbml.org/metnet/" xmlns:diag="http://projects.eml.org/bcb/sbml/level2">
+      <diag:listOfLayouts/>
+      <mn:listOfSpeciesTypeDefs>
+        <mn:speciesTypeDef id="RNA"/>
+        <mn:speciesTypeDef id="protein complex"/>
+        <mn:speciesTypeDef id="polypeptide"/>
+        <mn:speciesTypeDef id="metabolite"/>
+      </mn:listOfSpeciesTypeDefs>
+      <mn:listOfReactionTypeDefs>
+        <mn:reactionTypeDef id="dummy"/>
+      </mn:listOfReactionTypeDefs>
+      <mn:listOfSpeciesReferenceTypeDefs>
+        <mn:speciesReferenceTypeDef id="Translation"/>
+        <mn:speciesReferenceTypeDef id="Catalysis"/>
+        <mn:speciesReferenceTypeDef id="Composition-OR"/>
+        <mn:speciesReferenceTypeDef id="Enzymatic reaction"/>
+        <mn:speciesReferenceTypeDef id="Composition-AND"/>
+      </mn:listOfSpeciesReferenceTypeDefs>
+    </annotation>
+    <listOfCompartments>
+      <compartment id="cytosol"/>
+      <compartment id="mitochondria"/>
+      <compartment id="unknown"/>
+      <compartment id="plastid stroma"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="PROTON-0" name="PROTON" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="127" name="6-CARBOXYHEXANOYL-COA" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156895" name="AT5G27200" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="OXYGEN-MOLECULE-0" name="OXYGEN-MOLECULE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156533" name="Fab2" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156523" name="Oleate" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="1004" name="S-ADENOSYL-4-METHYLTHIO-2-OXOBUTANOATE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156998" name="AT3G11470" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156507" name="AT4G13050" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CO2-0" name="CO2" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="108583" name="MALONYL-COA" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADPH-1" name="NADPH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156503" name="Stearoyl-[acyl-carrier protein]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156558" name="Acetoacetyl-[acp]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156527" name="Reduced ferredoxin" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156539" name="KAS III" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADH-1" name="NADH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156535" name="AT3G02620" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="108601" name="BIOTIN" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156892" name="AT1G54580" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156473" name="BETA-KETOACYL-ACP REDUCTASE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156466" name="BETA-OH.ACYL-ACP DEHYDRATASE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="742" name="L-ALPHA-ALANINE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CoA-0" name="CoA" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156530" name="STEAROYL-ACP DESATURASE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="157008" name="apo-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156532" name="AT1G43800" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156493" name="Palmitoyl-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-2" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="8059" name="AT1G08510" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156522" name="Oleoyl-[acyl-carrier protein]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="37056" name="AT5G57590" compartment="cytosol">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>RNA</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="110031" name="BIOB" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="108580" name="ACETYL-COA" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156893" name="AT1G54630" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156464" name="AT5G10160" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CARBON-DIOXIDE-2" name="CARBON-DIOXIDE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156500" name="3-KETOACYL-ACP SYNTHASE II" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156537" name="AT5G16230" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156472" name="AT1G62610" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CoA-1" name="CoA" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="9961" name="AT2G30200" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="110033" name="DIAMINONONANOATE" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-0" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156470" name="AT1G24360" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="36113" name="AT5G04620" compartment="cytosol">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>RNA</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156489" name="MALONYL-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="Pi-0" name="Pi" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-5" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156967" name="3-oxo-stearoyl-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="PROTON-1" name="PROTON" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156551" name="But-2-enoyl-[acyl-carrier protein]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156469" name="AT3G55290" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="12725" name="AT5G04620" compartment="cytosol">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156984" name="Adenosine 3',5'-bisPi." compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NAD-1" name="NAD" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CARBON-DIOXIDE-0" name="CARBON-DIOXIDE" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CO-A-0" name="CO-A" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156999" name="AT2G02770" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADH-2" name="NADH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="ATP-0" name="ATP" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156508" name="ACYL-ACP THIOESTERASE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156990" name="holo-ACP synthetase" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156536" name="AT3G02630" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156534" name="AT3G02610" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADPH-0" name="NADPH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156506" name="AT3G25110" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156480" name="enr-a" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156492" name="NADP+" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156528" name="Oxidized ferredoxin" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="PROTON-4" name="PROTON" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADH-0" name="NADH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156482" name="FAS II" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>protein complex</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-3" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156891" name="ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="13661" name="AT5G57590" compartment="cytosol">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156476" name="KAS I" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="558" name="DIAMINONONANOATE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="PROTON-2" name="PROTON" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156490" name="Acyl-carrier protein" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="S-ADENOSYLMETHIONINE-0" name="S-ADENOSYLMETHIONINE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156499" name="AT1G74960" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CARBON-DIOXIDE-1" name="CARBON-DIOXIDE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156975" name="trans octadec-2-enoyl-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="PROTON-3" name="PROTON" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156468" name="AT3G46170" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NADPH-2" name="NADPH" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="108598" name="DETHIOBIOTIN" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156894" name="AT4G25050" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156970" name="3-OH.-stearoyl-ACP" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156488" name="Butyryl-[acp]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156471" name="AT3G55310" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156518" name="PALMITATE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-4" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="ADP-0" name="ADP" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156550" name="(3R)-3-OH.butanoyl-[acyl-carrier protein]" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="H2O-1" name="H2O" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="110029" name="CPD-249" compartment="mitochondria">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156538" name="AT5G16240" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CARBON-DIOXIDE-3" name="CARBON-DIOXIDE" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="156465" name="AT2G22230" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>polypeptide</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="NAD-0" name="NAD+" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="CoA-2" name="CoA" compartment="plastid stroma">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+      <species id="132" name="8-AMINO-7-OXONONANOATE" compartment="unknown">
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:speciesType>metabolite</mn:speciesType>
+          <mn:listOfSynonyms/>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction reversible="false" id="156609" name="reaction 156609">
+        <listOfReactants>
+          <speciesReference species="108580">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>108580_156609</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156489">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156489_156609</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CARBON-DIOXIDE-3">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156609_CARBON-DIOXIDE-3</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156558">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156609_156558</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CoA-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156609_CoA-0</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156539">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156539_156609</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="110032" name="reaction 110032">
+        <listOfReactants>
+          <speciesReference species="ATP-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>ATP-0_110032</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="110033">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110033_110032</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CARBON-DIOXIDE-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>CARBON-DIOXIDE-0_110032</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="108598">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110032_108598</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="Pi-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110032_Pi-0</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="ADP-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110032_ADP-0</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156505" name="reaction 156505">
+        <listOfReactants>
+          <speciesReference species="156506">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156506_156505</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156507">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156507_156505</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156508">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156505_156508</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156521" name="reaction 156521">
+        <listOfReactants>
+          <speciesReference species="H2O-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>H2O-0_156521</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156522">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156522_156521</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156521_156490</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156523">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156521_156523</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156508">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156508_156521</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="17296" name="reaction 17296">
+        <listOfReactants>
+          <speciesReference species="127">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>127_17296</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="742">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>742_17296</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="132">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>17296_132</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CARBON-DIOXIDE-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>17296_CARBON-DIOXIDE-1</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CO-A-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>17296_CO-A-0</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="12725">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>12725_17296</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156531" name="reaction 156531">
+        <listOfReactants>
+          <speciesReference species="156533">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156533_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156532">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156532_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156538">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156538_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156536">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156536_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156534">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156534_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156535">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156535_156531</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156537">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156537_156531</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156530">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156531_156530</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156665" name="reaction 156665">
+        <listOfReactants>
+          <speciesReference species="156489">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156489_156665</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADH-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADH-2_156665</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156488">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156488_156665</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="PROTON-4">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>PROTON-4_156665</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADPH-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADPH-2_156665</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156492">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_156492</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NAD-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_NAD-0</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_156490</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="H2O-5">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_H2O-5</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CO2-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_CO2-0</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156493">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156665_156493</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156482">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156482_156665</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156575" name="reaction 156575">
+        <listOfReactants>
+          <speciesReference species="156550">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156550_156575</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156551">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156575_156551</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="H2O-4">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156575_H2O-4</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156466">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156466_156575</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156918" name="reaction 156918">
+        <listOfReactants>
+          <speciesReference species="108583">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>108583_156918</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156490_156918</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156489">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156918_156489</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CoA-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156918_CoA-1</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="9961">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>9961_156918</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="157012" name="reaction 157012">
+        <listOfReactants>
+          <speciesReference species="156970">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156970_157012</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="H2O-3">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>157012_H2O-3</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156975">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>157012_156975</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156466">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156466_157012</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="17476" name="reaction 17476">
+        <listOfReactants>
+          <speciesReference species="132">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>132_17476</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="S-ADENOSYLMETHIONINE-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>S-ADENOSYLMETHIONINE-0_17476</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="558">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>17476_558</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="1004">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>17476_1004</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="13661">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>13661_17476</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156557" name="reaction 156557">
+        <listOfReactants>
+          <speciesReference species="156558">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156558_156557</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="PROTON-3">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>PROTON-3_156557</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADPH-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADPH-1_156557</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156492">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156557_156492</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156550">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156557_156550</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156473">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156473_156557</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="157003" name="reaction 157003">
+        <listOfReactants>
+          <speciesReference species="156998">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156998_157003</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156999">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156999_157003</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156990">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>157003_156990</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156968" name="reaction 156968">
+        <listOfReactants>
+          <speciesReference species="156493">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156493_156968</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156489">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156489_156968</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="CARBON-DIOXIDE-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156968_CARBON-DIOXIDE-2</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156968_156490</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156967">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156968_156967</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156500">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156500_156968</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156976" name="reaction 156976">
+        <listOfReactants>
+          <speciesReference species="156975">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156975_156976</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADH-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADH-0_156976</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="PROTON-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>PROTON-1_156976</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156503">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156976_156503</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NAD-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156976_NAD-0</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156480">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156480_156976</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156555" name="reaction 156555">
+        <listOfReactants>
+          <speciesReference species="156551">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156551_156555</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADH-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADH-1_156555</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="PROTON-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>PROTON-2_156555</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="NAD-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156555_NAD-1</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156488">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156555_156488</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156480">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156480_156555</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156920" name="reaction 156920">
+        <listOfReactants>
+          <speciesReference species="156476">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-AND</mn:speciesReferenceType>
+              <mn:id>156476_156920</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156473">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-AND</mn:speciesReferenceType>
+              <mn:id>156473_156920</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156466">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-AND</mn:speciesReferenceType>
+              <mn:id>156466_156920</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156480">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-AND</mn:speciesReferenceType>
+              <mn:id>156480_156920</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156482">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-AND</mn:speciesReferenceType>
+              <mn:id>156920_156482</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="157009" name="reaction 157009">
+        <listOfReactants>
+          <speciesReference species="156895">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156895_157009</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156894">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156894_157009</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156893">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156893_157009</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156892">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156892_157009</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156891">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156891_157009</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="157008">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>157009_157008</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="157010" name="reaction 157010">
+        <listOfReactants>
+          <speciesReference species="157008">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>157008_157010</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="CoA-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>CoA-2_157010</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>157010_156490</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156984">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>157010_156984</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156990">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156990_157010</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156478" name="reaction 156478">
+        <listOfReactants>
+          <speciesReference species="156465">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156465_156478</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156464">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156464_156478</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156466">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156478_156466</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156619" name="reaction 156619">
+        <listOfReactants>
+          <speciesReference species="H2O-2">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>H2O-2_156619</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156493">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156493_156619</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156490">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156619_156490</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156518">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156619_156518</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="8059">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>8059_156619</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="110028" name="reaction 110028">
+        <listOfReactants>
+          <speciesReference species="110029">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110029_110028</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="108598">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>108598_110028</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="108601">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>110028_108601</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="110031">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>110031_110028</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156525" name="reaction 156525">
+        <listOfReactants>
+          <speciesReference species="OXYGEN-MOLECULE-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>OXYGEN-MOLECULE-0_156525</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156527">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156527_156525</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156503">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156503_156525</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156528">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156525_156528</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="H2O-1">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156525_H2O-1</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156522">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156525_156522</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156530">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156530_156525</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156971" name="reaction 156971">
+        <listOfReactants>
+          <speciesReference species="PROTON-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>PROTON-0_156971</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156967">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156967_156971</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="NADPH-0">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>NADPH-0_156971</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156492">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156971_156492</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156970">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Enzymatic reaction</mn:speciesReferenceType>
+              <mn:id>156971_156970</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="156473">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Catalysis</mn:speciesReferenceType>
+              <mn:id>156473_156971</mn:id>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="156474" name="reaction 156474">
+        <listOfReactants>
+          <speciesReference species="156469">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156469_156474</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156468">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156468_156474</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156470">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156470_156474</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156471">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156471_156474</mn:id>
+            </annotation>
+          </speciesReference>
+          <speciesReference species="156472">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156472_156474</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="156473">
+            <annotation xmlns:mn="http://www.sbml.org/metnet/">
+              <mn:speciesReferenceType>Composition-OR</mn:speciesReferenceType>
+              <mn:id>156474_156473</mn:id>
+            </annotation>
+          </speciesReference>
+        </listOfProducts>
+        <listOfModifiers/>
+        <annotation>
+          <reactionType>dummy</reactionType>
+          <listOfSynonyms/>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="36113_12725-RXN" name="36113_12725 Translation">
+        <listOfReactants>
+          <speciesReference species="36113"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="12725"/>
+        </listOfProducts>
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:reactionType>Translation</mn:reactionType>
+        </annotation>
+      </reaction>
+      <reaction reversible="false" id="37056_13661-RXN" name="37056_13661 Translation">
+        <listOfReactants>
+          <speciesReference species="37056"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="13661"/>
+        </listOfProducts>
+        <annotation xmlns:mn="http://www.sbml.org/metnet/">
+          <mn:reactionType>Translation</mn:reactionType>
+        </annotation>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

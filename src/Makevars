@@ -1,0 +1,2 @@
+PKG_CPPFLAGS = -I/usr/include/sbml -I/usr/local/include/sbml
+PKG_LIBS = -lsbml 
