@@ -48,21 +48,109 @@
   free(math); \
 })
 
+#ifdef LIBSBML3
+#define Model_getNumLayouts(m) \
+  ListOf_size(Model_getListOfLayouts(m));
+#else
 #define Model_getNumLayouts(m) \
   ListOf_getNumItems(Model_getListOfLayouts(m));
+#endif
+
+#ifdef LIBSBML3
+static SEXP
+rsbml_build_dom_cvterm(CVTerm_t *cvterm)
+{
+  SEXP r_cvterm;
+  
+  PROTECT(r_cvterm = NEW_OBJECT(MAKE_CLASS("CVTerm")));
+  
+  const char *qualifier_type;
+  switch(CVTerm_getQualifierType(cvterm))
+  {
+    case MODEL_QUALIFIER:
+      qualifier_type = "model";
+    break;
+    case BIOLOGICAL_QUALIFIER:
+      qualifier_type = "biological";
+    break;
+    default:
+      qualifier_type = "unknown";
+  }
+  SET_SLOT(r_cvterm, install("qualifierType"), mkChar(qualifier_type));
+  
+  switch(CVTerm_getModelQualifierType(cvterm))
+  {
+    case BQM_IS:
+      qualifier_type = "is";
+    break;
+    case BQM_IS_DESCRIBED_BY:
+      qualifier_type = "isDescribedBy";
+    break;
+    default:
+      qualifier_type = "unknown";
+  }
+  SET_SLOT(r_cvterm, install("modelQualifierType"), mkChar(qualifier_type));
+  
+  switch(CVTerm_getBiologicalQualifierType(cvterm))
+  {
+    case BQB_IS:
+      qualifier_type = "is";
+    break;
+    case BQB_HAS_PART:
+      qualifier_type = "hasPart";
+    break;
+    case BQB_IS_PART_OF:
+      qualifier_type = "isPartOf";
+    break;
+    case BQB_IS_VERSION_OF:
+      qualifier_type = "isVersionOf";
+    break;
+    case BQB_HAS_VERSION:
+      qualifier_type = "hasVersion";
+    break;
+    case BQB_IS_HOMOLOG_TO:
+      qualifier_type = "isHomologTo";
+    break;
+    case BQB_IS_DESCRIBED_BY:
+      qualifier_type = "isDescribedBy";
+    break;
+    default:
+      qualifier_type = "unknown";
+  }
+  SET_SLOT(r_cvterm, install("biologicalQualifierType"), mkChar(qualifier_type));
+  
+  XMLAttributes_t *resources = CVTerm_getResources(cvterm);
+  SEXP r_resources;
+  PROTECT(r_resources = NEW_CHARACTER(XMLAttributes_getLength(resources)));
+  for (int i = 0; i < GET_LENGTH(r_resources); i++)
+    SET_STRING_ELT(r_resources, i, mkChar(XMLAttributes_getValue(resources, i)));
+  SET_SLOT(r_cvterm, install("resources"), r_resources);
+  
+  UNPROTECT(2);
+  
+  return r_cvterm;
+}
+#endif
 
 static SEXP
 rsbml_build_dom_s_base(SEXP r_s_base, SBase_t *s_base)
 {
+  if (SBase_isSetMetaId(s_base))
+    SET_SLOT(r_s_base, install("metaId"), mkString(SBase_getMetaId(s_base)));
+  #ifdef LIBSBML3
+  if (SBase_isSetNotes(s_base))
+    SET_SLOT(r_s_base, install("notes"), mkString(SBase_getNotesString(s_base)));
+  if (SBase_isSetAnnotation(s_base))
+    SET_SLOT(r_s_base, install("annotation"), mkString(SBase_getAnnotationString(s_base)));
+  /*if (SBase_isSetSBOTerm(s_base))
+    SET_SLOT(r_s_base, install("sboTerm"), 
+      mkChar(XMLNode_convertXMLNodeToString(SBase_getSBOTerm(s_base))));*/
+  SET_SLOT(r_s_base, install("cvTerms"), LIST_OF(s_base, SBase, cvterm, CVTerm, NULL));
+  #else
   if (SBase_isSetNotes(s_base))
     SET_SLOT(r_s_base, install("notes"), mkString(SBase_getNotes(s_base)));
   if (SBase_isSetAnnotation(s_base))
     SET_SLOT(r_s_base, install("annotation"), mkString(SBase_getAnnotation(s_base)));
-  if (SBase_isSetMetaId(s_base))
-    SET_SLOT(r_s_base, install("metaId"), mkString(SBase_getMetaId(s_base)));
-  #ifdef LIBSBML3
-  if (SBase_isSetSBOTerm(s_base))
-    SET_SLOT(r_s_base, install("sboTerm"), mkChar(SBase_getSBOTerm(s_base)));
   #endif
   return r_s_base;
 }
@@ -151,6 +239,23 @@ rsbml_build_dom_kinetic_law(KineticLaw_t *kinetic_law)
   return r_kinetic_law;
 }
 
+#ifdef LIBSBML3
+static void
+rsbml_build_dom_simple_species_reference(SEXP r_simple_species_reference,
+  SpeciesReference_t *simple_species_reference)
+{ 
+  rsbml_build_dom_s_base(r_simple_species_reference, (SBase_t *)simple_species_reference);
+  
+  if (SpeciesReference_isSetSpecies(simple_species_reference))
+    SET_SLOT(r_simple_species_reference, install("species"), 
+      mkString(SpeciesReference_getSpecies(simple_species_reference)));
+  #ifdef USE_LAYOUT
+  if (SpeciesReference_isSetId(simple_species_reference))
+    SET_SLOT(r_simple_species_reference, install("id"), 
+      mkString(SpeciesReference_getId(simple_species_reference)));
+  #endif
+}
+#else
 static void
 rsbml_build_dom_simple_species_reference(SEXP r_simple_species_reference,
   SimpleSpeciesReference_t *simple_species_reference)
@@ -166,6 +271,21 @@ rsbml_build_dom_simple_species_reference(SEXP r_simple_species_reference,
       mkString(SimpleSpeciesReference_getId(simple_species_reference)));
   #endif
 }
+#endif
+
+#ifdef LIBSBML3
+static SEXP
+rsbml_build_dom_stoichiometry_math(const StoichiometryMath_t *stoichiometry_math)
+{
+  SEXP r_stoichiometry_math;
+  
+  PROTECT(r_stoichiometry_math = NEW_OBJECT(MAKE_CLASS("StoichiometryMath")));
+  
+  SET_MATH(StoichiometryMath, stoichiometry_math, Math, math);
+  
+  return r_stoichiometry_math;
+}
+#endif
 
 static SEXP
 rsbml_build_dom_species_reference(SpeciesReference_t *species_reference)
@@ -174,16 +294,26 @@ rsbml_build_dom_species_reference(SpeciesReference_t *species_reference)
   
   PROTECT(r_species_reference = NEW_OBJECT(MAKE_CLASS("SpeciesReference")));
   
+  #ifdef LIBSBML3
+  rsbml_build_dom_simple_species_reference(r_species_reference, 
+    (SpeciesReference_t *)species_reference);
+  #else
   rsbml_build_dom_simple_species_reference(r_species_reference, 
     (SimpleSpeciesReference_t *)species_reference);
+  #endif
   
   if (SpeciesReference_isSetStoichiometryMath(species_reference)) {
+    #ifdef LIBSBML3
+    SET_SLOT(r_species_reference, install("stoiciometryMath"),
+      rsbml_build_dom_stoichiometry_math(SpeciesReference_getStoichiometryMath(species_reference)));
+    #else
     SEXP r_stoichiometry_math;
     SpeciesReference_t *stoichiometry_math = species_reference;
     PROTECT(r_stoichiometry_math = NEW_OBJECT(MAKE_CLASS("StoichiometryMath")));
     SET_MATH(SpeciesReference, stoichiometry_math, StoichiometryMath, math);
     SET_SLOT(r_species_reference, install("stoichiometryMath"), r_stoichiometry_math);
     UNPROTECT(1);
+    #endif
   }
   
   SET_SLOT(r_species_reference, install("stoichiometry"), 
@@ -196,6 +326,22 @@ rsbml_build_dom_species_reference(SpeciesReference_t *species_reference)
   return r_species_reference;
 }
 
+#ifdef LIBSBML3
+static SEXP
+rsbml_build_dom_modifier_species_reference(SpeciesReference_t *modifier_species_reference)
+{
+  SEXP r_modifier_species_reference;
+  
+  PROTECT(r_modifier_species_reference = NEW_OBJECT(MAKE_CLASS("ModifierSpeciesReference")));
+  
+  rsbml_build_dom_simple_species_reference(r_modifier_species_reference, 
+    (SpeciesReference_t *)modifier_species_reference);
+  
+  UNPROTECT(1);
+  
+  return r_modifier_species_reference;
+}
+#else
 static SEXP
 rsbml_build_dom_modifier_species_reference(ModifierSpeciesReference_t *modifier_species_reference)
 {
@@ -210,6 +356,7 @@ rsbml_build_dom_modifier_species_reference(ModifierSpeciesReference_t *modifier_
   
   return r_modifier_species_reference;
 }
+#endif
 
 static SEXP
 rsbml_build_dom_reaction(Reaction_t *reaction)
@@ -279,7 +426,7 @@ rsbml_build_dom_unit(Unit_t *unit)
   
   SET_SLOT(r_unit, install("kind"), mkString(UnitKind_toString(Unit_getKind(unit))));
   SET_SLOT(r_unit, install("exponent"), ScalarInteger(Unit_getExponent(unit)));
-  SET_SLOT(r_unit, install("scale"), ScalarInteger(Unit_getScale(unit)));
+  SET_SLOT(r_unit, install("unitScale"), ScalarInteger(Unit_getScale(unit)));
   SET_SLOT(r_unit, install("multiplier"), ScalarReal(Unit_getMultiplier(unit)));
   SET_SLOT(r_unit, install("offset"), ScalarReal(Unit_getOffset(unit)));
   
@@ -342,31 +489,55 @@ rsbml_build_dom_rule(Rule_t *rule)
     break;
   case SBML_ASSIGNMENT_RULE:
     PROTECT(r_rule = NEW_OBJECT(MAKE_CLASS("AssignmentRule")));
+    #ifdef LIBSBML3
+    if (Rule_isSetVariable((Rule_t *)rule))
+      SET_SLOT(r_rule, install("variable"),
+        mkString(Rule_getVariable(rule)));
+    #else
     if (AssignmentRule_isSetVariable((AssignmentRule_t *)rule))
-      SET_SLOT(r_rule, install("variable"), 
+      SET_SLOT(r_rule, install("variable"),
         mkString(AssignmentRule_getVariable((AssignmentRule_t *)rule)));
+    #endif
     break;
   case SBML_RATE_RULE:
     PROTECT(r_rule = NEW_OBJECT(MAKE_CLASS("RateRule")));
-    SET_SLOT(r_rule, install("variable"), mkString(RateRule_getVariable((RateRule_t *)rule)));
+    SET_SLOT(r_rule, install("variable"), mkString(
+      #ifdef LIBSBML3
+      Rule_getVariable(rule)));
+      #else
+      RateRule_getVariable((RateRule_t *)rule)));
+      #endif
     break;
   case SBML_SPECIES_CONCENTRATION_RULE:
     PROTECT(r_rule = NEW_OBJECT(MAKE_CLASS("SpeciesConcentrationRule")));
-    SET_SLOT(r_rule, install("species"), 
-      mkString(SpeciesConcentrationRule_getSpecies((SpeciesConcentrationRule_t *)rule)));
+    SET_SLOT(r_rule, install("species"), mkString(
+    #ifdef LIBSBML3
+      Rule_getVariable(rule)));
+    #else
+      SpeciesConcentrationRule_getSpecies((SpeciesConcentrationRule_t *)rule)));
+    #endif
     break;
   case SBML_COMPARTMENT_VOLUME_RULE:
     PROTECT(r_rule = NEW_OBJECT(MAKE_CLASS("CompartmentVolumeRule")));
-    SET_SLOT(r_rule, install("compartment"), 
-      mkString(CompartmentVolumeRule_getCompartment((CompartmentVolumeRule_t *)rule)));
+    SET_SLOT(r_rule, install("compartment"), mkString(
+    #ifdef LIBSBML3
+      Rule_getVariable(rule)));
+    #else
+      CompartmentVolumeRule_getCompartment((CompartmentVolumeRule_t *)rule)));
+    #endif
     break;
   case SBML_PARAMETER_RULE:
     PROTECT(r_rule = NEW_OBJECT(MAKE_CLASS("ParameterRule")));
+    #ifdef LIBSBML3
+    if (Rule_isSetUnits(rule))
+      SET_SLOT(r_rule, install("units"), mkString(Rule_getUnits(rule)));
+    #else
     SET_SLOT(r_rule, install("name"), 
       mkString(ParameterRule_getName((ParameterRule_t *)rule)));
     if (ParameterRule_isSetUnits((ParameterRule_t *)rule))
       SET_SLOT(r_rule, install("units"), 
         mkString(ParameterRule_getUnits((ParameterRule_t *)rule)));
+    #endif
     break;
   default:
     error("unknown rule type");
@@ -374,14 +545,22 @@ rsbml_build_dom_rule(Rule_t *rule)
   
   if (type == SBML_SPECIES_CONCENTRATION_RULE || type == SBML_COMPARTMENT_VOLUME_RULE ||
       type == SBML_PARAMETER_RULE) {
-    SET_SLOT(r_rule, install("type"), 
+    #ifdef LIBSBML3
+    RuleType_t type = Rule_getType(rule);
+    const char *type_name = "invalid";
+    if (type == RULE_TYPE_RATE)
+      type_name = "rate";
+    else if (type == RULE_TYPE_SCALAR)
+      type_name = "scalar";
+    SET_SLOT(r_rule, install("type"), mkString(type_name));
+    #else
+    SET_SLOT(r_rule, install("type"),
       mkString(RuleType_toString(AssignmentRule_getType((AssignmentRule_t *)rule))));
+    #endif
   }
   
   rsbml_build_dom_s_base(r_rule, (SBase_t *)rule);
   
-  if (Rule_isSetFormula(rule))
-    SET_SLOT(r_rule, install("formula"), mkString(Rule_getFormula(rule)));
   if (Rule_isSetMath(rule))
     SET_MATH(Rule, rule, Math, math);
   
@@ -412,7 +591,7 @@ rsbml_build_dom_event_assignment(EventAssignment_t *event_assignment)
 
 #ifdef LIBSBML3
 static SEXP
-rsbml_build_dom_delay(Delay_t *delay)
+rsbml_build_dom_delay(const Delay_t *delay)
 {
   SEXP r_delay;
   
@@ -427,7 +606,7 @@ rsbml_build_dom_delay(Delay_t *delay)
   return r_delay;
 }
 static SEXP
-rsbml_build_dom_trigger(Trigger_t *trigger)
+rsbml_build_dom_trigger(const Trigger_t *trigger)
 {
   SEXP r_trigger;
   
@@ -458,14 +637,14 @@ rsbml_build_dom_event(Event_t *event)
     SET_SLOT(r_event, install("name"), mkString(Event_getName(event)));
   #ifdef LIBSBML3
   if (Event_isSetDelay(event))
-    SET_SLOT(r_event, install("Delay"), rsbml_build_dom_delay(Event_getDelay(event)));
+    SET_SLOT(r_event, install("eventDelay"), rsbml_build_dom_delay(Event_getDelay(event)));
   if (Event_isSetTrigger(event))
-    SET_SLOT(r_event, install("Trigger"), rsbml_build_dom_trigger(Event_getTrigger(event)));
+    SET_SLOT(r_event, install("trigger"), rsbml_build_dom_trigger(Event_getTrigger(event)));
   #else
   if (Event_isSetTrigger(event))
     SET_MATH(Event, event, Trigger, trigger);
   if (Event_isSetDelay(event))
-    SET_MATH(Event, event, Delay, delay);
+    SET_MATH(Event, event, Delay, eventDelay);
   #endif
   if (Event_isSetTimeUnits(event))
     SET_SLOT(r_event, install("timeUnits"), mkString(Event_getTimeUnits(event)));
@@ -752,7 +931,7 @@ rsbml_build_dom_compartment_type(CompartmentType_t *compartment_type)
   rsbml_build_dom_s_base(r_compartment_type, (SBase_t *)compartment_type);
   
   SET_SLOT(r_compartment_type, install("id"), mkChar(CompartmentType_getId(compartment_type)));
-  if (CompartmentType_isSetName(species_type))
+  if (CompartmentType_isSetName(compartment_type))
     SET_SLOT(r_compartment_type, install("name"), mkChar(CompartmentType_getName(compartment_type)));
   
   UNPROTECT(1);
@@ -801,12 +980,55 @@ rsbml_build_dom_constraint(Constraint_t *constraint)
   
   rsbml_build_dom_s_base(r_constraint, (SBase_t *)constraint);
   
-  SET_SLOT(r_constraint, install("message"), mkChar(Constraint_getMessage(constraint)));
+  /*SET_SLOT(r_constraint, install("message"), 
+    mkChar(XMLNode_convertXMLNodeToString(Constraint_getMessage(constraint))));*/
   SET_MATH(Constraint, constraint, Math, math);
   
   UNPROTECT(1);
   
   return r_constraint;
+}
+#endif
+
+#ifdef LIBSBML3
+static SEXP
+rsbml_build_dom_model_creator(ModelCreator_t *model_creator)
+{
+  SEXP r_model_creator;
+  
+  PROTECT(r_model_creator = NEW_OBJECT(MAKE_CLASS("ModelCreator")));
+  
+  rsbml_build_dom_s_base(r_model_creator, (SBase_t *)model_creator);
+  
+  SET_SLOT(r_model_creator, install("familyName"), mkChar(ModelCreator_getFamilyName(model_creator)));
+  SET_SLOT(r_model_creator, install("givenName"), mkChar(ModelCreator_getGivenName(model_creator)));
+  SET_SLOT(r_model_creator, install("email"), mkChar(ModelCreator_getEmail(model_creator)));
+  SET_SLOT(r_model_creator, install("organization"), mkChar(ModelCreator_getOrganisation(model_creator)));
+  
+  UNPROTECT(1);
+  
+  return r_model_creator;
+}
+
+static SEXP
+rsbml_build_dom_model_history(ModelHistory_t *model_history)
+{
+  SEXP r_model_history;
+  
+  PROTECT(r_model_history = NEW_OBJECT(MAKE_CLASS("ModelHistory")));
+  
+  rsbml_build_dom_s_base(r_model_history, (SBase_t *)model_history);
+  
+  SET_SLOT(r_model_history, install("createdDate"), 
+    mkChar(Date_getDateAsString(ModelHistory_getCreatedDate(model_history))));
+  SET_SLOT(r_model_history, install("modifiedDate"), 
+    mkChar(Date_getDateAsString(ModelHistory_getModifiedDate(model_history))));
+  SET_SLOT(r_model_history, install("creators"), 
+    LIST_OF(model_history, ModelHistory, model_creator, Creator, NULL));
+  
+  UNPROTECT(1);
+  
+  return r_model_history;
 }
 #endif
 
@@ -821,6 +1043,11 @@ rsbml_build_dom_model(Model_t *model)
     SET_SLOT(r_model, install("id"), mkString(Model_getId(model)));
   if (Model_isSetName(model))
     SET_SLOT(r_model, install("name"), mkString(Model_getName(model)));
+  #ifdef LIBSBML3
+  if (Model_isSetModelHistory(model))
+    SET_SLOT(r_model, install("modelHistory"), 
+      rsbml_build_dom_model_history(Model_getModelHistory(model)));
+  #endif
   
   { /* species don't fit into the macro */
     /* on the bright side, this is an example of the macro */
@@ -880,7 +1107,11 @@ SEXP
 rsbml_R_build_dom(SEXP r_doc)
 {
   SBMLDocument_t *doc = R_ExternalPtrAddr(r_doc);
+  #ifdef LIBSBML3
+  if (SBMLDocument_getNumErrors(doc))
+  #else
   if (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc))
+  #endif
     error("Cannot build dom from document with errors");
   return rsbml_build_dom(doc);
 }

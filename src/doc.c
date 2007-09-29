@@ -1,47 +1,142 @@
 #include "rsbml.h"
 
-#define STRING(x) \
-({ \
-    const char *string = CHAR(STRING_ELT(x, 0)); \
-    &string; \
-})
-#define EXPRESSION(x) \
-({ \
-    ASTNode_t *node = SBML_parseFormula(STRING(coerceVector(x, STRSXP))[0]); \
-    &node; \
-})
-#define UNIT_KIND(x) \
-({ \
-    UnitKind_t kind = UnitKind_forName(STRING(x)[0]); \
-    &kind; \
-})
-#define RULE_TYPE(x) \
-({ \
-    RuleType_t type = RuleType_forName(STRING(x)[0]); \
-    &type; \
-})
+#define STRING(x) (char *)CHAR(STRING_ELT(x, 0))
+#define INTEGER_SCALAR(x) INTEGER(x)[0]
+#define REAL_SCALAR(x) REAL(x)[0]
+#define LOGICAL_SCALAR(x) LOGICAL(x)[0]
 
-#define ADD_LIST(class, var, Child, child, func) \
+#define rsbml_build_doc_ast_node(x) SBML_parseFormula(STRING(coerceVector(x, STRSXP)))
+#define rsbml_build_doc_unit_kind(x) UnitKind_forName(STRING(x))
+#define rsbml_build_doc_rule_type(x) RuleType_forName(STRING(x))
+
+#ifdef LIBSBML3
+
+#define rsbml_build_doc_date(x) Date_createFromString(STRING(x))
+
+static ModelQualifierType_t 
+rsbml_build_doc_model_qualifier_type(SEXP r_type)
+{
+  const char *name = STRING(r_type);
+  ModelQualifierType_t type;
+  if (!strcmp(name, "is"))
+    type = BQM_IS;
+  else if (!strcmp(name, "isDescribedBy"))
+    type = BQM_IS_DESCRIBED_BY;
+  else type = BQM_UNKNOWN;
+  return type;
+}
+
+static BiolQualifierType_t 
+rsbml_build_doc_biological_qualifier_type(SEXP r_type)
+{
+  const char *name = STRING(r_type);
+  BiolQualifierType_t type;
+  if (!strcmp(name, "is"))
+    type = BQB_IS;
+  else if (!strcmp(name, "hasPart"))
+    type = BQB_HAS_PART;
+  else if (!strcmp(name, "isPartOf"))
+    type = BQB_IS_PART_OF;
+  else if (!strcmp(name, "isVersionOf"))
+    type = BQB_IS_VERSION_OF;
+  else if (!strcmp(name, "hasVersion"))
+    type = BQB_HAS_VERSION;
+  else if (!strcmp(name, "isHomologTo"))
+    type = BQB_IS_HOMOLOG_TO;
+  else if (!strcmp(name, "isDescribedBy"))
+    type = BQB_IS_DESCRIBED_BY;
+  else type = BQB_UNKNOWN;
+  return type;
+}
+
+/* String -> XMLNode */
+/*
+static XMLNode_t *rsbml_build_doc_xml_node(SEXP r_node)
+{
+  return XMLNode_convertStringToXMLNode(STRING(r_node));
+}
+*/
+
+#endif
+
+#ifdef LIBSBML3
+#define CLEANUP_MEMORY 1
+#else
+#define CLEANUP_MEMORY 0
+/* dummy free function for Rule_t, never invoked */
+static void Rule_free(Rule_t *rule) { }
+#endif
+
+#define ADD_LIST(class, var, Child, child, ParamType, func) \
 ({ \
     int i; \
     SEXP list = GET_SLOT(r_ ## var, install(#child)); \
-    for (i = 0; i < GET_LENGTH(list); i++) \
-      class ## _add ## Child(var, rsbml_build_doc_ ## func(VECTOR_ELT(list, i))); \
+    for (i = 0; i < GET_LENGTH(list); i++) { \
+      ParamType ## _t *obj = rsbml_build_doc_ ## func(VECTOR_ELT(list, i)); \
+      class ## _add ## Child(var, obj); \
+      if (CLEANUP_MEMORY) \
+        ParamType ## _free(obj); \
+    } \
 })
 
+#define SET_ATTR_OBJ(Class, var, Name, name, ParamType, converter) \
+({ \
+    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name)); \
+    if (GET_LENGTH(r_ ## name)) { \
+      ParamType ## _t *conv = rsbml_build_doc_ ## converter(r_ ## name); \
+      Class ## _set ## Name((Class ## _t *)var, conv); \
+      if (CLEANUP_MEMORY) \
+        ParamType ## _free(conv); \
+    } \
+})
 #define SET_ATTR(Class, var, Name, name, converter) \
 ({ \
     SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name)); \
     if (GET_LENGTH(r_ ## name)) \
-      Class ## _set ## Name((Class ## _t *)var, converter(r_ ## name)[0]); \
+      Class ## _set ## Name((Class ## _t *)var, converter(r_ ## name)); \
 })
+
+#ifdef LIBSBML3
+static CVTerm_t *
+rsbml_build_doc_cvterm(SEXP r_cvterm)
+{
+  CVTerm_t * cvterm;
+  
+  QualifierType_t type = UNKNOWN_QUALIFIER;
+  SEXP r_type = GET_SLOT(r_cvterm, install("qualifierType"));
+  if (GET_LENGTH(r_type)) {
+    if (!strcmp(STRING(r_type), "model"))
+      type = MODEL_QUALIFIER;
+    else if (!strcmp(STRING(r_type), "biological"))
+      type = BIOLOGICAL_QUALIFIER;
+  }
+  cvterm = CVTerm_createWithQualifierType(type);
+  
+  SET_ATTR(CVTerm, cvterm, ModelQualifierType, modelQualifierType, 
+    rsbml_build_doc_model_qualifier_type);
+  SET_ATTR(CVTerm, cvterm, BiologicalQualifierType, biologicalQualifierType, 
+    rsbml_build_doc_biological_qualifier_type);
+  SEXP r_resources = GET_SLOT(r_cvterm, install("resources"));
+  for (int i = 0; i < GET_LENGTH(r_resources); i++)
+    CVTerm_addResource(cvterm, CHAR(STRING_ELT(r_resources, i)));
+  
+  return cvterm;
+}
+#endif
 
 static void
 rsbml_build_doc_s_base(SBase_t *s_base, SEXP r_s_base)
 {
   SET_ATTR(SBase, s_base, MetaId, metaId, STRING);
-  SET_ATTR(SBase, s_base, Notes, notes, STRING);
+  #ifdef LIBSBML3
+  SET_ATTR(SBase, s_base, AnnotationString, annotation, STRING);
+  SET_ATTR(SBase, s_base, NotesString, notes, STRING);
+  /*SET_ATTR(SBase, s_base, SBOTerm, sboTerm, rsbml_build_doc_xml_node);*/
+  ADD_LIST(SBase, s_base, CVTerm, cvTerms, CVTerm, cvterm);
+  #else
   SET_ATTR(SBase, s_base, Annotation, annotation, STRING);
+  SET_ATTR(SBase, s_base, Notes, notes, STRING);
+  #endif
 }
 
 #ifdef LIBSBML3
@@ -72,15 +167,15 @@ rsbml_build_doc_species(SEXP r_species)
   
   SET_ATTR(Species, species, Id, id, STRING);
   SET_ATTR(Species, species, Name, name, STRING);
-  SET_ATTR(Species, species, InitialConcentration, initialConcentration, REAL);
-  SET_ATTR(Species, species, InitialAmount, initialAmount, REAL);
+  SET_ATTR(Species, species, InitialConcentration, initialConcentration, REAL_SCALAR);
+  SET_ATTR(Species, species, InitialAmount, initialAmount, REAL_SCALAR);
   SET_ATTR(Species, species, SubstanceUnits, substanceUnits, STRING);
   SET_ATTR(Species, species, SpatialSizeUnits, spatialSizeUnits, STRING);
   SET_ATTR(Species, species, Units, units, STRING);
-  SET_ATTR(Species, species, HasOnlySubstanceUnits, hasOnlySubstanceUnits, LOGICAL);
-  SET_ATTR(Species, species, BoundaryCondition, boundaryCondition, LOGICAL);
-  SET_ATTR(Species, species, Charge, charge, INTEGER);
-  SET_ATTR(Species, species, Constant, constant, LOGICAL);
+  SET_ATTR(Species, species, HasOnlySubstanceUnits, hasOnlySubstanceUnits, LOGICAL_SCALAR);
+  SET_ATTR(Species, species, BoundaryCondition, boundaryCondition, LOGICAL_SCALAR);
+  SET_ATTR(Species, species, Charge, charge, INTEGER_SCALAR);
+  SET_ATTR(Species, species, Constant, constant, LOGICAL_SCALAR);
   
   return species;
 }
@@ -96,7 +191,7 @@ rsbml_build_doc_function_definition(SEXP r_function_definition)
   
   SET_ATTR(FunctionDefinition, function_definition, Id, id, STRING);
   SET_ATTR(FunctionDefinition, function_definition, Name, name, STRING);
-  SET_ATTR(FunctionDefinition, function_definition, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(FunctionDefinition, function_definition, Math, math, ASTNode, ast_node);
   
   return function_definition;
 }
@@ -110,11 +205,11 @@ rsbml_build_doc_unit(SEXP r_unit)
   
   rsbml_build_doc_s_base((SBase_t *)unit, r_unit);
   
-  SET_ATTR(Unit, unit, Kind, kind, UNIT_KIND);
-  SET_ATTR(Unit, unit, Exponent, exponent, INTEGER);
-  SET_ATTR(Unit, unit, Scale, scale, INTEGER);
-  SET_ATTR(Unit, unit, Multiplier, multiplier, REAL);
-  SET_ATTR(Unit, unit, Offset, offset, REAL);
+  SET_ATTR(Unit, unit, Kind, kind, rsbml_build_doc_unit_kind);
+  SET_ATTR(Unit, unit, Exponent, exponent, INTEGER_SCALAR);
+  SET_ATTR(Unit, unit, Scale, unitScale, INTEGER_SCALAR);
+  SET_ATTR(Unit, unit, Multiplier, multiplier, REAL_SCALAR);
+  SET_ATTR(Unit, unit, Offset, offset, REAL_SCALAR);
   
   return unit;
 }
@@ -130,7 +225,7 @@ rsbml_build_doc_unit_definition(SEXP r_unit_definition)
   
   SET_ATTR(UnitDefinition, unit_definition, Id, id, STRING);
   SET_ATTR(UnitDefinition, unit_definition, Name, name, STRING);
-  ADD_LIST(UnitDefinition, unit_definition, Unit, units, unit);
+  ADD_LIST(UnitDefinition, unit_definition, Unit, units, Unit, unit);
   
   return unit_definition;
 }
@@ -163,11 +258,11 @@ rsbml_build_doc_compartment(SEXP r_compartment)
   
   SET_ATTR(Compartment, compartment, Id, id, STRING);
   SET_ATTR(Compartment, compartment, Name, name, STRING);
-  SET_ATTR(Compartment, compartment, SpatialDimensions, spatialDimensions, INTEGER);
-  SET_ATTR(Compartment, compartment, Size, size, REAL);
+  SET_ATTR(Compartment, compartment, SpatialDimensions, spatialDimensions, INTEGER_SCALAR);
+  SET_ATTR(Compartment, compartment, Size, size, REAL_SCALAR);
   SET_ATTR(Compartment, compartment, Units, units, STRING);
   SET_ATTR(Compartment, compartment, Outside, outside, STRING);
-  SET_ATTR(Compartment, compartment, Constant, constant, LOGICAL);
+  SET_ATTR(Compartment, compartment, Constant, constant, LOGICAL_SCALAR);
   
   return compartment;
 }
@@ -183,9 +278,9 @@ rsbml_build_doc_parameter(SEXP r_parameter)
   
   SET_ATTR(Parameter, parameter, Id, id, STRING);
   SET_ATTR(Parameter, parameter, Name, name, STRING);
-  SET_ATTR(Parameter, parameter, Value, value, REAL);
+  SET_ATTR(Parameter, parameter, Value, value, REAL_SCALAR);
   SET_ATTR(Parameter, parameter, Units, units, STRING);
-  SET_ATTR(Parameter, parameter, Constant, constant, LOGICAL);
+  SET_ATTR(Parameter, parameter, Constant, constant, LOGICAL_SCALAR);
   
   return parameter;
 }
@@ -199,14 +294,26 @@ rsbml_build_doc_kinetic_law(SEXP r_kinetic_law)
   
   rsbml_build_doc_s_base((SBase_t *)kinetic_law, r_kinetic_law);
   
-  SET_ATTR(KineticLaw, kinetic_law, Math, math, EXPRESSION);
-  ADD_LIST(KineticLaw, kinetic_law, Parameter, parameters, parameter);
+  SET_ATTR_OBJ(KineticLaw, kinetic_law, Math, math, ASTNode, ast_node);
+  ADD_LIST(KineticLaw, kinetic_law, Parameter, parameters, Parameter, parameter);
   SET_ATTR(KineticLaw, kinetic_law, TimeUnits, timeUnits, STRING);
   SET_ATTR(KineticLaw, kinetic_law, SubstanceUnits, substanceUnits, STRING);
   
   return kinetic_law;
 }
 
+#ifdef LIBSBML3
+static void
+rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_reference,
+  SEXP r_simple_species_reference)
+{
+  rsbml_build_doc_s_base((SBase_t *)simple_species_reference, r_simple_species_reference);
+  #ifdef USE_LAYOUT
+  SET_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
+  #endif
+  SET_ATTR(SpeciesReference, simple_species_reference, Species, species, STRING);
+}
+#else
 static void
 rsbml_build_doc_simple_species_reference(SimpleSpeciesReference_t *simple_species_reference,
   SEXP r_simple_species_reference)
@@ -217,6 +324,17 @@ rsbml_build_doc_simple_species_reference(SimpleSpeciesReference_t *simple_specie
   #endif
   SET_ATTR(SimpleSpeciesReference, simple_species_reference, Species, species, STRING);
 }
+#endif
+
+#ifdef LIBSBML3
+static StoichiometryMath_t *
+rsbml_build_doc_stoichiometry_math(SEXP r_stoichiometry_math)
+{
+  StoichiometryMath_t *stoichiometry_math = StoichiometryMath_create();
+  SET_ATTR_OBJ(StoichiometryMath, stoichiometry_math, Math, math, ASTNode, ast_node);
+  return stoichiometry_math;
+}
+#endif
 
 static SpeciesReference_t *
 rsbml_build_doc_species_reference(SEXP r_species_reference)
@@ -226,21 +344,45 @@ rsbml_build_doc_species_reference(SEXP r_species_reference)
   
   species_reference = SpeciesReference_create();
   
+  #ifdef LIBSBML3
+  rsbml_build_doc_simple_species_reference((SpeciesReference_t *)species_reference,
+    r_species_reference);
+  #else
   rsbml_build_doc_simple_species_reference((SimpleSpeciesReference_t *)species_reference,
     r_species_reference);
+  #endif
   
-  SET_ATTR(SpeciesReference, species_reference, Stoichiometry, stoichiometry, REAL);
+  SET_ATTR(SpeciesReference, species_reference, Stoichiometry, stoichiometry, REAL_SCALAR);
  
   {
+    #ifdef LIBSBML3
+    SET_ATTR_OBJ(SpeciesReference, species_reference, StoichiometryMath, stoichiometryMath,
+      StoichiometryMath, stoichiometry_math);
+    #else
     SEXP r_stoichiometry_math = GET_SLOT(r_species_reference, install("stoichiometryMath"));
     SpeciesReference_t *stoichiometry_math = species_reference;
     if (GET_LENGTH(r_stoichiometry_math))
-      SET_ATTR(SpeciesReference, stoichiometry_math, StoichiometryMath, math, EXPRESSION);
+      SET_ATTR_OBJ(SpeciesReference, stoichiometry_math, StoichiometryMath, math, ASTNode, ast_node);
+    #endif
   }
 
   return species_reference;
 }
 
+#ifdef LIBSBML3
+static SpeciesReference_t *
+rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
+{
+  SpeciesReference_t * modifier_species_reference;
+  
+  modifier_species_reference = SpeciesReference_createModifier();
+  
+  rsbml_build_doc_simple_species_reference(
+    (SpeciesReference_t *)modifier_species_reference, r_modifier_species_reference);
+  
+  return modifier_species_reference;
+}
+#else
 static ModifierSpeciesReference_t *
 rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
 {
@@ -253,12 +395,12 @@ rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
   
   return modifier_species_reference;
 }
+#endif
 
 static Reaction_t *
 rsbml_build_doc_reaction(SEXP r_reaction)
 {
   Reaction_t * reaction;
-  SEXP kineticLaw = GET_SLOT(r_reaction, install("kineticLaw"));
   
   reaction = Reaction_create();
   
@@ -266,13 +408,16 @@ rsbml_build_doc_reaction(SEXP r_reaction)
   
   SET_ATTR(Reaction, reaction, Id, id, STRING);
   SET_ATTR(Reaction, reaction, Name, name, STRING);
-  ADD_LIST(Reaction, reaction, Reactant, reactants, species_reference);
-  ADD_LIST(Reaction, reaction, Product, products, species_reference);
-  ADD_LIST(Reaction, reaction, Modifier, modifiers, modifier_species_reference);
-  if (GET_LENGTH(kineticLaw))
-    Reaction_setKineticLaw(reaction, rsbml_build_doc_kinetic_law(kineticLaw));
-  SET_ATTR(Reaction, reaction, Reversible, reversible, LOGICAL);
-  SET_ATTR(Reaction, reaction, Fast, fast, LOGICAL);
+  ADD_LIST(Reaction, reaction, Reactant, reactants, SpeciesReference, species_reference);
+  ADD_LIST(Reaction, reaction, Product, products, SpeciesReference, species_reference);
+  #ifdef LIBSBML3
+  ADD_LIST(Reaction, reaction, Modifier, modifiers, SpeciesReference, modifier_species_reference);
+  #else
+  ADD_LIST(Reaction, reaction, Modifier, modifiers, ModifierSpeciesReference, modifier_species_reference);
+  #endif
+  SET_ATTR_OBJ(Reaction, reaction, KineticLaw, kineticLaw, KineticLaw, kinetic_law);
+  SET_ATTR(Reaction, reaction, Reversible, reversible, LOGICAL_SCALAR);
+  SET_ATTR(Reaction, reaction, Fast, fast, LOGICAL_SCALAR);
   
   return reaction;
 }
@@ -282,6 +427,22 @@ rsbml_build_doc_rule(SEXP r_rule)
 {
   Rule_t * rule = NULL;
   
+  #ifdef LIBSBML3
+  if (inherits(r_rule, "AlgebraicRule"))
+    rule = Rule_createAlgebraic();
+  else if (inherits(r_rule, "RateRule")) {
+    rule = Rule_createRate();
+    SET_ATTR(Rule, rule, Variable, variable, STRING);
+  } else if (inherits(r_rule, "AssignmentRule")) {
+    rule = Rule_createAssignment();
+    SET_ATTR(Rule, rule, Variable, variable, STRING);
+  } else {
+    error("Unknown event type");
+  }
+  if (inherits(r_rule, "ParameterRule")) {
+    SET_ATTR(Rule, rule, Units, units, STRING);
+  }
+  #else
   if (inherits(r_rule, "AlgebraicRule"))
     rule = (Rule_t *)AlgebraicRule_create();
   else if (inherits(r_rule, "RateRule")) {
@@ -305,12 +466,13 @@ rsbml_build_doc_rule(SEXP r_rule)
   }
   
   if (inherits(r_rule, "AssignmentRule")) {
-    SET_ATTR(AssignmentRule, rule, Type, type, RULE_TYPE);
+    SET_ATTR(AssignmentRule, rule, Type, type, rsbml_build_doc_rule_type);
   } 
+  #endif
   
   rsbml_build_doc_s_base((SBase_t *)rule, r_rule);
   
-  SET_ATTR(Rule, rule, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(Rule, rule, Math, math, ASTNode, ast_node);
   
   return rule;
 }
@@ -325,7 +487,7 @@ rsbml_build_doc_event_assignment(SEXP r_event_assignment)
   rsbml_build_doc_s_base((SBase_t *)event_assignment, r_event_assignment);
   
   SET_ATTR(EventAssignment, event_assignment, Variable, variable, STRING);
-  SET_ATTR(EventAssignment, event_assignment, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(EventAssignment, event_assignment, Math, math, ASTNode, ast_node);
   
   return event_assignment;
 }
@@ -340,7 +502,7 @@ rsbml_build_doc_trigger(SEXP r_trigger)
   
   rsbml_build_doc_s_base((SBase_t *)trigger, r_trigger);
   
-  SET_ATTR(Trigger, trigger, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(Trigger, trigger, Math, math, ASTNode, ast_node);
   
   return trigger;
 }
@@ -353,7 +515,7 @@ rsbml_build_doc_delay(SEXP r_delay)
   
   rsbml_build_doc_s_base((SBase_t *)delay, r_delay);
   
-  SET_ATTR(Delay, delay, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(Delay, delay, Math, math, ASTNode, ast_node);
   
   return delay;
 }
@@ -371,16 +533,14 @@ rsbml_build_doc_event(SEXP r_event)
   SET_ATTR(Event, event, Id, id, STRING);
   SET_ATTR(Event, event, Name, name, STRING);
   #ifdef LIBSBML3
-  SEXP r_delay = GET_SLOT(r_event, install("delay"));
-  if (GET_LENGTH(r_delay))
-    Event_setDelay(rsbml_build_doc_delay(r_delay));
-  Event_setTrigger(rsbml_build_doc_trigger(GET_SLOT(r_event, install("trigger"))));
+  SET_ATTR_OBJ(Event, event, Delay, eventDelay, Delay, delay);
+  SET_ATTR_OBJ(Event, event, Trigger, trigger, Trigger, trigger);
   #else
-  SET_ATTR(Event, event, Trigger, trigger, EXPRESSION);
-  SET_ATTR(Event, event, Delay, delay, EXPRESSION);
+  SET_ATTR_OBJ(Event, event, Trigger, trigger, ASTNode, ast_node);
+  SET_ATTR_OBJ(Event, event, Delay, eventDelay, ASTNode, ast_node);
   #endif
   SET_ATTR(Event, event, TimeUnits, timeUnits, STRING);
-  ADD_LIST(Event, event, EventAssignment, eventAssignments, event_assignment);
+  ADD_LIST(Event, event, EventAssignment, eventAssignments, EventAssignment, event_assignment);
   
   return event;
 }
@@ -395,9 +555,9 @@ rsbml_build_doc_dimensions(SEXP r_dimensions)
   
   rsbml_build_doc_s_base((SBase_t *)dimensions, r_dimensions);
   
-  SET_ATTR(Dimensions, dimensions, Width, width, REAL);
-  SET_ATTR(Dimensions, dimensions, Height, height, REAL);
-  SET_ATTR(Dimensions, dimensions, Depth, depth, REAL);
+  SET_ATTR(Dimensions, dimensions, Width, width, REAL_SCALAR);
+  SET_ATTR(Dimensions, dimensions, Height, height, REAL_SCALAR);
+  SET_ATTR(Dimensions, dimensions, Depth, depth, REAL_SCALAR);
   
   return dimensions;
 }
@@ -411,9 +571,9 @@ rsbml_build_doc_point(SEXP r_point)
   
   rsbml_build_doc_s_base((SBase_t *)point, r_point);
   
-  SET_ATTR(Point, point, XOffset, x, REAL);
-  SET_ATTR(Point, point, YOffset, y, REAL);
-  SET_ATTR(Point, point, ZOffset, z, REAL);
+  SET_ATTR(Point, point, XOffset, x, REAL_SCALAR);
+  SET_ATTR(Point, point, YOffset, y, REAL_SCALAR);
+  SET_ATTR(Point, point, ZOffset, z, REAL_SCALAR);
   
   return point;
 }
@@ -428,10 +588,8 @@ rsbml_build_doc_bounding_box(SEXP r_bounding_box)
   rsbml_build_doc_s_base((SBase_t *)bounding_box, r_bounding_box);
   
   SET_ATTR(BoundingBox, bounding_box, Id, id, STRING);
-  BoundingBox_setPosition(bounding_box, 
-    rsbml_build_doc_point(GET_SLOT(r_bounding_box, install("position"))));
-  BoundingBox_setDimensions(bounding_box, 
-    rsbml_build_doc_dimensions(GET_SLOT(r_bounding_box, install("dimensions"))));
+  SET_ATTR_OBJ(BoundingBox, bounding_box, Position, position, Point, point);
+  SET_ATTR_OBJ(BoundingBox, bounding_box, Dimensions, dimensions, Dimensions, dimensions);
   
   return bounding_box;
 }
@@ -440,8 +598,8 @@ static void
 rsbml_build_doc_base_graphical_object(GraphicalObject_t * graphical_object, SEXP r_graphical_object)
 {
   SET_ATTR(GraphicalObject, graphical_object, Id, id, STRING);
-  GraphicalObject_setBoundingBox(graphical_object,
-    rsbml_build_doc_bounding_box(GET_SLOT(r_graphical_object, install("boundingBox"))));
+  SET_ATTR_OBJ(GraphicalObject, graphical_object, BoundingBox, boundingBox, 
+    BoundingBox, bounding_box);
 }
 
 static GraphicalObject_t *
@@ -491,18 +649,14 @@ rsbml_build_doc_line_segment(SEXP r_line_segment)
   
   if (inherits(r_line_segment, "CubicBezier")) {
     line_segment = (LineSegment_t *)CubicBezier_create();
-    CubicBezier_setBasePoint1((CubicBezier_t *)line_segment,
-      rsbml_build_doc_point(GET_SLOT(r_line_segment, install("basePoint1"))));
-    CubicBezier_setBasePoint2((CubicBezier_t *)line_segment,
-      rsbml_build_doc_point(GET_SLOT(r_line_segment, install("basePoint2"))));
+    SET_ATTR_OBJ(CubicBezier, line_segment, BasePoint1, basePoint1, Point, point);
+    SET_ATTR_OBJ(CubicBezier, line_segment, BasePoint2, basePoint2, Point, point);
   } else line_segment = LineSegment_create();
   
   rsbml_build_doc_s_base((SBase_t *)line_segment, r_line_segment);
   
-  LineSegment_setStart(line_segment, 
-    rsbml_build_doc_point(GET_SLOT(r_line_segment, install("start"))));
-  LineSegment_setEnd(line_segment, 
-    rsbml_build_doc_point(GET_SLOT(r_line_segment, install("end"))));
+  SET_ATTR_OBJ(LineSegment, line_segment, Start, start, Point, point);
+  SET_ATTR_OBJ(LineSegment, line_segment, End, end, Point, point);
   
   return line_segment;
 }
@@ -516,7 +670,7 @@ rsbml_build_doc_curve(SEXP r_curve)
   
   rsbml_build_doc_s_base((SBase_t *)curve, r_curve);
   
-  ADD_LIST(Curve, curve, CurveSegment, curveSegments, line_segment);
+  ADD_LIST(Curve, curve, CurveSegment, curveSegments, LineSegment, line_segment);
   
   return curve;
 }
@@ -525,7 +679,6 @@ static SpeciesReferenceGlyph_t *
 rsbml_build_doc_species_reference_glyph(SEXP r_species_reference_glyph)
 {
   SpeciesReferenceGlyph_t * species_reference_glyph;
-  SEXP r_curve = GET_SLOT(r_species_reference_glyph, install("curve"));
   
   species_reference_glyph = SpeciesReferenceGlyph_create();
   
@@ -536,8 +689,7 @@ rsbml_build_doc_species_reference_glyph(SEXP r_species_reference_glyph)
   SET_ATTR(SpeciesReferenceGlyph, species_reference_glyph, SpeciesReferenceId, speciesReference, STRING);
   // FIXME: SpeciesReferenceGlyph_setRole is not exported
   /*SET_ATTR(SpeciesReferenceGlyph, species_reference_glyph, Role, role, STRING);*/
-  if (GET_LENGTH(r_curve))
-    SpeciesReferenceGlyph_setCurve(species_reference_glyph, rsbml_build_doc_curve(r_curve));
+  SET_ATTR_OBJ(SpeciesReferenceGlyph, species_reference_glyph, Curve, glyphCurve, Curve, curve);
   
   return species_reference_glyph;
 }
@@ -546,17 +698,15 @@ static ReactionGlyph_t *
 rsbml_build_doc_reaction_glyph(SEXP r_reaction_glyph)
 {
   ReactionGlyph_t * reaction_glyph;
-  SEXP r_curve = GET_SLOT(r_reaction_glyph, install("curve"));
   
   reaction_glyph = ReactionGlyph_create();
   
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)reaction_glyph, r_reaction_glyph);
   
   SET_ATTR(ReactionGlyph, reaction_glyph, ReactionId, reaction, STRING);
-  if (GET_LENGTH(r_curve))
-    ReactionGlyph_setCurve(reaction_glyph, rsbml_build_doc_curve(r_curve));
+  SET_ATTR_OBJ(ReactionGlyph, reaction_glyph, Curve, glyphCurve, Curve, curve);
   ADD_LIST(ReactionGlyph, reaction_glyph, SpeciesReferenceGlyph, 
-    speciesReferenceGlyphs, species_reference_glyph);
+    speciesReferenceGlyphs, SpeciesReferenceGlyph, species_reference_glyph);
   
   return reaction_glyph;
 }
@@ -588,14 +738,13 @@ rsbml_build_doc_layout(SEXP r_layout)
   
   SET_ATTR(Layout, layout, Id, id, STRING);
   // FIXME: libsml is missing Layout_setDimensions()
-  /*Layout_setDimensions(layout, 
-    rsbml_build_doc_dimensions(GET_SLOT(r_layout, install("dimensions"))));*/
-  ADD_LIST(Layout, layout, CompartmentGlyph, compartmentGlyphs, compartment_glyph);
-  ADD_LIST(Layout, layout, SpeciesGlyph, speciesGlyphs, species_glyph);
-  ADD_LIST(Layout, layout, ReactionGlyph, reactionGlyphs, reaction_glyph);
-  ADD_LIST(Layout, layout, TextGlyph, textGlyphs, text_glyph);
+  /*SET_ATTR_OBJ(Layout, layout, Dimensions, dimensions, Dimensions, dimensions);*/
+  ADD_LIST(Layout, layout, CompartmentGlyph, compartmentGlyphs, CompartmentGlyph, compartment_glyph);
+  ADD_LIST(Layout, layout, SpeciesGlyph, speciesGlyphs, SpeciesGlyph, species_glyph);
+  ADD_LIST(Layout, layout, ReactionGlyph, reactionGlyphs, ReactionGlyph, reaction_glyph);
+  ADD_LIST(Layout, layout, TextGlyph, textGlyphs, TextGlyph, text_glyph);
   ADD_LIST(Layout, layout, AdditionalGraphicalObject, additionalGraphicalObjects, 
-    graphical_object);
+    GraphicalObject, graphical_object);
   
   return layout;
 }
@@ -611,7 +760,7 @@ rsbml_build_doc_initial_assignment(SEXP r_initial_assignment)
   
   rsbml_build_doc_s_base((SBase_t *)initial_assignment, r_initial_assignment);
   
-  SET_ATTR(InitialAssignment, initial_assignment, Math, math, EXPRESSION);
+  SET_ATTR_OBJ(InitialAssignment, initial_assignment, Math, math, ASTNode, ast_node);
   SET_ATTR(InitialAssignment, initial_assignment, Symbol, symbol, STRING);
   
   return initial_assignment;
@@ -625,10 +774,42 @@ rsbml_build_doc_constraint(SEXP r_constraint)
   
   rsbml_build_doc_s_base((SBase_t *)constraint, r_constraint);
   
-  SET_ATTR(Constraint, constraint, Math, math, EXPRESSION);
-  SET_ATTR(Constraint, constraint, Message, message, STRING);
+  SET_ATTR_OBJ(Constraint, constraint, Math, math, ASTNode, ast_node);
+  /* FIXME: need to use XMLNode_convertXMLNodeToString, but not exported */
+  /*SET_ATTR(Constraint, constraint, Message, message, rsbml_build_doc_xml_node);*/
   
   return constraint;
+}
+#endif
+
+#ifdef LIBSBML3
+static ModelCreator_t *
+rsbml_build_doc_model_creator(SEXP r_model_creator)
+{
+  ModelCreator_t * model_creator;
+  
+  model_creator = ModelCreator_create();
+  
+  SET_ATTR(ModelCreator, model_creator, FamilyName, familyName, STRING);
+  SET_ATTR(ModelCreator, model_creator, GivenName, givenName, STRING);
+  SET_ATTR(ModelCreator, model_creator, Email, email, STRING);
+  SET_ATTR(ModelCreator, model_creator, Organisation, organization, STRING);
+  
+  return model_creator;
+}
+
+static ModelHistory_t *
+rsbml_build_doc_model_history(SEXP r_model_history)
+{
+  ModelHistory_t * model_history;
+  
+  model_history = ModelHistory_create();
+  
+  SET_ATTR_OBJ(ModelHistory, model_history, CreatedDate, createdDate, Date, date);
+  SET_ATTR_OBJ(ModelHistory, model_history, ModifiedDate, modifiedDate, Date, date);
+  ADD_LIST(ModelHistory, model_history, Creator, creators, ModelCreator, model_creator);
+  
+  return model_history;
 }
 #endif
 
@@ -640,20 +821,27 @@ rsbml_build_doc_model(SEXP r_model)
   SET_ATTR(Model, model, Id, id, STRING);
   SET_ATTR(Model, model, Name, name, STRING);
 
-  ADD_LIST(Model, model, Species, species, species);
-  ADD_LIST(Model, model, FunctionDefinition, functionDefinitions, function_definition);
-  ADD_LIST(Model, model, UnitDefinition, unitDefinitions, unit_definition);
-  ADD_LIST(Model, model, Compartment, compartments, compartment);
-  ADD_LIST(Model, model, Parameter, parameters, parameter);
-  ADD_LIST(Model, model, Rule, rules, rule);
-  ADD_LIST(Model, model, Reaction, reactions, reaction);
-  ADD_LIST(Model, model, Event, events, event);
+  ADD_LIST(Model, model, Species, species, Species, species);
+  ADD_LIST(Model, model, FunctionDefinition, functionDefinitions, FunctionDefinition, 
+    function_definition);
+  ADD_LIST(Model, model, UnitDefinition, unitDefinitions, UnitDefinition, unit_definition);
+  ADD_LIST(Model, model, Compartment, compartments, Compartment, compartment);
+  ADD_LIST(Model, model, Parameter, parameters, Parameter, parameter);
+  ADD_LIST(Model, model, Rule, rules, Rule, rule);
+  ADD_LIST(Model, model, Reaction, reactions, Reaction, reaction);
+  ADD_LIST(Model, model, Event, events, Event, event);
   #ifdef LIBSBML3
-  ADD_LIST(Model, model, SpeciesType, speciesTypes, species_type);
-  ADD_LIST(Model, model, CompartmentType, compartmentTypes, compartment_type);
+  ADD_LIST(Model, model, SpeciesType, speciesTypes, SpeciesType, species_type);
+  ADD_LIST(Model, model, CompartmentType, compartmentTypes, CompartmentType, compartment_type);
+  ADD_LIST(Model, model, InitialAssignment, initialAssignments, InitialAssignment, initial_assignment);
+  ADD_LIST(Model, model, Constraint, constraints, Constraint, constraint);
   #endif
   #ifdef USE_LAYOUT
-  ADD_LIST(Model, model, Layout, layouts, layout);
+  ADD_LIST(Model, model, Layout, layouts, Layout, layout);
+  #endif
+  
+  #ifdef LIBSBML3
+  SET_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory, model_history);
   #endif
   
   return model;
@@ -666,10 +854,21 @@ rsbml_build_doc(SEXP r_doc)
   
   doc = SBMLDocument_create();
   
-  SET_ATTR(SBMLDocument, doc, Level, level, INTEGER);
-  SET_ATTR(SBMLDocument, doc, Version, ver, INTEGER);
+  #ifdef LIBSBML3
+  SEXP r_level = GET_SLOT(r_doc, install("level"));
+  SEXP r_version = GET_SLOT(r_doc, install("version"));
+  unsigned int level = 2, version = 3;
+  if (GET_LENGTH(r_level))
+    level = INTEGER_SCALAR(r_level);
+  if (GET_LENGTH(r_version))
+    version = INTEGER_SCALAR(r_version);
+  SBMLDocument_setLevelAndVersion(doc, level, version);
+  #else
+  SET_ATTR(SBMLDocument, doc, Level, level, INTEGER_SCALAR);
+  SET_ATTR(SBMLDocument, doc, Version, ver, INTEGER_SCALAR);
+  #endif
   
-  SBMLDocument_setModel(doc, rsbml_build_doc_model(GET_SLOT(r_doc, install("model"))));
+  SET_ATTR_OBJ(SBMLDocument, doc, Model, model, Model, model);
   
   return doc;
 }

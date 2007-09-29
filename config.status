@@ -331,7 +331,7 @@ Copyright (C) 2006 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/larman/research/metnet/rsbml'
+ac_pwd='/home/larman/research/bioc/rsbml'
 srcdir='.'
 # If no file are specified by the user, then we need to provide default
 # value.  By we need to know if files were specified by the user.
@@ -502,17 +502,21 @@ s,@LIBS@,|#_!!_#|-lsbml ,g
 s,@build_alias@,|#_!!_#|,g
 s,@host_alias@,|#_!!_#|,g
 s,@target_alias@,|#_!!_#|,g
-s,@CC@,|#_!!_#|gcc,g
-s,@CFLAGS@,|#_!!_#|-g -O2,g
+s,@PKG_CONFIG@,|#_!!_#|/usr/bin/pkg-config,g
+s,@LIBSBML3_CFLAGS@,|#_!!_#|,g
+s,@LIBSBML3_LIBS@,|#_!!_#|,g
+s,@CC@,|#_!!_#|i686-pc-linux-gnu-gcc,g
+s,@CFLAGS@,|#_!!_#|-march=pentium-m -O2 -pipe -fomit-frame-pointer -std=gnu99,g
 s,@LDFLAGS@,|#_!!_#|,g
-s,@CPPFLAGS@,|#_!!_#| -I/usr/include/sbml -I/usr/local/include/sbml,g
-s,@ac_ct_CC@,|#_!!_#|gcc,g
+s,@CPPFLAGS@,|#_!!_#|-I/usr/local/include -I/usr/include/sbml -I/usr/local/include -I/usr/local/include/sbml,g
+s,@ac_ct_CC@,|#_!!_#|i686-pc-linux-gnu-gcc,g
 s,@EXEEXT@,|#_!!_#|,g
 s,@OBJEXT@,|#_!!_#|o,g
-s,@CPP@,|#_!!_#|gcc -E,g
+s,@CPP@,|#_!!_#|i686-pc-linux-gnu-gcc -E,g
 s,@GREP@,|#_!!_#|/bin/grep,g
 s,@EGREP@,|#_!!_#|/bin/grep -E,g
-s,@LIBSBML_CPPFLAGS@,|#_!!_#|-I/usr/include/sbml -I/usr/local/include/sbml,g
+s,@RSBML_CPPFLAGS@,|#_!!_#|,g
+s,@LIBSBML_CPPFLAGS@,|#_!!_#|-I/usr/include/sbml -I/usr/local/include -I/usr/local/include/sbml,g
 s,@LIBOBJS@,|#_!!_#|,g
 s,@LTLIBOBJS@,|#_!!_#|,g
 :end

@@ -1,24 +1,24 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 
-#include <SBMLTypes.h>
+#include <sbml/SBMLTypes.h>
 
 // Layout stuff
 #ifdef USE_LAYOUT
-#include <layout/BoundingBox.h>
-#include <layout/SpeciesGlyph.h>
-#include <layout/CompartmentGlyph.h>
-#include <layout/SpeciesReferenceRole.h>
-#include <layout/SpeciesReferenceGlyph.h>
-#include <layout/CubicBezier.h>
-#include <layout/Curve.h>
-#include <layout/TextGlyph.h>
-#include <layout/Dimensions.h>
-#include <layout/LineSegment.h>
-#include <layout/GraphicalObject.h>
-#include <layout/Point.h>
-#include <layout/Layout.h>
-#include <layout/ReactionGlyph.h>
+#include <sbml/layout/BoundingBox.h>
+#include <sbml/layout/SpeciesGlyph.h>
+#include <sbml/layout/CompartmentGlyph.h>
+#include <sbml/layout/SpeciesReferenceRole.h>
+#include <sbml/layout/SpeciesReferenceGlyph.h>
+#include <sbml/layout/CubicBezier.h>
+#include <sbml/layout/Curve.h>
+#include <sbml/layout/TextGlyph.h>
+#include <sbml/layout/Dimensions.h>
+#include <sbml/layout/LineSegment.h>
+#include <sbml/layout/GraphicalObject.h>
+#include <sbml/layout/Point.h>
+#include <sbml/layout/Layout.h>
+#include <sbml/layout/ReactionGlyph.h>
 #endif
 
 /* functions callable from R */
