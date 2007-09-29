@@ -1,5 +1,5 @@
 setClass("Unit", representation(kind = "character", exponent = "integer", 
-  unitScale = "integer", multiplier = "numeric", offset = "numeric"), 
+  scale = "integer", multiplier = "numeric", offset = "numeric"), 
   contains = "SBase")
 
  setGeneric("kind", function(object) standardGeneric("kind"))
@@ -8,8 +8,8 @@ setMethod("kind", "Unit", function(object) object@kind)
  setGeneric("exponent", function(object) standardGeneric("exponent"))
 setMethod("exponent", "Unit", function(object) object@exponent)
 
- setGeneric("unitScale", function(object) standardGeneric("unitScale"))
-setMethod("unitScale", "Unit", function(object) object@unitScale)
+ setGeneric("scale", function(x, center, scale) standardGeneric("scale"))
+setMethod("scale", "Unit", function(x, center, scale) x@scale)
 
  setGeneric("multiplier", function(object) standardGeneric("multiplier"))
 setMethod("multiplier", "Unit", function(object) object@multiplier)
@@ -37,9 +37,9 @@ setReplaceMethod("exponent", "Unit", function(object, value) {
   object
 })
 
- setGeneric("unitScale<-", function(object, value) standardGeneric("unitScale<-"))
-setReplaceMethod("unitScale", "Unit", function(object, value) {
-  object@unitScale <- as.integer(value)
+ setGeneric("scale<-", function(object, value) standardGeneric("scale<-"))
+setReplaceMethod("scale", "Unit", function(object, value) {
+  object@scale <- as.integer(value)
   object
 })
 

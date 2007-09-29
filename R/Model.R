@@ -2,7 +2,7 @@ setClass("Model", representation(id = "character", name = "character", functionD
   unitDefinitions = "list", compartments = "list", species = "list", parameters = "list", 
   rules = "list", reactions = "list", events = "list", layouts = "list",
   speciesTypes = "list", compartmentTypes = "list", constraints = "list", 
-  initialAssignments = "list", modelHistory = "ModelHistory"))
+  initialAssignments = "list"))
 
  
 setMethod("id", "Model", function(object) object@id)
@@ -135,7 +135,7 @@ setMethod("speciesTypes", "Model", function(object) object@speciesTypes)
  setGeneric("compartmentTypes<-", function(object, value) standardGeneric("compartmentTypes<-"))
 setReplaceMethod("compartmentTypes", "Model", function(object, value) {
   if (!all(sapply(value, inherits, "CompartmentType")))
-    stop("All compartment types must be CompartmentType objects")
+    stop("All layouts must be CompartmentType objects")
   names(value) <- sapply(value, id)
   object@compartmentTypes <- value
   object
@@ -144,7 +144,7 @@ setReplaceMethod("compartmentTypes", "Model", function(object, value) {
  setGeneric("speciesTypes<-", function(object, value) standardGeneric("speciesTypes<-"))
 setReplaceMethod("speciesTypes", "Model", function(object, value) {
   if (!all(sapply(value, inherits, "SpeciesType")))
-    stop("All species types must be SpeciesType objects")
+    stop("All layouts must be SpeciesType objects")
   names(value) <- sapply(value, id)
   object@speciesTypes <- value
   object
@@ -159,7 +159,7 @@ setMethod("initialAssignments", "Model", function(object) object@initialAssignme
  setGeneric("constraints<-", function(object, value) standardGeneric("constraints<-"))
 setReplaceMethod("constraints", "Model", function(object, value) {
   if (!all(sapply(value, inherits, "Constraint")))
-    stop("All constraints must be Constraint objects")
+    stop("All layouts must be Constraint objects")
   names(value) <- sapply(value, id)
   object@constraints <- value
   object
@@ -168,16 +168,8 @@ setReplaceMethod("constraints", "Model", function(object, value) {
  setGeneric("initialAssignments<-", function(object, value) standardGeneric("initialAssignments<-"))
 setReplaceMethod("initialAssignments", "Model", function(object, value) {
   if (!all(sapply(value, inherits, "InitialAssignment")))
-    stop("All initial assignments must be InitialAssignment objects")
+    stop("All layouts must be InitialAssignment objects")
   object@initialAssignments <- value
-  object
-})
-
- setGeneric("modelHistory", function(object) standardGeneric("modelHistory"))
-setMethod("modelHistory", "Model", function(object) object@modelHistory)
- setGeneric("modelHistory<-", function(object, value) standardGeneric("modelHistory<-"))
-setReplaceMethod("modelHistory", "Model", function(object, value) {
-  object@modelHistory <- value
   object
 })
 

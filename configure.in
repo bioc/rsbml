@@ -9,13 +9,8 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 
-# Try pkg-config, which only exists for libsbml >= 3.0.0
-# The legacy parameters override the pkg-config results
-PKG_CHECK_MODULES(LIBSBML3, [libsbml >= 3.0.0], [LIBSBML3="yes"], [LIBSBML3="no"])
-
-AC_ARG_WITH(libsbml-include,
-            AC_HELP_STRING([--with-libsbml-include=PATH], 
-              [location of libsbml headers, directory containing 'sbml' directory]),
+AC_ARG_WITH(libsbml-include, 
+            AC_HELP_STRING([--with-libsbml-include=PATH], [location of libsbml headers]),
             [LIBSBML_INCLUDE=$withval])
 AC_ARG_WITH(libsbml-lib, 
             AC_HELP_STRING([--with-libsbml-lib=PATH], [location of libsbml library]),
@@ -23,31 +18,23 @@ AC_ARG_WITH(libsbml-lib,
 
 if test [ -n "${LIBSBML_INCLUDE}" ] ; then
   LIBSBML_CPPFLAGS="-I${LIBSBML_INCLUDE}"
-elif test [ -n "${LIBSBML3_CFLAGS}" ]; then
-  LIBSBML_CPPFLAGS="${LIBSBML3_CFLAGS}"
-else LIBSBML_CPPFLAGS="-I/usr/include/sbml -I/usr/local/include -I/usr/local/include/sbml"
+else
+  LIBSBML_CPPFLAGS="-I/usr/include/sbml -I/usr/local/include/sbml"
 fi
 CPPFLAGS="${CPPFLAGS} ${LIBSBML_CPPFLAGS}"
 
 if test [ -n "${LIBSBML_LIBS}" ] ; then
-  LIBS="${LIBSBML_LIBS} ${LIBS}"
-elif test [ -n "${LIBSBML3_LIBS}" ]; then
-  LIBS="${LIBSBML3_LIBS} ${LIBS}"
+  LIBS="-L${LIBSBML_LIBS} ${LIBS}"
 fi
 
-if test "${LIBSBML3}" != "no"; then
-  RSBML_CPPFLAGS="-DLIBSBML3"
-else
-  AC_CHECK_HEADER([sbml/SBMLDocument.h],, 
-    AC_MSG_ERROR([Could not find sbml/SBMLDocument.h: 
-      rsbml requires libsbml from http://www.sbml.org/software/libsbml/
-      use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path.]))
-  AC_CHECK_LIB([sbml], [SBMLDocument_create],,
-    AC_MSG_ERROR([Could not link to libsbml: 
-      use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
-fi
+AC_CHECK_HEADER([SBMLDocument.h],, 
+  AC_MSG_ERROR([Could not find sbml/SBMLDocument.h: 
+    rsbml requires libsbml from http://www.sbml.org/software/libsbml/
+    use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path.]))
+AC_CHECK_LIB([sbml], [SBMLDocument_create],,
+  AC_MSG_ERROR([Could not link to libsbml: 
+    use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
 
-AC_SUBST(RSBML_CPPFLAGS)
 AC_SUBST(LIBSBML_CPPFLAGS)
 AC_SUBST(LIBS)
 AC_OUTPUT(src/Makevars)

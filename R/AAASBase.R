@@ -1,5 +1,5 @@
-setClass("SBase", representation(metaId = "character", notes = "character", 
-  annotation = "character", cvTerms = "list", sboTerm = "character"), contains=("VIRTUAL"))
+setClass("SBase", representation(metaId = "character", notes = "character", annotation = "character"), 
+  contains=("VIRTUAL"))
   
 setGeneric("metaId", function(object) standardGeneric("metaId"))
 setMethod("metaId", "SBase", function(object) object@metaId)
@@ -9,12 +9,6 @@ setMethod("notes", "SBase", function(object) object@notes)
 
 setGeneric("annotation", function(object) standardGeneric("annotation"))
 setMethod("annotation", "SBase", function(object) object@annotation)
-
-setGeneric("cvTerms", function(object) standardGeneric("cvTerms"))
-setMethod("cvTerms", "SBase", function(object) object@cvTerms)
-
-setGeneric("sboTerm", function(object) standardGeneric("sboTerm"))
-setMethod("sboTerm", "SBase", function(object) object@sboTerm)
 
 setGeneric("metaId<-",
            function(object, value) standardGeneric("metaId<-"))
@@ -34,21 +28,5 @@ setGeneric("annotation<-",
            function(object, value) standardGeneric("annotation<-"))
 setReplaceMethod("annotation", "SBase", function(object, value) {
     object@annotation <- value
-    object
-})
-
-setGeneric("cvTerms<-",
-           function(object, value) standardGeneric("cvTerms<-"))
-setReplaceMethod("cvTerms", "SBase", function(object, value) {
-    if (!all(sapply(value, inherits, "CVTerm")))
-      stop("All cvTerms must be CVTerm objects")
-    object@cvTerms <- value
-    object
-})
-
-setGeneric("sboTerm<-",
-           function(object, value) standardGeneric("sboTerm<-"))
-setReplaceMethod("sboTerm", "SBase", function(object, value) {
-    object@sboTerm <- value
     object
 })

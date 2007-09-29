@@ -1678,19 +1678,6 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-: ${R_HOME=`R RHOME`}
-if test -z "${R_HOME}"; then
-  echo "could not determine R_HOME"
-  exit 1
-fi
-CC=`"${R_HOME}/bin/R" CMD config CC`
-CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-
-# Try pkg-config, which only exists for libsbml >= 3.0.0
-# The legacy parameters can override the pkg-config results
-PKG_CHECK_MODULES(LIBSBML, libsbml >= 3.0.0, LIBSBML3 = 1, LIBSBML3 = 0)
-
 
 # Check whether --with-libsbml-include was given.
 if test "${with_libsbml_include+set}" = set; then
@@ -1706,7 +1693,7 @@ fi
 
 if test  -n "${LIBSBML_INCLUDE}"  ; then
   LIBSBML_CPPFLAGS="-I${LIBSBML_INCLUDE}"
-elif test  -z "${LIBSBML_CPPFLAGS}" ; then
+else
   LIBSBML_CPPFLAGS="-I/usr/include/sbml -I/usr/local/include/sbml"
 fi
 CPPFLAGS="${CPPFLAGS} ${LIBSBML_CPPFLAGS}"

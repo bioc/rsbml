@@ -1,10 +1,5 @@
 #include "rsbml.h"
-#include "StringMap.h"
-
-#ifdef LIBSBML3
-#define SimpleSpeciesReference_getSpecies(x) SpeciesReference_getSpecies(x)
-typedef SpeciesReference_t SimpleSpeciesReference_t;
-#endif
+#include <util/StringMap.h>
 
 SEXP
 rsbml_build_graph(SBMLDocument_t *doc)
@@ -113,11 +108,7 @@ SEXP
 rsbml_R_build_graph(SEXP r_doc)
 {
   SBMLDocument_t *doc = R_ExternalPtrAddr(r_doc);
-  #ifdef LIBSBML3
-  if (SBMLDocument_getNumErrors(doc))
-  #else
   if (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc))
-  #endif
     error("Cannot build graph from document with errors");
   return rsbml_build_graph(doc);
 }
