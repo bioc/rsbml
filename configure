@@ -650,6 +650,9 @@ LIBS
 build_alias
 host_alias
 target_alias
+PKG_CONFIG
+LIBSBML3_CFLAGS
+LIBSBML3_LIBS
 CC
 CFLAGS
 LDFLAGS
@@ -660,6 +663,7 @@ OBJEXT
 CPP
 GREP
 EGREP
+RSBML_CPPFLAGS
 LIBSBML_CPPFLAGS
 LIBOBJS
 LTLIBOBJS'
@@ -667,6 +671,9 @@ ac_subst_files=''
       ac_precious_vars='build_alias
 host_alias
 target_alias
+PKG_CONFIG
+LIBSBML3_CFLAGS
+LIBSBML3_LIBS
 CC
 CFLAGS
 LDFLAGS
@@ -1242,10 +1249,16 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-libsbml-include=PATH
-                          location of libsbml headers
+                          location of libsbml headers, directory containing
+                          'sbml' directory
   --with-libsbml-lib=PATH location of libsbml library
 
 Some influential environment variables:
+  PKG_CONFIG  path to pkg-config utility
+  LIBSBML3_CFLAGS
+              C compiler flags for LIBSBML3, overriding pkg-config
+  LIBSBML3_LIBS
+              linker flags for LIBSBML3, overriding pkg-config
   CC          C compiler command
   CFLAGS      C compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -1678,6 +1691,209 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+
+# Try pkg-config, which only exists for libsbml >= 3.0.0
+# The legacy parameters override the pkg-config results
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+echo "${ECHO_T}$PKG_CONFIG" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { echo "$as_me:$LINENO: result: $ac_pt_PKG_CONFIG" >&5
+echo "${ECHO_T}$ac_pt_PKG_CONFIG" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ echo "$as_me:$LINENO: WARNING: In the future, Autoconf will not detect cross-tools
+whose name does not start with the host triplet.  If you think this
+configuration is useful to you, please write to autoconf@gnu.org." >&5
+echo "$as_me: WARNING: In the future, Autoconf will not detect cross-tools
+whose name does not start with the host triplet.  If you think this
+configuration is useful to you, please write to autoconf@gnu.org." >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ echo "$as_me:$LINENO: checking pkg-config is at least version $_pkg_min_version" >&5
+echo $ECHO_N "checking pkg-config is at least version $_pkg_min_version... $ECHO_C" >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+	else
+		{ echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+		PKG_CONFIG=""
+	fi
+
+fi
+
+pkg_failed=no
+{ echo "$as_me:$LINENO: checking for LIBSBML3" >&5
+echo $ECHO_N "checking for LIBSBML3... $ECHO_C" >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBSBML3_CFLAGS"; then
+        pkg_cv_LIBSBML3_CFLAGS="$LIBSBML3_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libsbml >= 3.0.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libsbml >= 3.0.0") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBSBML3_CFLAGS=`$PKG_CONFIG --cflags "libsbml >= 3.0.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LIBSBML3_LIBS"; then
+        pkg_cv_LIBSBML3_LIBS="$LIBSBML3_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libsbml >= 3.0.0\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libsbml >= 3.0.0") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_LIBSBML3_LIBS=`$PKG_CONFIG --libs "libsbml >= 3.0.0" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBSBML3_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libsbml >= 3.0.0"`
+        else
+	        LIBSBML3_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libsbml >= 3.0.0"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBSBML3_PKG_ERRORS" >&5
+
+	{ echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+                LIBSBML3="no"
+elif test $pkg_failed = untried; then
+	LIBSBML3="no"
+else
+	LIBSBML3_CFLAGS=$pkg_cv_LIBSBML3_CFLAGS
+	LIBSBML3_LIBS=$pkg_cv_LIBSBML3_LIBS
+        { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+	LIBSBML3="yes"
+fi
+
 
 # Check whether --with-libsbml-include was given.
 if test "${with_libsbml_include+set}" = set; then
@@ -1693,16 +1909,22 @@ fi
 
 if test  -n "${LIBSBML_INCLUDE}"  ; then
   LIBSBML_CPPFLAGS="-I${LIBSBML_INCLUDE}"
-else
-  LIBSBML_CPPFLAGS="-I/usr/include/sbml -I/usr/local/include/sbml"
+elif test  -n "${LIBSBML3_CFLAGS}" ; then
+  LIBSBML_CPPFLAGS="${LIBSBML3_CFLAGS}"
+else LIBSBML_CPPFLAGS="-I/usr/include/sbml -I/usr/local/include -I/usr/local/include/sbml"
 fi
 CPPFLAGS="${CPPFLAGS} ${LIBSBML_CPPFLAGS}"
 
 if test  -n "${LIBSBML_LIBS}"  ; then
-  LIBS="-L${LIBSBML_LIBS} ${LIBS}"
+  LIBS="${LIBSBML_LIBS} ${LIBS}"
+elif test  -n "${LIBSBML3_LIBS}" ; then
+  LIBS="${LIBSBML3_LIBS} ${LIBS}"
 fi
 
-ac_ext=c
+if test "${LIBSBML3}" != "no"; then
+  RSBML_CPPFLAGS="-DLIBSBML3"
+else
+  ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -3258,18 +3480,18 @@ fi
 done
 
 
-if test "${ac_cv_header_SBMLDocument_h+set}" = set; then
-  { echo "$as_me:$LINENO: checking for SBMLDocument.h" >&5
-echo $ECHO_N "checking for SBMLDocument.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_SBMLDocument_h+set}" = set; then
+if test "${ac_cv_header_sbml_SBMLDocument_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for sbml/SBMLDocument.h" >&5
+echo $ECHO_N "checking for sbml/SBMLDocument.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_sbml_SBMLDocument_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_SBMLDocument_h" >&5
-echo "${ECHO_T}$ac_cv_header_SBMLDocument_h" >&6; }
+{ echo "$as_me:$LINENO: result: $ac_cv_header_sbml_SBMLDocument_h" >&5
+echo "${ECHO_T}$ac_cv_header_sbml_SBMLDocument_h" >&6; }
 else
   # Is the header compilable?
-{ echo "$as_me:$LINENO: checking SBMLDocument.h usability" >&5
-echo $ECHO_N "checking SBMLDocument.h usability... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking sbml/SBMLDocument.h usability" >&5
+echo $ECHO_N "checking sbml/SBMLDocument.h usability... $ECHO_C" >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -3277,7 +3499,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 $ac_includes_default
-#include <SBMLDocument.h>
+#include <sbml/SBMLDocument.h>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -3309,15 +3531,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "${ECHO_T}$ac_header_compiler" >&6; }
 
 # Is the header present?
-{ echo "$as_me:$LINENO: checking SBMLDocument.h presence" >&5
-echo $ECHO_N "checking SBMLDocument.h presence... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking sbml/SBMLDocument.h presence" >&5
+echo $ECHO_N "checking sbml/SBMLDocument.h presence... $ECHO_C" >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <SBMLDocument.h>
+#include <sbml/SBMLDocument.h>
 _ACEOF
 if { (ac_try="$ac_cpp conftest.$ac_ext"
 case "(($ac_try" in
@@ -3350,48 +3572,48 @@ echo "${ECHO_T}$ac_header_preproc" >&6; }
 # So?  What about this header?
 case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
   yes:no: )
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: SBMLDocument.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: proceeding with the compiler's result" >&5
-echo "$as_me: WARNING: SBMLDocument.h: proceeding with the compiler's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: proceeding with the compiler's result" >&2;}
     ac_header_preproc=yes
     ;;
   no:yes:* )
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: present but cannot be compiled" >&5
-echo "$as_me: WARNING: SBMLDocument.h: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h:     check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: SBMLDocument.h:     check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: see the Autoconf documentation" >&5
-echo "$as_me: WARNING: SBMLDocument.h: see the Autoconf documentation" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h:     section \"Present But Cannot Be Compiled\"" >&5
-echo "$as_me: WARNING: SBMLDocument.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: SBMLDocument.h: proceeding with the preprocessor's result" >&2;}
-    { echo "$as_me:$LINENO: WARNING: SBMLDocument.h: in the future, the compiler will take precedence" >&5
-echo "$as_me: WARNING: SBMLDocument.h: in the future, the compiler will take precedence" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: sbml/SBMLDocument.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: sbml/SBMLDocument.h: in the future, the compiler will take precedence" >&2;}
 
     ;;
 esac
-{ echo "$as_me:$LINENO: checking for SBMLDocument.h" >&5
-echo $ECHO_N "checking for SBMLDocument.h... $ECHO_C" >&6; }
-if test "${ac_cv_header_SBMLDocument_h+set}" = set; then
+{ echo "$as_me:$LINENO: checking for sbml/SBMLDocument.h" >&5
+echo $ECHO_N "checking for sbml/SBMLDocument.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_sbml_SBMLDocument_h+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  ac_cv_header_SBMLDocument_h=$ac_header_preproc
+  ac_cv_header_sbml_SBMLDocument_h=$ac_header_preproc
 fi
-{ echo "$as_me:$LINENO: result: $ac_cv_header_SBMLDocument_h" >&5
-echo "${ECHO_T}$ac_cv_header_SBMLDocument_h" >&6; }
+{ echo "$as_me:$LINENO: result: $ac_cv_header_sbml_SBMLDocument_h" >&5
+echo "${ECHO_T}$ac_cv_header_sbml_SBMLDocument_h" >&6; }
 
 fi
-if test $ac_cv_header_SBMLDocument_h = yes; then
+if test $ac_cv_header_sbml_SBMLDocument_h = yes; then
   :
 else
   { { echo "$as_me:$LINENO: error: Could not find sbml/SBMLDocument.h:
-    rsbml requires libsbml from http://www.sbml.org/software/libsbml/
-    use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path." >&5
+      rsbml requires libsbml from http://www.sbml.org/software/libsbml/
+      use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path." >&5
 echo "$as_me: error: Could not find sbml/SBMLDocument.h:
-    rsbml requires libsbml from http://www.sbml.org/software/libsbml/
-    use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path." >&2;}
+      rsbml requires libsbml from http://www.sbml.org/software/libsbml/
+      use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path." >&2;}
    { (exit 1); exit 1; }; }
 fi
 
@@ -3467,10 +3689,12 @@ _ACEOF
 
 else
   { { echo "$as_me:$LINENO: error: Could not link to libsbml:
-    use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path." >&5
+      use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path." >&5
 echo "$as_me: error: Could not link to libsbml:
-    use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path." >&2;}
+      use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path." >&2;}
    { (exit 1); exit 1; }; }
+fi
+
 fi
 
 
@@ -4143,6 +4367,9 @@ LIBS!$LIBS$ac_delim
 build_alias!$build_alias$ac_delim
 host_alias!$host_alias$ac_delim
 target_alias!$target_alias$ac_delim
+PKG_CONFIG!$PKG_CONFIG$ac_delim
+LIBSBML3_CFLAGS!$LIBSBML3_CFLAGS$ac_delim
+LIBSBML3_LIBS!$LIBSBML3_LIBS$ac_delim
 CC!$CC$ac_delim
 CFLAGS!$CFLAGS$ac_delim
 LDFLAGS!$LDFLAGS$ac_delim
@@ -4153,12 +4380,13 @@ OBJEXT!$OBJEXT$ac_delim
 CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
+RSBML_CPPFLAGS!$RSBML_CPPFLAGS$ac_delim
 LIBSBML_CPPFLAGS!$LIBSBML_CPPFLAGS$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 50; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 54; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

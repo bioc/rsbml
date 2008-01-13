@@ -1,6 +1,6 @@
 setClass("SpeciesReferenceGlyph", representation(speciesGlyph = "character", 
-  speciesReference = "character", role = "character", curve = "Curve"), 
-  prototype = list(role = "undefined", curve = NULL), contains = "GraphicalObject")
+  speciesReference = "character", role = "character", glyphCurve = "Curve"), 
+  prototype = list(role = "undefined", glyphCurve = NULL), contains = "GraphicalObject")
 
  setGeneric("speciesGlyph", function(object) standardGeneric("speciesGlyph"))
 setMethod("speciesGlyph", "SpeciesReferenceGlyph", function(object) object@speciesGlyph)
@@ -11,10 +11,9 @@ setMethod("speciesReference", "SpeciesReferenceGlyph", function(object) object@s
  setGeneric("role", function(object) standardGeneric("role"))
 setMethod("role", "SpeciesReferenceGlyph", function(object) object@role)
 
-setGeneric("curve", function(expr, from, to, n, add, type, ylab, log, xlim, ...) 
-  standardGeneric("curve"))
-setMethod("curve", "SpeciesReferenceGlyph", 
-  function(expr, from, to, n, add, type, ylab, log, xlim, ...) expr@curve)
+setGeneric("glyphCurve", function(object) standardGeneric("glyphCurve"))
+setMethod("glyphCurve", "SpeciesReferenceGlyph", 
+  function(object) object@glyphCurve)
 
  setGeneric("speciesGlyph<-", function(object, value) standardGeneric("speciesGlyph<-"))
 setReplaceMethod("speciesGlyph", "SpeciesReferenceGlyph", function(object, value) {
@@ -39,12 +38,12 @@ setReplaceMethod("role", "SpeciesReferenceGlyph", function(object, value) {
   object
 })
 
- setGeneric("curve<-", function(object, value) standardGeneric("curve<-"))
-setReplaceMethod("curve", "SpeciesReferenceGlyph", function(object, value) {
+ setGeneric("glyphCurve<-", function(object, value) standardGeneric("glyphCurve<-"))
+setReplaceMethod("glyphCurve", "SpeciesReferenceGlyph", function(object, value) {
   if (is.null(value))
     object <- new("SpeciesReferenceGlyph", speciesGlyph = speciesGlyph(object),
       speciesReference = speciesReference(object), role = role(object))
-  object@curve <- value
+  object@glyphCurve <- value
   object
 })
 

@@ -1092,24 +1092,24 @@
   </listOfLayouts>
             </annotation>
     <listOfCompartments>
-      <compartment id="Yeast"/>
+      <compartment id="Yeast" size="1"/>
     </listOfCompartments>
     <listOfSpecies>
       <species id="Glucose" name="Glucose" compartment="Yeast"/>
-      <species id="Glucose-6-phosphate" name="Glucose-6-phosphate" compartment="Yeast"/>
-      <species id="Fructose-6-phosphate" name="Fructose-6-phosphate" compartment="Yeast"/>
-      <species id="Fructose-1_6-bisphosphate" name="Fructose-1,6-bisphosphate" compartment="Yeast"/>
+      <species id="Glucose_6_phosphate" name="Glucose-6-phosphate" compartment="Yeast"/>
+      <species id="Fructose_6_phosphate" name="Fructose-6-phosphate" compartment="Yeast"/>
+      <species id="Fructose_1_6_bisphosphate" name="Fructose-1,6-bisphosphate" compartment="Yeast"/>
       <species id="Dihydroxyacetonephosphate" name="Dihydroxyacetonephosphate" compartment="Yeast"/>
-      <species id="Glyceraldehyd-3-phosphate" name="Glyceraldehyd-3-phosphate" compartment="Yeast"/>
-      <species id="1_3-Bisphosphoglycerate" name="1,3-Bisphosphoglycerate" compartment="Yeast"/>
-      <species id="3-Phosphoglycerate" name="3-Phosphoglycerate" compartment="Yeast"/>
-      <species id="2-Phosphoglycerate" name="2-Phosphoglycerate" compartment="Yeast"/>
+      <species id="Glyceraldehyd_3_phosphate" name="Glyceraldehyd-3-phosphate" compartment="Yeast"/>
+      <species id="_1_3_Bisphosphoglycerate" name="1,3-Bisphosphoglycerate" compartment="Yeast"/>
+      <species id="_3_Phosphoglycerate" name="3-Phosphoglycerate" compartment="Yeast"/>
+      <species id="_2_Phosphoglycerate" name="2-Phosphoglycerate" compartment="Yeast"/>
       <species id="Phosphoenolpyruvate" name="Phosphoenolpyruvate" compartment="Yeast"/>
       <species id="Pyruvate" name="Pyruvate" compartment="Yeast"/>
       <species id="ATP" name="ATP" compartment="Yeast"/>
       <species id="ADP" name="ADP" compartment="Yeast"/>
-      <species id="H+" name="H+" compartment="Yeast"/>
-      <species id="NAD+" name="NAD+" compartment="Yeast"/>
+      <species id="H_" name="H+" compartment="Yeast"/>
+      <species id="NAD_" name="NAD+" compartment="Yeast"/>
       <species id="NADH" name="NADH" compartment="Yeast"/>
       <species id="H2O" name="H2O" compartment="Yeast"/>
       <species id="Pi" name="Pi" compartment="Yeast"/>
@@ -1129,7 +1129,7 @@
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Glucose-6-phosphate">
+          <speciesReference species="Glucose_6_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_G6P_1"/>
 </annotation>
@@ -1139,7 +1139,7 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_ADP_1"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="H+">
+          <speciesReference species="H_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_H_1"/>
 </annotation>
@@ -1148,14 +1148,14 @@
       </reaction>
       <reaction id="Phosphoglucoseisomerase">
         <listOfReactants>
-          <speciesReference species="Glucose-6-phosphate">
+          <speciesReference species="Glucose_6_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_G6P_2"/>
 </annotation>
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Fructose-6-phosphate">
+          <speciesReference species="Fructose_6_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_F6P_1"/>
 </annotation>
@@ -1164,7 +1164,7 @@
       </reaction>
       <reaction id="Phosphofructokinase" reversible="false">
         <listOfReactants>
-          <speciesReference species="Fructose-6-phosphate">
+          <speciesReference species="Fructose_6_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_F6P_2"/>
 </annotation>
@@ -1176,7 +1176,7 @@
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Fructose-1_6-bisphosphate">
+          <speciesReference species="Fructose_1_6_bisphosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_F16BP_1"/>
 </annotation>
@@ -1186,7 +1186,7 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_ADP_2"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="H+">
+          <speciesReference species="H_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_H_2"/>
 </annotation>
@@ -1195,7 +1195,7 @@
       </reaction>
       <reaction id="Aldolase">
         <listOfReactants>
-          <speciesReference species="Fructose-1_6-bisphosphate">
+          <speciesReference species="Fructose_1_6_bisphosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_F16BP_2"/>
 </annotation>
@@ -1207,7 +1207,7 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_DHAP_1"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="Glyceraldehyd-3-phosphate">
+          <speciesReference species="Glyceraldehyd_3_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_GAP_1"/>
 </annotation>
@@ -1223,7 +1223,7 @@
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Glyceraldehyd-3-phosphate">
+          <speciesReference species="Glyceraldehyd_3_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_GAP_2"/>
 </annotation>
@@ -1232,12 +1232,12 @@
       </reaction>
       <reaction id="GAP_Dehydrogenase" reversible="false">
         <listOfReactants>
-          <speciesReference species="Glyceraldehyd-3-phosphate">
+          <speciesReference species="Glyceraldehyd_3_phosphate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_GAP_3"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="NAD+">
+          <speciesReference species="NAD_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_NAD_1"/>
 </annotation>
@@ -1249,7 +1249,7 @@
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="1_3-Bisphosphoglycerate">
+          <speciesReference species="_1_3_Bisphosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_BPG_1"/>
 </annotation>
@@ -1259,7 +1259,7 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_NADH_1"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="H+">
+          <speciesReference species="H_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_H_5"/>
 </annotation>
@@ -1268,7 +1268,7 @@
       </reaction>
       <reaction id="Phosphoglyceratekinase" reversible="false">
         <listOfReactants>
-          <speciesReference species="1_3-Bisphosphoglycerate">
+          <speciesReference species="_1_3_Bisphosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_BPG_2"/>
 </annotation>
@@ -1278,14 +1278,14 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_ADP_3"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="H+">
+          <speciesReference species="H_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_H_3"/>
 </annotation>
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="3-Phosphoglycerate">
+          <speciesReference species="_3_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_3PG_1"/>
 </annotation>
@@ -1299,14 +1299,14 @@
       </reaction>
       <reaction id="Phosphoglyceratemutase">
         <listOfReactants>
-          <speciesReference species="3-Phosphoglycerate">
+          <speciesReference species="_3_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_3PG_2"/>
 </annotation>
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="2-Phosphoglycerate">
+          <speciesReference species="_2_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_2PG_1"/>
 </annotation>
@@ -1315,14 +1315,14 @@
       </reaction>
       <reaction id="Enolase">
         <listOfReactants>
-          <speciesReference species="3-Phosphoglycerate">
+          <speciesReference species="_3_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_2PG_2"/>
 </annotation>
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="2-Phosphoglycerate">
+          <speciesReference species="_2_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_PEP_1"/>
 </annotation>
@@ -1336,7 +1336,7 @@
       </reaction>
       <reaction id="Pyruvatekinase" reversible="false">
         <listOfReactants>
-          <speciesReference species="3-Phosphoglycerate">
+          <speciesReference species="_3_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_PEP_2"/>
 </annotation>
@@ -1346,14 +1346,14 @@
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_ADP_4"/>
 </annotation>
           </speciesReference>
-          <speciesReference species="H+">
+          <speciesReference species="H_">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_H_4"/>
 </annotation>
           </speciesReference>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="2-Phosphoglycerate">
+          <speciesReference species="_2_Phosphoglycerate">
             <annotation>
   <layoutId xmlns="http://projects.eml.org/bcb/sbml/level2" id="ref_Pyr_1"/>
 </annotation>

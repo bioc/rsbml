@@ -1,6 +1,6 @@
 setClass("Event", representation(id = "character", name = "character", trigger = "Trigger", 
-  delay = "Delay", timeUnits = "character", eventAssignments = "list"),
-  prototype = list(delay = NULL),
+  eventDelay = "Delay", timeUnits = "character", eventAssignments = "list"),
+  prototype = list(eventDelay = NULL),
   contains = "SBase")
 
  
@@ -12,8 +12,8 @@ setMethod("name", "Event", function(object) object@name)
  setGeneric("trigger", function(object) standardGeneric("trigger"))
 setMethod("trigger", "Event", function(object) object@trigger)
 
- setGeneric("delay", function(x, env) standardGeneric("delay"))
-setMethod("delay", "Event", function(x, env) x@delay)
+ setGeneric("eventDelay", function(object) standardGeneric("eventDelay"))
+setMethod("eventDelay", "Event", function(object) object@eventDelay)
 
  setGeneric("timeUnits", function(object) standardGeneric("timeUnits"))
 setMethod("timeUnits", "Event", function(object) object@timeUnits)
@@ -39,9 +39,9 @@ setReplaceMethod("trigger", "Event", function(object, value) {
   object
 })
 
- setGeneric("delay<-", function(object, value) standardGeneric("delay<-"))
-setReplaceMethod("delay", "Event", function(object, value) {
-  object@delay <- value
+ setGeneric("eventDelay<-", function(object, value) standardGeneric("eventDelay<-"))
+setReplaceMethod("eventDelay", "Event", function(object, value) {
+  object@eventDelay <- value
   object
 })
 

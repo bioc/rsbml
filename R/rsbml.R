@@ -34,7 +34,7 @@ as.character.SBMLDocument <- as.character.SBML <- function(x, ...) rsbml_xml(x)
 
 setGeneric("rsbml_write", function(object, filename) standardGeneric("rsbml_write"))
 setMethod("rsbml_write", "SBMLDocument", function(object, filename) 
-  .Call("rsbml_R_write_doc", object, as.character(filename), PACKAGE="rsbml"))
+  invisible(.Call("rsbml_R_write_doc", object, as.character(filename), PACKAGE="rsbml")))
 setMethod("rsbml_write", "SBML", function(object, filename) {
   doc <- rsbml_doc(object)
   rsbml_write(doc, filename)

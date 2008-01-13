@@ -1,5 +1,10 @@
 #include "rsbml.h"
-#include <util/StringMap.h>
+#include "StringMap.h"
+
+#ifdef LIBSBML3
+#define SimpleSpeciesReference_getSpecies(x) SpeciesReference_getSpecies(x)
+typedef SpeciesReference_t SimpleSpeciesReference_t;
+#endif
 
 SEXP
 rsbml_build_graph(SBMLDocument_t *doc)
@@ -24,11 +29,19 @@ rsbml_build_graph(SBMLDocument_t *doc)
   
   id_map = StringMap_create();
   for (i = 0; i < num_species; i++) {
-    const char *id = Species_getId(Model_getSpecies(model, i));
+    const char *id;
+    Species_t *species = Model_getSpecies(model, i);
+    if (Species_isSetId(species))
+      id = Species_getId(species);
+    else id = Species_getName(species);
     SET_STRING_ELT(r_nodes, i, mkChar(id));
   }
   for (i = 0; i < num_reactions; i++) {
-    const char *id = Reaction_getId(Model_getReaction(model, i));
+    Reaction_t *reaction = Model_getReaction(model, i);
+    const char *id;
+    if (Reaction_isSetId(reaction))
+      id = Reaction_getId(reaction);
+    else id = Reaction_getName(reaction);
     SET_STRING_ELT(r_nodes, i + num_species, mkChar(id));
   }
   
@@ -41,7 +54,9 @@ rsbml_build_graph(SBMLDocument_t *doc)
     Reaction_t *reaction = Model_getReaction(model, i);
     int j, num_reactants = Reaction_getNumReactants(reaction);
     int num_modifiers = Reaction_getNumModifiers(reaction);
-    long reaction_index = (long) StringMap_get(id_map, Reaction_getId(reaction));
+    const char *id = Reaction_isSetId(reaction) ? Reaction_getId(reaction) : 
+      Reaction_getName(reaction); 
+    long reaction_index = (long) StringMap_get(id_map, id);
     out_count[reaction_index] = Reaction_getNumProducts(reaction);
     for (j = 0; j < num_reactants; j++) {
       const char *id = SimpleSpeciesReference_getSpecies(
@@ -73,7 +88,9 @@ rsbml_build_graph(SBMLDocument_t *doc)
     int j, num_reactants = Reaction_getNumReactants(reaction);
     int num_modifiers = Reaction_getNumModifiers(reaction);
     int num_products = Reaction_getNumProducts(reaction);
-    long reaction_index = (long) StringMap_get(id_map, Reaction_getId(reaction));
+    const char *id = Reaction_isSetId(reaction) ? Reaction_getId(reaction) : 
+      Reaction_getName(reaction); 
+    long reaction_index = (long) StringMap_get(id_map, id);
     SEXP reaction_out = VECTOR_ELT(VECTOR_ELT(r_edges, reaction_index), 0);
     for (j = 0; j < num_reactants; j++) {
       const char *id = SimpleSpeciesReference_getSpecies(
@@ -108,7 +125,11 @@ SEXP
 rsbml_R_build_graph(SEXP r_doc)
 {
   SBMLDocument_t *doc = R_ExternalPtrAddr(r_doc);
+  #ifdef LIBSBML3
+  if (SBMLDocument_getNumErrors(doc))
+  #else
   if (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc))
+  #endif
     error("Cannot build graph from document with errors");
   return rsbml_build_graph(doc);
 }
