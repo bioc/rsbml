@@ -7,8 +7,10 @@
 \alias{species<-,SimpleSpeciesReference-method}
 
 \title{SBML type "SimpleSpeciesReference"}
-\description{Base class for bindings between a \code{\linkS4class{Species}} and 
-a \code{\linkS4class{Reaction}}.}
+\description{
+Base class for bindings between a \code{\linkS4class{Species}} and 
+a \code{\linkS4class{Reaction}}.
+}
 \section{Instantiation}{
 Objects can be created by calls of the form \code{new("SimpleSpeciesReference", ...)}.
 }
@@ -26,6 +28,11 @@ Objects can be created by calls of the form \code{new("SimpleSpeciesReference", 
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Extends}{

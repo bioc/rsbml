@@ -43,7 +43,7 @@
 \alias{units,Species-method}
 
 \title{SBML type "Species"}
-\description{}
+\description{A participant in an SBML model.}
 \section{Instantiation}{
 Objects can be created by calls of the form \code{new("Species", ...)}.
 }
@@ -79,6 +79,11 @@ Objects can be created by calls of the form \code{new("Species", ...)}.
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Extends}{

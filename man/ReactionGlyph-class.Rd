@@ -1,10 +1,10 @@
 \name{ReactionGlyph-class}
 \docType{class}
 \alias{ReactionGlyph-class}
-\alias{curve,ReactionGlyph-method}
-\alias{curve}
-\alias{curve<-,ReactionGlyph-method}
-\alias{curve<-}
+\alias{glyphCurve,ReactionGlyph-method}
+\alias{glyphCurve}
+\alias{glyphCurve<-,ReactionGlyph-method}
+\alias{glyphCurve<-}
 \alias{reaction,ReactionGlyph-method}
 \alias{reaction}
 \alias{reaction<-,ReactionGlyph-method}
@@ -23,8 +23,8 @@ Objects can be created by calls of the form \code{new("ReactionGlyph", ...)}.
 	 \describe{
     \item{\code{reaction}:}{Object of class \code{"character"} identifying the reaction
       represented by this glyph.}
-    \item{\code{curve}:}{Object of class \code{"Curve"} describing this glyph as
-      a curve (optional). }
+    \item{\code{glyphCurve}:}{Object of class \code{"Curve"} describing
+      this glyph as a curve (optional). }
     \item{\code{speciesReferenceGlyphs}:}{Object of class \code{"list"} containing
     \code{\linkS4class{SpeciesReferenceGlyph}}s that represent the 
     \code{\linkS4class{SpeciesReference}}s of the underlying \code{\linkS4class{Reaction}}.}
@@ -40,6 +40,11 @@ Objects can be created by calls of the form \code{new("ReactionGlyph", ...)}.
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Extends}{
@@ -48,8 +53,9 @@ Class \code{"\linkS4class{SBase}"}, by class "GraphicalObject", distance 2.
 }
 \section{Methods}{
   \describe{
-    \item{curve}{\code{signature(expr = "ReactionGlyph")}: ... }
-    \item{curve<-}{\code{signature(object = "ReactionGlyph")}: sets the \code{curve} slot }
+    \item{glyphCurve}{\code{signature(expr = "ReactionGlyph")}: gets the
+    \code{glyphCurve} slot }
+    \item{glyphCurve<-}{\code{signature(object = "ReactionGlyph")}: sets the \code{glyphCurve} slot }
     \item{reaction}{\code{signature(object = "ReactionGlyph")}: gets the \code{reaction} slot }
     \item{reaction<-}{\code{signature(object = "ReactionGlyph")}: sets the \code{reaction} slot }
     \item{speciesReferenceGlyphs}{\code{signature(object = "ReactionGlyph")}: gets the \code{speciesReferenceGlyphs} slot }

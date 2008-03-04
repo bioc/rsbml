@@ -17,10 +17,10 @@
 \alias{offset}
 \alias{offset<-,Unit-method}
 \alias{offset<-}
-\alias{scale,Unit-method}
-\alias{scale}
-\alias{scale<-,Unit-method}
-\alias{scale<-}
+\alias{unitScale,Unit-method}
+\alias{unitScale}
+\alias{unitScale<-,Unit-method}
+\alias{unitScale<-}
 
 \title{SBML type "Unit"}
 \description{	A (possibly transformed) reference to a base \code{UnitKind}. The
@@ -34,7 +34,7 @@ Objects can be created by calls of the form \code{new("Unit", ...)}.
     an SBML \code{UnitKind}. For possible values see Table 2 in the SBML specification.}
     \item{\code{exponent}:}{Object of class \code{"integer"} indicating the
     exponent to use in the transformation.}
-    \item{\code{scale}:}{Object of class \code{"integer"} indicating the
+    \item{\code{unitScale}:}{Object of class \code{"integer"} indicating the
     order of magnitude of the scaling to use in the transformation.}
     \item{\code{multiplier}:}{Object of class \code{"numeric"} indicating
     the factor to use for scaling in the transformation.}
@@ -49,6 +49,11 @@ Objects can be created by calls of the form \code{new("Unit", ...)}.
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Extends}{
@@ -64,8 +69,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
     \item{multiplier<-}{\code{signature(object = "Unit")}: sets the \code{multiplier} slot }
     \item{offset}{\code{signature(object = "Unit")}: gets the \code{offset} slot }
     \item{offset<-}{\code{signature(object = "Unit")}: sets the \code{offset} slot }
-    \item{scale}{\code{signature(x = "Unit")}: ... }
-    \item{scale<-}{\code{signature(object = "Unit")}: sets the \code{scale} slot }
+    \item{unitScale}{\code{signature(x = "Unit")}: ... }
+    \item{unitScale<-}{\code{signature(object = "Unit")}: sets the \code{unitScale} slot }
 	 }
 }
 \references{\url{http://sbml.org/documents/}}

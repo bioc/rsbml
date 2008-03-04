@@ -1,8 +1,13 @@
-setClass("Model", representation(id = "character", name = "character", functionDefinitions = "list", 
-  unitDefinitions = "list", compartments = "list", species = "list", parameters = "list", 
-  rules = "list", reactions = "list", events = "list", layouts = "list",
-  speciesTypes = "list", compartmentTypes = "list", constraints = "list", 
-  initialAssignments = "list", modelHistory = "ModelHistory"))
+setClass("Model",
+         representation(id = "character", name = "character",
+                        functionDefinitions = "list", unitDefinitions = "list",
+                        compartments = "list", species = "list",
+                        parameters = "list", rules = "list", reactions = "list",
+                        events = "list", layouts = "list",
+                        speciesTypes = "list", compartmentTypes = "list",
+                        constraints = "list", initialAssignments = "list",
+                        modelHistory = "ModelHistory"),
+         contains = "SBase")
 
  
 setMethod("id", "Model", function(object) object@id)

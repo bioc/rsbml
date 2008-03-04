@@ -11,16 +11,30 @@ setMethod("modifiedDate", "ModelHistory", function(object) object@modifiedDate)
 setMethod("creators", "ModelHistory", function(object) object@creators)
 
  setGeneric("createdDate<-", function(object, value) standardGeneric("createdDate<-"))
-setReplaceMethod("createdDate", "ModelHistory", function(object, value) {
-  object@createdDate <- value
-  object
-})
+setReplaceMethod("createdDate", c("ModelHistory", "character"),
+                 function(object, value) {
+                   object@createdDate <- value
+                   object
+                 })
+setReplaceMethod("createdDate", c("ModelHistory", "POSIXt"),
+                 function(object, value)
+                 {
+                   createdDate(object) <- format(value, "%Y-%m-%dT%H:%M:%S%z")
+                   object
+                 })
 
  setGeneric("modifiedDate<-", function(object, value) standardGeneric("modifiedDate<-"))
-setReplaceMethod("modifiedDate", "ModelHistory", function(object, value) {
-  object@modifiedDate <- value
-  object
-})
+setReplaceMethod("modifiedDate", c("ModelHistory", "character"),
+                 function(object, value) {
+                   object@modifiedDate <- value
+                   object
+                 })
+setReplaceMethod("modifiedDate", c("ModelHistory", "POSIXt"),
+                 function(object, value)
+                 {
+                   modifiedDate(object) <- format(value, "%Y-%m-%dT%H:%M:%S%z")
+                   object
+                 })
 
  setGeneric("creators<-", function(object, value) standardGeneric("creators<-"))
 setReplaceMethod("creators", "ModelHistory", function(object, value) {

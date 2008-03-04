@@ -13,12 +13,20 @@
 \alias{notes}
 \alias{notes<-,SBase-method}
 \alias{notes<-}
+\alias{cvTerms}
+\alias{cvTerms,SBase-method}
+\alias{cvTerms<-}
+\alias{cvTerms<-,SBase-method}
+\alias{sboTerm}
+\alias{sboTerm,SBase-method}
+\alias{sboTerm<-}
+\alias{sboTerm<-,SBase-method}
 
 \title{SBML type "SBase"}
 \description{	The abstract type from which all other SBML types are derived. }
 \section{Instantiation}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
-	 \describe{
+  \describe{
     \item{\code{metaId}:}{Object of class \code{"character"} that is an XML ID
       "described" by an RDF resource. This links an SBML element to an RDF
       resource. RDF may appear anywhere in an SBML element,
@@ -28,6 +36,11 @@
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Methods}{
@@ -37,8 +50,17 @@
     \item{metaId}{\code{signature(object = "SBase")}: gets the \code{metaId} slot }
     \item{metaId<-}{\code{signature(object = "SBase")}: sets the \code{metaId} slot }
     \item{notes}{\code{signature(object = "SBase")}: gets the \code{notes} slot }
-    \item{notes<-}{\code{signature(object = "SBase")}: sets the \code{notes} slot }
-	 }
+    \item{notes<-}{\code{signature(object = "SBase")}: sets the
+      \code{notes}slot }
+    \item{cvTerms}{\code{signature(object = "SBase")}: gets the
+      \code{cvTerms} slot.}
+    \item{cvTerms<-}{\code{signature(object = "SBase")}: sets the
+      \code{cvTerms} slot.}
+    \item{sboTerm}{\code{signature(object = "SBase")}: gets the
+      \code{sboTerm} slot.}
+    \item{sboTerm<-}{\code{signature(object = "SBase")}: sets the
+      \code{sboTerm} slot.}
+  }
 }
 \references{\url{http://sbml.org/documents/}}
 \author{Michael Lawrence}

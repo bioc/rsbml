@@ -55,6 +55,10 @@
 \alias{constraints<-,Model-method}
 \alias{initialAssignments,Model-method}
 \alias{initialAssignments<-,Model-method}
+\alias{modelHistory}
+\alias{modelHistory,Model-method}
+\alias{modelHistory<-}
+\alias{modelHistory<-,Model-method}
 
 \title{SBML type "Model"}
 \description{The central SBML element. Contains the \code{\linkS4class{Species}},
@@ -94,7 +98,27 @@ Objects can be created by calls of the form \code{new("Model", ...)}.
       \code{\linkS4class{Constraint}}s.}
     \item{\code{initialAssignments}:}{Object of class \code{"list"} containing
       \code{\linkS4class{InitialAssignment}}s.}
+    \item{\code{modelHistory}:}{Object of class
+      \code{\linkS4class{ModelHistory}} recording the history of the
+      model.}
+    \item{\code{metaId}:}{Object of class \code{"character"} that is an XML ID
+      "described" by an RDF resource. This links an SBML element to an RDF
+      resource. RDF may appear anywhere in an SBML element,
+      but is usually placed inside the \code{annotation} element.}
+    \item{\code{notes}:}{Object of class \code{"character"} 
+      containing user-readable XHTML notes about an element. }
+    \item{\code{annotation}:}{Object of class \code{"character"} containing
+      additional machine-readable information about an element, usually as RDF,
+      such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
+}
+\section{Extends}{
+Class \code{"\linkS4class{SBase}"}, directly.
 }
 \section{Methods}{
   \describe{
@@ -127,8 +151,13 @@ Objects can be created by calls of the form \code{new("Model", ...)}.
     \item{initialAssignments}{\code{signature(object = "Model")}: gets the \code{initialAssignments} slot }
     \item{initialAssignments<-}{\code{signature(object = "Model")}: sets the \code{initialAssignments} slot }
     \item{speciesTypes}{\code{signature(object = "Model")}: gets the \code{speciesTypes} slot }
-    \item{speciesTypes<-}{\code{signature(object = "Model")}: sets the \code{speciesTypes} slot }
-	 }
+    \item{speciesTypes<-}{\code{signature(object = "Model")}: sets the
+      \code{speciesTypes}slot }
+    \item{modelHistory}{\code{signature(object = "Model")}: gets the \code{modelHistory} slot }
+    \item{modelHistory<-}{\code{signature(object = "Model")}: sets the \code{modelHistory} slot }
+    
+  }
+  
 }
 \references{\url{http://sbml.org/documents/}}
 \author{Michael Lawrence}

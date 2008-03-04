@@ -1,10 +1,10 @@
 \name{Event-class}
 \docType{class}
 \alias{Event-class}
-\alias{delay,Event-method}
-\alias{delay}
-\alias{delay<-,Event-method}
-\alias{delay<-}
+\alias{eventDelay,Event-method}
+\alias{eventDelay}
+\alias{eventDelay<-,Event-method}
+\alias{eventDelay<-}
 \alias{eventAssignments,Event-method}
 \alias{eventAssignments}
 \alias{eventAssignments<-,Event-method}
@@ -31,7 +31,7 @@ Objects can be created by calls of the form \code{new("Event", ...)}.
     \item{\code{name}:}{Object of class \code{"character"} naming this component. }
     \item{\code{trigger}:}{Object of class \code{"expression"} that evaluates to
     \code{TRUE} when the event is to be fired.}
-    \item{\code{delay}:}{Object of class \code{"expression"} that evaluates to the
+    \item{\code{eventDelay}:}{Object of class \code{"expression"} that evaluates to the
     time until execution of this event after it has been fired.}
     \item{\code{timeUnits}:}{Object of class \code{"character"} identifying the
     units of the delay.}
@@ -46,6 +46,11 @@ Objects can be created by calls of the form \code{new("Event", ...)}.
     \item{\code{annotation}:}{Object of class \code{"character"} containing
       additional machine-readable information about an element, usually as RDF,
       such as BioPAX. This is where application-specific data belongs.}
+    \item{\code{cvTerms}:}{Object of class \code{"list"} containing
+      instances of \code{\linkS4class{CVTerm}} associated with this
+      element.}
+    \item{\code{sboTerm}:}{Object of class \code{"integer"} identifying
+      a term in the Systems Biology Ontology (SBO).}
   }
 }
 \section{Extends}{
@@ -59,8 +64,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
     \item{name<-}{\code{signature(object = "Event")}: sets the \code{name} slot }
     \item{timeUnits}{\code{signature(object = "Event")}: gets the \code{timeUnits} slot }
     \item{timeUnits<-}{\code{signature(object = "Event")}: sets the \code{timeUnits} slot }
-    \item{delay}{\code{signature(x = "Event")}: ... }
-    \item{delay<-}{\code{signature(object = "Event")}: sets the \code{delay} slot }
+    \item{eventDelay}{\code{signature(x = "Event")}: ... }
+    \item{eventDelay<-}{\code{signature(object = "Event")}: sets the \code{delay} slot }
     \item{eventAssignments}{\code{signature(object = "Event")}: gets the \code{eventAssignments} slot }
     \item{eventAssignments<-}{\code{signature(object = "Event")}: sets the \code{eventAssignments} slot }
     \item{trigger}{\code{signature(object = "Event")}: gets the \code{trigger} slot }
