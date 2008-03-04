@@ -1035,6 +1035,8 @@ rsbml_build_dom_model(Model_t *model)
   SEXP r_model;
   
   PROTECT(r_model = NEW_OBJECT(MAKE_CLASS("Model")));
+
+  rsbml_build_dom_s_base(r_model, (SBase_t *)model);
   
   if (Model_isSetId(model))
     SET_SLOT(r_model, install("id"), mkString(Model_getId(model)));
