@@ -73,7 +73,7 @@ StringMap_findItem (const StringMap_t *map, const char *key);
 /**
  * Creates a new StringMap and returns a pointer to it.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 StringMap_t *
 StringMap_create (void)
 {
@@ -124,7 +124,7 @@ StringMapItem_free (StringMapItem_t *item)
 /**
  * Returns nonzero iff key exists.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 int
 StringMap_exists (StringMap_t *map, const char *key)
 {
@@ -202,7 +202,7 @@ StringMap_findItemInList (List_t *items, const char *key)
 /**
  * Frees the StringMap.  Does not free the values.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_free (StringMap_t *map)
 {
@@ -239,7 +239,7 @@ StringMap_free (StringMap_t *map)
  * If no such item exists, returns NULL.  Note that an item with
  * a NULL value also returns NULL.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void *
 StringMap_get (const StringMap_t *map, const char *key)
 {
@@ -334,7 +334,7 @@ StringMap_hashFunction (const char *str)
  * Associates the specified value with the specified key.  If the key already
  * exists, it gets the new value.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_put (StringMap_t *map, const char *key, void *value)
 {
@@ -376,7 +376,7 @@ StringMap_put (StringMap_t *map, const char *key, void *value)
 /**
  * Removes the specified key.  Does nothing if the key does not exist.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_remove (StringMap_t *map, const char *key)
 {
@@ -403,7 +403,7 @@ StringMap_remove (StringMap_t *map, const char *key)
 /**
  * Returns the number of elements in this StringMap.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 unsigned int
 StringMap_size (const StringMap_t *map)
 {

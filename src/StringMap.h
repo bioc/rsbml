@@ -78,7 +78,7 @@ typedef struct
 /**
  * Creates a new StringMap and returns a pointer to it.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 StringMap_t *
 StringMap_create (void);
 
@@ -91,14 +91,14 @@ StringMapItem_create (const char *key, void *value);
 /**
  * Returns nonzero iff key exists.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 int
 StringMap_exists (StringMap_t *map, const char *key);
 
 /**
  * Frees the given StringMap.  Does not free the values.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_free (StringMap_t *map);
 
@@ -107,7 +107,7 @@ StringMap_free (StringMap_t *map);
  * Returns the value of the item corresponding to the given key.
  * If no such item exists, returns NULL.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void *
 StringMap_get (const StringMap_t *map, const char *key);
 
@@ -115,28 +115,28 @@ StringMap_get (const StringMap_t *map, const char *key);
  * @return the number of items the Stack is capable of holding before
  * it will (automatically) double its storage capacity.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 unsigned int
 StringMap_capacity (const StringMap_t *map);
 
 /**
  * Associates the specified value with the specified key.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_put (StringMap_t *map, const char *key, void *value);
 
 /**
  * Removes the specified key.  Does nothing if the key does not exist.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 void
 StringMap_remove (StringMap_t *map, const char *key);
 
 /**
  * Returns the number of elements in this StringMap.
  */
-LIBSBML_EXTERN
+/*LIBSBML_EXTERN*/
 unsigned int
 StringMap_size (const StringMap_t *map);
 
