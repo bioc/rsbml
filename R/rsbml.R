@@ -1,5 +1,5 @@
 rsbml_read <- 
-function(filename, text, check = TRUE, validate = FALSE)
+function(filename, text, quiet = FALSE, validate = FALSE)
 {
   if (!missing(filename))
     obj <- .Call("rsbml_R_read_doc", as.character(filename), 
@@ -8,13 +8,12 @@ function(filename, text, check = TRUE, validate = FALSE)
     obj <- .Call("rsbml_R_read_doc_from_string", as.character(text), 
       as.logical(validate), PACKAGE="rsbml")
   else stop("You must supply either 'filename' or 'text'")
-  if (check && !rsbml_check(obj))
-    stop("There were problems importing the SBML document")
+  rsbml_check(obj, quiet)
   obj
 }
 
 setGeneric("rsbml_dom", function(doc) standardGeneric("rsbml_dom"))
-setMethod("rsbml_dom", "SBMLDocument", function(doc) 
+setMethod("rsbml_dom", "SBMLDocument", function(doc)
   .Call("rsbml_R_build_dom", doc, PACKAGE="rsbml"))
 setAs("SBMLDocument", "SBML", function(from) rsbml_dom(from))
 
@@ -40,15 +39,28 @@ setMethod("rsbml_write", "SBML", function(object, filename) {
   rsbml_write(doc, filename)
 })
 
-setGeneric("rsbml_check", function(object, quiet = FALSE) standardGeneric("rsbml_check"))
-setMethod("rsbml_check", "SBMLDocument", function(object, quiet = FALSE) {
+setGeneric("rsbml_check",
+           function(object, quiet = FALSE, verbose = FALSE)
+           standardGeneric("rsbml_check"))
+setMethod("rsbml_check", "SBMLDocument",
+          function(object, quiet = FALSE, verbose = FALSE)
+{
   valid <- .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
   if (!quiet && !valid) {
     problems <- rsbml_problems(object)
-    sapply(names(problems)[sapply(problems, length) > 0], function(type) 
-      sapply(problems[[type]], function(problem) 
-        warning(paste("[", type , "] (", problem$line, ", ", problem$column, ") ", 
-          problem$message, sep=""), call. = FALSE)))
+    emit_type <- function(type, emitter, ...) {
+      for (problem in problems[[type]]) {
+        msg <- paste("[", type , "] (", problem$line, ", ", problem$column,
+                     ") ", problem$message, sep="")
+        emitter(msg, ...)
+      }
+    }
+    if (verbose) {
+      emit_type("info", message)
+      emit_type("warning", message)
+    }
+    emit_type("error", warning, call. = FALSE)
+    emit_type("fatal", stop, call. = FALSE)
   }
   valid
 })

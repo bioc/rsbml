@@ -76,7 +76,7 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
     default:
       qualifier_type = "unknown";
   }
-  SET_SLOT(r_cvterm, install("qualifierType"), mkChar(qualifier_type));
+  SET_SLOT(r_cvterm, install("qualifierType"), mkString(qualifier_type));
   
   switch(CVTerm_getModelQualifierType(cvterm))
   {
@@ -89,7 +89,7 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
     default:
       qualifier_type = "unknown";
   }
-  SET_SLOT(r_cvterm, install("modelQualifierType"), mkChar(qualifier_type));
+  SET_SLOT(r_cvterm, install("modelQualifierType"), mkString(qualifier_type));
   
   switch(CVTerm_getBiologicalQualifierType(cvterm))
   {
@@ -117,7 +117,7 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
     default:
       qualifier_type = "unknown";
   }
-  SET_SLOT(r_cvterm, install("biologicalQualifierType"), mkChar(qualifier_type));
+  SET_SLOT(r_cvterm, install("biologicalQualifierType"), mkString(qualifier_type));
   
   XMLAttributes_t *resources = CVTerm_getResources(cvterm);
   SEXP r_resources;
@@ -135,6 +135,7 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
 static SEXP
 rsbml_build_dom_s_base(SEXP r_s_base, SBase_t *s_base)
 {
+  Rprintf("SBase element: %s\n", SBase_getElementName(s_base));
   if (SBase_isSetMetaId(s_base))
     SET_SLOT(r_s_base, install("metaId"), mkString(SBase_getMetaId(s_base)));
   #ifdef LIBSBML3
@@ -927,9 +928,9 @@ rsbml_build_dom_compartment_type(CompartmentType_t *compartment_type)
   
   rsbml_build_dom_s_base(r_compartment_type, (SBase_t *)compartment_type);
   
-  SET_SLOT(r_compartment_type, install("id"), mkChar(CompartmentType_getId(compartment_type)));
+  SET_SLOT(r_compartment_type, install("id"), mkString(CompartmentType_getId(compartment_type)));
   if (CompartmentType_isSetName(compartment_type))
-    SET_SLOT(r_compartment_type, install("name"), mkChar(CompartmentType_getName(compartment_type)));
+    SET_SLOT(r_compartment_type, install("name"), mkString(CompartmentType_getName(compartment_type)));
   
   UNPROTECT(1);
   
@@ -944,9 +945,9 @@ rsbml_build_dom_species_type(SpeciesType_t *species_type)
   
   rsbml_build_dom_s_base(r_species_type, (SBase_t *)species_type);
   
-  SET_SLOT(r_species_type, install("id"), mkChar(SpeciesType_getId(species_type)));
+  SET_SLOT(r_species_type, install("id"), mkString(SpeciesType_getId(species_type)));
   if (SpeciesType_isSetName(species_type))
-    SET_SLOT(r_species_type, install("name"), mkChar(SpeciesType_getName(species_type)));
+    SET_SLOT(r_species_type, install("name"), mkString(SpeciesType_getName(species_type)));
   
   UNPROTECT(1);
   
@@ -961,7 +962,7 @@ rsbml_build_dom_initial_assignment(InitialAssignment_t *initial_assignment)
   
   rsbml_build_dom_s_base(r_initial_assignment, (SBase_t *)initial_assignment);
   
-  SET_SLOT(r_initial_assignment, install("symbol"), mkChar(InitialAssignment_getSymbol(initial_assignment)));
+  SET_SLOT(r_initial_assignment, install("symbol"), mkString(InitialAssignment_getSymbol(initial_assignment)));
   SET_MATH(InitialAssignment, initial_assignment, Math, math);
   
   UNPROTECT(1);
@@ -978,7 +979,7 @@ rsbml_build_dom_constraint(Constraint_t *constraint)
   rsbml_build_dom_s_base(r_constraint, (SBase_t *)constraint);
   
   SET_SLOT(r_constraint, install("message"), 
-    mkChar(XMLNode_convertXMLNodeToString(Constraint_getMessage(constraint))));
+    mkString(XMLNode_convertXMLNodeToString(Constraint_getMessage(constraint))));
   SET_MATH(Constraint, constraint, Math, math);
   
   UNPROTECT(1);
@@ -995,12 +996,10 @@ rsbml_build_dom_model_creator(ModelCreator_t *model_creator)
   
   PROTECT(r_model_creator = NEW_OBJECT(MAKE_CLASS("ModelCreator")));
   
-  rsbml_build_dom_s_base(r_model_creator, (SBase_t *)model_creator);
-  
-  SET_SLOT(r_model_creator, install("familyName"), mkChar(ModelCreator_getFamilyName(model_creator)));
-  SET_SLOT(r_model_creator, install("givenName"), mkChar(ModelCreator_getGivenName(model_creator)));
-  SET_SLOT(r_model_creator, install("email"), mkChar(ModelCreator_getEmail(model_creator)));
-  SET_SLOT(r_model_creator, install("organization"), mkChar(ModelCreator_getOrganisation(model_creator)));
+  SET_SLOT(r_model_creator, install("familyName"), mkString(ModelCreator_getFamilyName(model_creator)));
+  SET_SLOT(r_model_creator, install("givenName"), mkString(ModelCreator_getGivenName(model_creator)));
+  SET_SLOT(r_model_creator, install("email"), mkString(ModelCreator_getEmail(model_creator)));
+  SET_SLOT(r_model_creator, install("organization"), mkString(ModelCreator_getOrganisation(model_creator)));
   
   UNPROTECT(1);
   
@@ -1014,12 +1013,10 @@ rsbml_build_dom_model_history(ModelHistory_t *model_history)
   
   PROTECT(r_model_history = NEW_OBJECT(MAKE_CLASS("ModelHistory")));
   
-  rsbml_build_dom_s_base(r_model_history, (SBase_t *)model_history);
-  
   SET_SLOT(r_model_history, install("createdDate"), 
-    mkChar(Date_getDateAsString(ModelHistory_getCreatedDate(model_history))));
+    mkString(Date_getDateAsString(ModelHistory_getCreatedDate(model_history))));
   SET_SLOT(r_model_history, install("modifiedDate"), 
-    mkChar(Date_getDateAsString(ModelHistory_getModifiedDate(model_history))));
+    mkString(Date_getDateAsString(ModelHistory_getModifiedDate(model_history))));
   SET_SLOT(r_model_history, install("creators"), 
     LIST_OF(model_history, ModelHistory, model_creator, Creator, NULL));
   
@@ -1042,14 +1039,14 @@ rsbml_build_dom_model(Model_t *model)
     SET_SLOT(r_model, install("id"), mkString(Model_getId(model)));
   if (Model_isSetName(model))
     SET_SLOT(r_model, install("name"), mkString(Model_getName(model)));
-  #ifdef LIBSBML3
+
+#ifdef LIBSBML3
   if (Model_isSetModelHistory(model))
     SET_SLOT(r_model, install("modelHistory"), 
       rsbml_build_dom_model_history(Model_getModelHistory(model)));
-  #endif
+#endif
   
   { /* species don't fit into the macro */
-    /* on the bright side, this is an example of the macro */
     int i, num_species = Model_getNumSpecies(model);
     SEXP r_species, r_names;
     PROTECT(r_species = NEW_LIST(num_species));
@@ -1063,7 +1060,7 @@ rsbml_build_dom_model(Model_t *model)
     SET_SLOT(r_model, install("species"), r_species);
     UNPROTECT(2);
   }
-  
+
   SET_SLOT(r_model, install("reactions"), LIST_OF(model, Model, reaction, Reaction, "id"));
   SET_SLOT(r_model, install("compartments"), LIST_OF(model, Model, compartment, Compartment, "id"));
   SET_SLOT(r_model, install("unitDefinitions"), LIST_OF(model, Model, unit_definition, UnitDefinition, "id"));
@@ -1106,11 +1103,7 @@ SEXP
 rsbml_R_build_dom(SEXP r_doc)
 {
   SBMLDocument_t *doc = R_ExternalPtrAddr(r_doc);
-  #ifdef LIBSBML3
-  if (SBMLDocument_getNumErrors(doc))
-  #else
-  if (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc))
-  #endif
+  if (rsbml_errors(doc))
     error("Cannot build dom from document with errors");
   return rsbml_build_dom(doc);
 }

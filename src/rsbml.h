@@ -32,6 +32,6 @@ SEXP rsbml_R_write_doc_to_string(SEXP r_doc);
 SEXP rsbml_R_read_doc(SEXP r_doc, SEXP r_filename);
 SEXP rsbml_R_read_doc_from_string(SEXP r_xml, SEXP r_validate);
 
-/* shared internal function */
+/* shared internal functions */
 SEXP rsbml_create_doc_ptr(SBMLDocument_t *doc);
-
+Rboolean rsbml_errors(SBMLDocument_t *doc);

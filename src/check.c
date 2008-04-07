@@ -119,6 +119,21 @@ rsbml_R_problems(SEXP r_doc)
   return rsbml_problems(doc);
 }
 
+Rboolean rsbml_errors(SBMLDocument_t *doc)
+{
+#ifdef LIBSBML3
+  int i;
+  for (i = 0; i < SBMLDocument_getNumErrors(doc); i++) {
+    XMLError_t *error = (XMLError_t *)SBMLDocument_getError(doc, i);
+    if (XMLError_isError(error) || XMLError_isFatal(error))
+      return(TRUE);
+  }
+  return(FALSE);
+#else
+  return (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc));
+#endif
+}
+
 static Rboolean
 rsbml_check_doc(SBMLDocument_t *doc)
 {

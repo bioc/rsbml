@@ -125,11 +125,7 @@ SEXP
 rsbml_R_build_graph(SEXP r_doc)
 {
   SBMLDocument_t *doc = R_ExternalPtrAddr(r_doc);
-  #ifdef LIBSBML3
-  if (SBMLDocument_getNumErrors(doc))
-  #else
-  if (SBMLDocument_getNumErrors(doc) || SBMLDocument_getNumFatals(doc))
-  #endif
+  if (rsbml_errors(doc))
     error("Cannot build graph from document with errors");
   return rsbml_build_graph(doc);
 }
