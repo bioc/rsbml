@@ -135,7 +135,6 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
 static SEXP
 rsbml_build_dom_s_base(SEXP r_s_base, SBase_t *s_base)
 {
-  Rprintf("SBase element: %s\n", SBase_getElementName(s_base));
   if (SBase_isSetMetaId(s_base))
     SET_SLOT(r_s_base, install("metaId"), mkString(SBase_getMetaId(s_base)));
   #ifdef LIBSBML3
