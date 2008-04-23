@@ -85,7 +85,7 @@ warnings. If you would like to compute on the problems, the following returns
 a data structure describing the errors along with their positions in the SBML,
 if available.
 
-<<problems>>=
+<<problems, eval=FALSE>>=
 doc <- rsbml_read("non-existent-file.xml", check = FALSE)
 rsbml_problems(doc)
 @
