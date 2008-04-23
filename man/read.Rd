@@ -2,11 +2,11 @@
 \name{SBML import}
 \title{Read in an SBML file (start here)}
 \description{Read an SBML file into R.}
-\usage{rsbml_read(filename, text, check = TRUE, validate = FALSE)}
+\usage{rsbml_read(filename, text, quiet = FALSE, validate = FALSE)}
 \arguments{
   \item{filename}{the name of the SBML file to parse}
   \item{text}{a string of SBML text to parse (instead of file)}
-  \item{check}{whether to report problems encountered during parsing}
+  \item{quiet}{whether to report problems encountered during parsing}
   \item{validate}{whether to perform XML schema validation}
 }
 \value{a \code{\linkS4class{SBMLDocument}}}
