@@ -80,8 +80,8 @@ StringMap_create (void)
   StringMap_t *sm;
 
 
-  sm            = (StringMap_t *) safe_malloc( sizeof(StringMap_t) );
-  sm->itemLists = (List_t **) safe_calloc(INITIAL_CAPACITY, sizeof(List_t *));
+  sm            = (StringMap_t *) malloc( sizeof(StringMap_t) );
+  sm->itemLists = (List_t **) calloc(INITIAL_CAPACITY, sizeof(List_t *));
   sm->size      = 0;
   sm->capacity  = INITIAL_CAPACITY;
 
@@ -98,7 +98,7 @@ StringMapItem_create (const char *key, void *value)
   StringMapItem_t *item;
 
 
-  item        = (StringMapItem_t *) safe_malloc( sizeof(StringMapItem_t) );
+  item        = (StringMapItem_t *) malloc( sizeof(StringMapItem_t) );
   item->key   = safe_strdup(key);
   item->value = value;
 
@@ -278,7 +278,7 @@ StringMap_grow (StringMap_t *map)
 
 
   map->capacity *= 10;
-  map->itemLists = (List_t **) safe_calloc(map->capacity, sizeof(List_t*));
+  map->itemLists = (List_t **) calloc(map->capacity, sizeof(List_t*));
 
   /* rehash all the old items into the new, larger hash */
 
