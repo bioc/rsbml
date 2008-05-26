@@ -1,14 +1,16 @@
 rsbml_read <- 
-function(filename, text, quiet = FALSE, validate = FALSE)
+function(filename, text, strict = FALSE, schema = FALSE)
 {
-  if (!missing(filename))
+  if (!missing(filename)) {
+    filename <- path.expand(filename)
     obj <- .Call("rsbml_R_read_doc", as.character(filename), 
-      as.logical(validate), PACKAGE="rsbml")
+      as.logical(schema), PACKAGE="rsbml")
+  }
   else if (!missing(text))
     obj <- .Call("rsbml_R_read_doc_from_string", as.character(text), 
-      as.logical(validate), PACKAGE="rsbml")
+      as.logical(schema), PACKAGE="rsbml")
   else stop("You must supply either 'filename' or 'text'")
-  rsbml_check(obj, quiet)
+  rsbml_check(obj, strict)
   obj
 }
 
@@ -40,31 +42,21 @@ setMethod("rsbml_write", "SBML", function(object, filename) {
 })
 
 setGeneric("rsbml_check",
-           function(object, quiet = FALSE, verbose = FALSE)
+           function(object, strict = FALSE)
            standardGeneric("rsbml_check"))
 setMethod("rsbml_check", "SBMLDocument",
-          function(object, quiet = FALSE, verbose = FALSE)
+          function(object, strict)
 {
   valid <- .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
-  if (!quiet && !valid) {
-    problems <- rsbml_problems(object)
-    emit_type <- function(type, emitter, ...) {
-      for (problem in problems[[type]]) {
-        msg <- paste("[", type , "] (", problem$line, ", ", problem$column,
-                     ") ", problem$message, sep="")
-        emitter(msg, ...)
-      }
-    }
-    if (verbose) {
-      emit_type("info", message)
-      emit_type("warning", message)
-    }
-    emit_type("error", warning, call. = FALSE)
-    emit_type("fatal", stop, call. = FALSE)
+  if (!valid) {
+    .throw(rsbml_problems(object), strict)
   }
   valid
 })
 
 setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
-setMethod("rsbml_problems", "SBMLDocument", function(object) 
-  .Call("rsbml_R_problems", object, PACKAGE="rsbml"))
+setMethod("rsbml_problems", "SBMLDocument",
+          function(object) {
+            probs <- .Call("rsbml_R_problems", object, PACKAGE="rsbml")
+            do.call("new", c("SBMLProblems", probs))
+          })

@@ -71,10 +71,10 @@ rsbml_problems(SBMLDocument_t *doc)
   SET_VECTOR_ELT(r_problems, 3, r_fatals);
   
   PROTECT(r_names = NEW_CHARACTER(4));
-  SET_STRING_ELT(r_names, 0, mkChar("info"));
-  SET_STRING_ELT(r_names, 1, mkChar("warning"));
-  SET_STRING_ELT(r_names, 2, mkChar("error"));
-  SET_STRING_ELT(r_names, 3, mkChar("fatal"));
+  SET_STRING_ELT(r_names, 0, mkChar("infos"));
+  SET_STRING_ELT(r_names, 1, mkChar("warnings"));
+  SET_STRING_ELT(r_names, 2, mkChar("errors"));
+  SET_STRING_ELT(r_names, 3, mkChar("fatals"));
   SET_NAMES(r_problems, r_names);
   UNPROTECT(1);
   

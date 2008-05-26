@@ -38,7 +38,7 @@ fi
 if test "${LIBSBML3}" != "no"; then
   RSBML_CPPFLAGS="-DLIBSBML3"
 else
-  AC_CHECK_HEADER([sbml/SBMLDocument.h],, 
+  AC_CHECK_HEADER([sbml/xml/ParseMessage.h],, 
     AC_MSG_ERROR([Could not find sbml/SBMLDocument.h: 
       rsbml requires libsbml from http://www.sbml.org/software/libsbml/
       use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path.]))
@@ -47,7 +47,16 @@ else
       use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
 fi
 
+# This is just a temporary hack, probably need to build this stuff in
+PKG_CHECK_MODULES(SOSLIB, [libODES >= 1.7.0], [SOSLIB="yes"], [SOSLIB="no"])
+if test "${SOSLIB}" != "no"; then
+  RSBML_CPPFLAGS="${RSBML_CPPFLAGS} -DSOSLIB"
+  LIBS="${LIBS} ${SOSLIB_LIBS}"
+  LIBS="${LIBS} -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
+fi
+
 AC_SUBST(RSBML_CPPFLAGS)
 AC_SUBST(LIBSBML_CPPFLAGS)
+AC_SUBST(SOSLIB_CPPFLAGS)
 AC_SUBST(LIBS)
 AC_OUTPUT(src/Makevars)

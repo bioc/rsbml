@@ -34,18 +34,13 @@
 #define SRCFILE
 #endif
 
-#define SET_MATH(class, var, Field, field) \
-({ \
-  ParseStatus status; \
-  char *math = SBML_formulaToString(class ## _get ## Field (var)); \
-  SET_SLOT(r_ ## var, install(#field), R_ParseVector(mkString(math), 1, &status \
-    SRCFILE)); \
-  if (status != PARSE_OK) { \
-    Rprintf("Failed to parse: %s\n", math); \
-    free(math); \
-	  error("Failed to parse mathematical formula in " #class); \
-  } \
-  free(math); \
+#define SET_MATH(class, var, Field, field) ({                      \
+  SEXP lang, expr;                                                 \
+  PROTECT(lang = rmathml_visit(class ## _get ## Field (var)));     \
+  expr = allocVector(EXPRSXP, 1);                                  \
+  SET_VECTOR_ELT(expr, 0, lang);                                   \
+  SET_SLOT(r_ ## var, install(#field), expr);                      \
+  UNPROTECT(1);                                                    \
 })
 
 #ifdef LIBSBML3

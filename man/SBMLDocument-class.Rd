@@ -23,8 +23,13 @@ Class \code{"\linkS4class{oldClass}"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{rsbml\_check}{\code{signature(object = "SBMLDocument")}: 
-      semantically validates the document. Emits warnings describing the problems.}
+    \item{rsbml\_check}{\code{signature(object = "SBMLDocument")}:
+      \code{rsbml_check(object, quiet = FALSE, verbose = FALSE)}:
+      semantically validates the document. If \code{quiet} is
+      \code{TRUE}, emits warnings describing errors and fatal failures
+      encountered when the document was parsed. If \code{verbose} is
+      also \code{TRUE}, reports less critical warnings about problems in
+      the model, such as internal inconsistencies.}
     \item{rsbml\_dom}{\code{signature(doc = "SBMLDocument")}: Constructs an S4 
       object model from a libsbml document. }
     \item{rsbml\_graph}{\code{signature(doc = "SBMLDocument")}: Converts a 
