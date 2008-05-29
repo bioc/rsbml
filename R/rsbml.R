@@ -58,5 +58,11 @@ setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
 setMethod("rsbml_problems", "SBMLDocument",
           function(object) {
             probs <- .Call("rsbml_R_problems", object, PACKAGE="rsbml")
-            do.call("new", c("SBMLProblems", probs))
+            classes <- c("SBMLInfo", "SBMLWarning", "SBMLError", "SBMLFatal")
+            makeProblems <- function(ind)
+              lapply(probs[[ind]],
+                     function(prob) do.call("new", c(classes[ind], prob)))
+            formalProbs <- lapply(seq_along(probs), makeProblems)
+            names(formalProbs) <- names(probs)
+            do.call("new", c("SBMLProblems", formalProbs))
           })

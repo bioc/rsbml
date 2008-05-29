@@ -28,7 +28,7 @@ rsbml_problem(ParseMessage_t *msg)
   PROTECT(r_names = NEW_CHARACTER(3));
   SET_STRING_ELT(r_names, 0, mkChar("line"));
   SET_STRING_ELT(r_names, 1, mkChar("column"));
-  SET_STRING_ELT(r_names, 2, mkChar("message"));
+  SET_STRING_ELT(r_names, 2, mkChar("msg"));
   SET_NAMES(r_problem, r_names);
   
   UNPROTECT(2);

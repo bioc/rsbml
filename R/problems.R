@@ -35,7 +35,7 @@ setClass("SBMLProblem",
 setGeneric(".condition", function(object, ...) standardGeneric(".condition"))
 setMethod(".condition", "SBMLProblem", function(object, type) {
   class <- c(class(object), type, "condition")
-  structure(list(message = object@msg, call = NULL,
+  structure(list(msg = object@msg, call = NULL,
                  line = object@line, column = object@column), 
             class = class)
 })
@@ -50,16 +50,15 @@ setMethod("show", "SBMLProblem",
 setClass("SBMLFatal", contains = "SBMLProblem")
 setMethod(".condition", "SBMLFatal", function(object) "error")
 setMethod(".throw", "SBMLFatal",
-          function(object) stop(.condition(object, "error"), call. = FALSE))
+          function(object) stop(.condition(object, "error")))
 
 setClass("SBMLError", contains = "SBMLProblem")
 setMethod(".throw", "SBMLError",
-          function(object) warning(.condition(object, "warning"),
-                                   call. = FALSE))
+          function(object) stop(.condition(object, "error")))
 
 setClass("SBMLWarning", contains = "SBMLProblem")
 setMethod(".throw", "SBMLWarning",
-          function(object) message(.condition(object, "message")))
+          function(object) warning(.condition(object, "warning")))
 
 setClass("SBMLInfo", contains = "SBMLProblem")
 setMethod(".throw", "SBMLInfo",
