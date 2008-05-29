@@ -1,7 +1,8 @@
-setClass("Event", representation(id = "character", name = "character", trigger = "Trigger", 
-  eventDelay = "Delay", timeUnits = "character", eventAssignments = "list"),
-  prototype = list(eventDelay = NULL),
-  contains = "SBase")
+setClass("Event",
+         representation(id = "character", name = "character",
+                        trigger = "Trigger", eventDelay = "Delay",
+                        timeUnits = "character", eventAssignments = "list"),
+         contains = "SBase")
 
  
 setMethod("id", "Event", function(object) object@id)

@@ -48,7 +48,6 @@ setMethod("show", "SBMLProblem",
 
 
 setClass("SBMLFatal", contains = "SBMLProblem")
-setMethod(".condition", "SBMLFatal", function(object) "error")
 setMethod(".throw", "SBMLFatal",
           function(object) stop(.condition(object, "error")))
 
