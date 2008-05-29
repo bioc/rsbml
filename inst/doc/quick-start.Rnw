@@ -89,7 +89,7 @@ signals: \textit{SBMLFatal}, \textit{SBMLError} and
 resulting from a non-existent file and prints the message:
 <<problems>>=
 bad <- tryCatch(rsbml_read("non-existent-file.xml"), 
-                SBMLError = function(fatal) print(fatal$msg))
+                error = function(fatal) print(fatal$msg))
 @
 
 \section*{Writing SBML documents}
