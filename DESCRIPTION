@@ -1,6 +1,5 @@
 Package: rsbml
-Version: 1.99.4
-Date:    2008/5/29
+Version: 1.99.5
 Title: R support for SBML, using libsbml
 Author:  Michael Lawrence <lawremi@iastate.edu>
 Depends: R (>= 2.6.0), graph, methods, utils

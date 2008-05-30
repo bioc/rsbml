@@ -35,3 +35,4 @@ SEXP rsbml_R_read_doc_from_string(SEXP r_xml, SEXP r_validate);
 /* shared internal functions */
 SEXP rsbml_create_doc_ptr(SBMLDocument_t *doc);
 Rboolean rsbml_errors(SBMLDocument_t *doc);
+SEXP rmathml_visit(const ASTNode_t *node);

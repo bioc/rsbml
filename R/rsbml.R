@@ -1,3 +1,4 @@
+### FIXME: may need a 'verbose' argument here that prints info messages
 rsbml_read <- 
 function(filename, text, strict = FALSE, schema = FALSE)
 {

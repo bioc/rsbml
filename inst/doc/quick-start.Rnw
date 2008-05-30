@@ -82,14 +82,16 @@ rsbml_check(doc)
 
 If there were any problems with the document, they would be communicated as
 R console messages, warnings or errors. If you would like to compute on 
-the problems, you will need to catch the signals thrown by the
+the problems, you will need to catch the conditions thrown by the
 \texttt{rsbml\_read} function. There are three different types of
-signals: \textit{SBMLFatal}, \textit{SBMLError} and
-\textit{SBMLWarning}. The following code catches the error
+conditions: \textit{SBMLFatal}, \textit{SBMLError} and
+\textit{SBMLWarning}. \textit{SBMLFatal} and \textit{SBMLError} both
+inherit from \textit{error}, while \textit{SBMLWarning} inherits from
+\textit{warning}. The following code catches the error
 resulting from a non-existent file and prints the message:
 <<problems>>=
-bad <- tryCatch(rsbml_read("non-existent-file.xml"), 
-                error = function(fatal) print(fatal$msg))
+tryCatch(rsbml_read("non-existent-file.xml"), 
+         error = function(err) err$msg)
 @
 
 \section*{Writing SBML documents}

@@ -1,6 +1,6 @@
 setClass("SBML", representation(level = "integer", ver = "integer", model = "Model"), 
   contains = "SBase", prototype = list(level = as.integer(2), ver = as.integer(1)),
-  validity = function(object) rsbml_check(object))
+  validity = function(object) rsbml_check(rsbml_doc(object)))
 
 setGeneric("level", function(object) standardGeneric("level"))
 setMethod("level", "SBML", function(object) object@level)
