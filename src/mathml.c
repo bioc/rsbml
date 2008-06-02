@@ -366,7 +366,10 @@ ASTNode_t *rmathml_ASTNode(SEXP sym) {
         type = AST_FUNCTION_TANH;
       else if (sym == install("if")) /* initial 'if' */
         type = AST_FUNCTION_PIECEWISE;
+      else type = AST_NAME; /* user-defined function */
       node = ASTNode_createWithType(type);
+      if (type == AST_NAME)
+        ASTNode_setName(node, CHAR(PRINTNAME(sym)));
       while(!isNull(CAR(args))) {
         ASTNode_addChild(node, rmathml_ASTNode(CAR(args)));
         args = CDR(args);
@@ -381,6 +384,8 @@ ASTNode_t *rmathml_ASTNode(SEXP sym) {
     else if (sym != install("if")) /* ignore 'else if' */
       type = AST_NAME;
     node = ASTNode_createWithType(type);
+    if (type == AST_NAME)
+      ASTNode_setName(node, CHAR(PRINTNAME(sym)));
     break;
   case REALSXP:
     node = ASTNode_createWithType(AST_REAL);
