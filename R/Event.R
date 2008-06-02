@@ -1,6 +1,7 @@
+setClassUnion("OptionalDelay", c("Delay", "NULL"))
 setClass("Event",
          representation(id = "character", name = "character",
-                        trigger = "Trigger", eventDelay = "Delay",
+                        trigger = "Trigger", eventDelay = "OptionalDelay",
                         timeUnits = "character", eventAssignments = "list"),
          contains = "SBase")
 

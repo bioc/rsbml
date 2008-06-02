@@ -1,6 +1,9 @@
-setClass("SpeciesReferenceGlyph", representation(speciesGlyph = "character", 
-  speciesReference = "character", role = "character", glyphCurve = "Curve"), 
-  prototype = list(role = "undefined", glyphCurve = NULL), contains = "GraphicalObject")
+setClassUnion("OptionalCurve", c("Curve", "NULL"))
+setClass("SpeciesReferenceGlyph",
+         representation(speciesGlyph = "character",
+                        speciesReference = "character", role = "character",
+                        glyphCurve = "OptionalCurve"), 
+         prototype(role = "undefined"), "GraphicalObject")
 
  setGeneric("speciesGlyph", function(object) standardGeneric("speciesGlyph"))
 setMethod("speciesGlyph", "SpeciesReferenceGlyph", function(object) object@speciesGlyph)

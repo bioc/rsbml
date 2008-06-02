@@ -1,6 +1,6 @@
 ### FIXME: may need a 'verbose' argument here that prints info messages
 rsbml_read <- 
-function(filename, text, strict = FALSE, schema = FALSE)
+function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE)
 {
   if (!missing(filename)) {
     filename <- path.expand(filename)
@@ -12,7 +12,9 @@ function(filename, text, strict = FALSE, schema = FALSE)
       as.logical(schema), PACKAGE="rsbml")
   else stop("You must supply either 'filename' or 'text'")
   rsbml_check(obj, strict)
-  obj
+  if (dom)
+    rsbml_dom(obj)
+  else obj
 }
 
 setGeneric("rsbml_dom", function(doc) standardGeneric("rsbml_dom"))
@@ -59,6 +61,7 @@ setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
 setMethod("rsbml_problems", "SBMLDocument",
           function(object) {
             probs <- .Call("rsbml_R_problems", object, PACKAGE="rsbml")
+### FIXME: these objects should be constructed C side
             classes <- c("SBMLInfo", "SBMLWarning", "SBMLError", "SBMLFatal")
             makeProblems <- function(ind)
               lapply(probs[[ind]],

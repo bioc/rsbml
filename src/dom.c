@@ -36,7 +36,7 @@
 
 #define SET_MATH(class, var, Field, field) ({                      \
   SEXP lang, expr;                                                 \
-  PROTECT(lang = rmathml_visit(class ## _get ## Field (var)));     \
+  PROTECT(lang = rmathml_SEXP(class ## _get ## Field (var)));      \
   expr = allocVector(EXPRSXP, 1);                                  \
   SET_VECTOR_ELT(expr, 0, lang);                                   \
   SET_SLOT(r_ ## var, install(#field), expr);                      \
@@ -1006,11 +1006,13 @@ rsbml_build_dom_model_history(ModelHistory_t *model_history)
   SEXP r_model_history;
   
   PROTECT(r_model_history = NEW_OBJECT(MAKE_CLASS("ModelHistory")));
-  
-  SET_SLOT(r_model_history, install("createdDate"), 
-    mkString(Date_getDateAsString(ModelHistory_getCreatedDate(model_history))));
-  SET_SLOT(r_model_history, install("modifiedDate"), 
-    mkString(Date_getDateAsString(ModelHistory_getModifiedDate(model_history))));
+
+  if (ModelHistory_getCreatedDate(model_history))
+    SET_SLOT(r_model_history, install("createdDate"), 
+             mkString(Date_getDateAsString(ModelHistory_getCreatedDate(model_history))));
+  if (ModelHistory_getModifiedDate(model_history))
+    SET_SLOT(r_model_history, install("modifiedDate"), 
+             mkString(Date_getDateAsString(ModelHistory_getModifiedDate(model_history))));
   SET_SLOT(r_model_history, install("creators"), 
     LIST_OF(model_history, ModelHistory, model_creator, Creator, NULL));
   
@@ -1085,7 +1087,7 @@ rsbml_build_dom(SBMLDocument_t *doc)
   PROTECT(r_dom = NEW_OBJECT(MAKE_CLASS("SBML")));
   
   SET_SLOT(r_dom, install("level"), ScalarInteger(SBMLDocument_getLevel(doc)));
-  SET_SLOT(r_dom, install("version"), ScalarInteger(SBMLDocument_getVersion(doc)));
+  SET_SLOT(r_dom, install("ver"), ScalarInteger(SBMLDocument_getVersion(doc)));
   SET_SLOT(r_dom, install("model"), rsbml_build_dom_model(SBMLDocument_getModel(doc)));
   
   UNPROTECT(1);

@@ -35,7 +35,7 @@ setClass("SBMLProblem",
 setGeneric(".condition", function(object, ...) standardGeneric(".condition"))
 setMethod(".condition", "SBMLProblem", function(object, type) {
   class <- c(class(object), type, "condition")
-  structure(list(msg = object@msg, call = NULL,
+  structure(list(message = object@msg, call = NULL,
                  line = object@line, column = object@column), 
             class = class)
 })

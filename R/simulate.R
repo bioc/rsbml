@@ -220,12 +220,8 @@ setMethod("simulate", "SOSExperiment",
 setMethod("simulate", "SBMLDocument", .simulate.SBML)
 
 setMethod("simulate", "SBML",
-          function(object, nsim, seed, ...)
+          function(object, nsim = 10, seed = NULL, ...)
           simulate(rsbml_doc(object), nsim, seed, ...))
-
-setMethod("simulate", "Model",
-          function(object, nsim, seed, ...)
-          simulate(new("SBML", model = object), nsim, seed, ...))
 
 ### Attempt at simulating in R
 ### Provide a wrapper around lsoda conforming to stats::simulate

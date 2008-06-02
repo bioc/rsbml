@@ -87,6 +87,8 @@ SEXP rsbml_R_SBML_odeSolver(SEXP doc, SEXP times, SEXP atol, SEXP rtol,
     for (i = 0; i < ncols(params); i++)
       VarySettings_addDesignPoint(vary, REAL(params)+i*nrows(params));
     results = SBML_odeSolverBatch(R_ExternalPtrAddr(doc), cvode, vary);
+    if (!results)
+      error("Simulations failed");
     PROTECT(rResult = allocVector(VECSXP, LENGTH(params)));
     for (i = 0; i < ncols(params); i++) {
       SEXP r = rsbml_SBMLResults_R(SBMLResultsArray_getResults(results, i));
@@ -96,6 +98,8 @@ SEXP rsbml_R_SBML_odeSolver(SEXP doc, SEXP times, SEXP atol, SEXP rtol,
     UNPROTECT(1);
   } else {
     SBMLResults_t *result = SBML_odeSolver(R_ExternalPtrAddr(doc), cvode);
+    if (!result)
+      error("Simulation failed");
     rResult = rsbml_SBMLResults_R(result);
   }
   CvodeSettings_free(cvode);

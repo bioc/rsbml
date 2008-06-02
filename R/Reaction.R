@@ -1,7 +1,10 @@
-setClass("Reaction", representation(id = "character", name = "character", 
-  reactants = "list", products = "list", modifiers = "list", kineticLaw = "KineticLaw", 
-  reversible = "logical", fast = "logical"), 
-  prototype = list(kineticLaw = NULL), contains = "SBase")
+setClassUnion("OptionalKineticLaw", c("KineticLaw", "NULL"))
+setClass("Reaction",
+         representation(id = "character", name = "character", 
+                        reactants = "list", products = "list",
+                        modifiers = "list", kineticLaw = "OptionalKineticLaw", 
+                        reversible = "logical", fast = "logical"),
+         contains = "SBase")
 
  
 setMethod("id", "Reaction", function(object) object@id)

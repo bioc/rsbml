@@ -1,3 +1,4 @@
+setClassUnion("OptionalModelHistory", c("ModelHistory", "NULL"))
 setClass("Model",
          representation(id = "character", name = "character",
                         functionDefinitions = "list", unitDefinitions = "list",
@@ -6,7 +7,7 @@ setClass("Model",
                         events = "list", layouts = "list",
                         speciesTypes = "list", compartmentTypes = "list",
                         constraints = "list", initialAssignments = "list",
-                        modelHistory = "ModelHistory"),
+                        modelHistory = "OptionalModelHistory"),
          contains = "SBase")
 
  

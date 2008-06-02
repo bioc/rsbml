@@ -1,5 +1,7 @@
-setClass("ReactionGlyph", representation(reaction = "character", glyphCurve = "Curve", 
-  speciesReferenceGlyphs = "list"), prototype = list(glyphCurve = NULL), contains = "GraphicalObject")
+setClass("ReactionGlyph",
+         representation(reaction = "character", glyphCurve = "OptionalCurve", 
+                        speciesReferenceGlyphs = "list"),
+         contains = "GraphicalObject")
 
  setGeneric("reaction", function(object) standardGeneric("reaction"))
 setMethod("reaction", "ReactionGlyph", function(object) object@reaction)

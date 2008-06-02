@@ -1,7 +1,8 @@
-setClass("SpeciesReference", representation(stoichiometry = "numeric", 
-  stoichiometryMath = "StoichiometryMath"), 
-  prototype = list(stoichiometry = 1, stoichiometryMath = NULL), 
-  contains = "SimpleSpeciesReference")
+setClassUnion("OptionalStoichiometryMath", c("StoichiometryMath", "NULL"))
+setClass("SpeciesReference",
+         representation(stoichiometry = "numeric",
+                        stoichiometryMath = "OptionalStoichiometryMath"), 
+         prototype(stoichiometry = 1), "SimpleSpeciesReference")
 
  setGeneric("stoichiometry", function(object) standardGeneric("stoichiometry"))
 setMethod("stoichiometry", "SpeciesReference", function(object) object@stoichiometry)

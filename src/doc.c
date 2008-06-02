@@ -5,7 +5,7 @@
 #define REAL_SCALAR(x) REAL(x)[0]
 #define LOGICAL_SCALAR(x) LOGICAL(x)[0]
 
-#define rsbml_build_doc_ast_node(x) SBML_parseFormula(STRING(coerceVector(x, STRSXP)))
+#define rsbml_build_doc_ast_node(x) rmathml_ASTNode(VECTOR_ELT(x, 0))
 #define rsbml_build_doc_unit_kind(x) UnitKind_forName(STRING(x))
 #define rsbml_build_doc_rule_type(x) RuleType_forName(STRING(x))
 
@@ -165,6 +165,7 @@ rsbml_build_doc_species(SEXP r_species)
   
   SET_XML_ATTR(Species, species, Id, id, STRING);
   SET_XML_ATTR(Species, species, Name, name, STRING);
+  SET_XML_ATTR(Species, species, Compartment, compartment, STRING);
   SET_XML_ATTR(Species, species, InitialConcentration, initialConcentration, REAL_SCALAR);
   SET_XML_ATTR(Species, species, InitialAmount, initialAmount, REAL_SCALAR);
   SET_XML_ATTR(Species, species, SubstanceUnits, substanceUnits, STRING);
@@ -854,7 +855,7 @@ rsbml_build_doc(SEXP r_doc)
   
   #ifdef LIBSBML3
   SEXP r_level = GET_SLOT(r_doc, install("level"));
-  SEXP r_version = GET_SLOT(r_doc, install("version"));
+  SEXP r_version = GET_SLOT(r_doc, install("ver"));
   unsigned int level = 2, version = 3;
   if (GET_LENGTH(r_level))
     level = INTEGER_SCALAR(r_level);
