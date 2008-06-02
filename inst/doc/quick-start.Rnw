@@ -29,7 +29,7 @@ It is also possible to parse an R character vector instead of an external file.
 
 <<read>>=
 library(rsbml)
-doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package = "rsbml"))
+doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package = "rsbml"), dom = FALSE)
 @
 
 If errors are encountered, the function throws an error along with
