@@ -9,9 +9,9 @@ CC=`"${R_HOME}/bin/R" CMD config CC`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 
-# Try pkg-config, which only exists for libsbml >= 3.0.0
+# Try pkg-config, which only exists for libsbml >= 3.0.2
 # The legacy parameters override the pkg-config results
-PKG_CHECK_MODULES(LIBSBML3, [libsbml >= 3.0.0], [LIBSBML3="yes"], [LIBSBML3="no"])
+PKG_CHECK_MODULES(LIBSBML3, [libsbml >= 3.0.2], [LIBSBML3="yes"], [LIBSBML3="no"])
 
 AC_ARG_WITH(libsbml-include,
             AC_HELP_STRING([--with-libsbml-include=PATH], 
@@ -47,10 +47,28 @@ else
       use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
 fi
 
-# This is just a temporary hack, probably need to build this stuff in
-PKG_CHECK_MODULES(SOSLIB, [libODES >= 1.7.0], [SOSLIB="yes"], [SOSLIB="no"])
-if test "${SOSLIB}" != "no"; then
-  RSBML_CPPFLAGS="${RSBML_CPPFLAGS} -DSOSLIB"
+## give user option of using SOSlib
+AC_ARG_ENABLE(soslib, [  --enable-soslib[=yes|no|system]          Enable SOSLib (simulation) support, 'yes' by default if libsbml 3.0.2 or higher detected.])
+
+if test "${LIBSBML3}" != "no" && test -z "${enable_soslib}"; then
+  enable_soslib="yes"
+fi
+
+if test "${enable_soslib}" != "no"; then
+  if test "${enable_soslib}" == "system";  then
+    PKG_CHECK_MODULES(SOSLIB, [libODES >= 1.7.0], [SOSLIB="yes"])
+  else
+    SOURCE_DIR=`pwd`/local
+    ## FIXME: need to use AC_CONFIG_SUBDIRS here
+    cd inst/SBML_odeSolver-1.7.0beta
+    ./configure --prefix="${SOURCE_DIR}" LIBS="-lxml2" --without-xerces --with-sundials=/usr
+    make
+    make install
+    SOSLIB_CFLAGS="-I${SOURCE_DIR}/include"
+    SOSLIB_LIBS="-L${SOURCE_DIR}/lib -lODES"
+    cd ../..
+  fi
+  RSBML_CPPFLAGS="${RSBML_CPPFLAGS} -DSOSLIB ${SOSLIB_CFLAGS}"
   LIBS="${LIBS} ${SOSLIB_LIBS}"
   LIBS="${LIBS} -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
 fi

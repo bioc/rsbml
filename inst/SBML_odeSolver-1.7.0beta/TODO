@@ -1,0 +1,93 @@
+* cross-check AST processing with MathML definitions
+  at http://www.w3.org/TR/MathML2/appendixc.html
+
+* example for UsrDefFnct: 
+	* interpolation from external data file
+	* callBack Fnct
+
+* general accuracy / performance: see file OUTLOOK
+        * generate SOSlib Benchmarking Test Suite
+        * adapt printout accuracy to CVODE errors
+	* check usage of double, float, long float etc.
+	* choose CVODE error tolerances automatically for each ODE??
+	* choose other solvers from the CVODE package
+
+* Function Definition Replacement:
+	* implement in evaluate/differentiateAST
+
+* SUNDIALS interface
+        * use more/better options!
+	* use of parallel capabilities
+	* KINSOL for steady state detection
+	* daeSolver IDA
+
+* eventDetector:
+	* integrate from last to current timestep, until trigger < CVODE ERROR
+	* use combination of interpolation and exact integration
+	  to event trigger
+
+* online communication
+	* use callback and user-defined-functions
+	  for communication with other tools/solver 
+	  (e.g. stochastic)
+
+* compilation:
+	* use TCC runtime compilation of CVODE code
+
+* SBW: write interface function
+
+* BioUML: explore interface possibility
+
+* command-line and interactive usage
+	* change visualization to GNUPLOT (3D!)
+	* bioLog_resultVisualizer: ...
+
+___TODO MARCH 2007__
+
+* recreate solver structures when choosing new solver/iteration methods
+* implement max. order
+
+* check old valgrind memory leaks
+
+* check n-ary for relational operators
+
+* remove space() and fprintf(stderr,...)
+
+* optimize sens. matrix construction, compare parameters
+
+* implement compilation for all RHS
+
+* event bug! check rule evaluation ordering, and default observables
+also see odeModel.c line 175
+    /* AMF => if you want to expand the default observables set please
+    let me know.  If you include the reaction symbols performance
+    will be degraded in models with events */
+
+* use values array also for SBML input model
+
+* high level interfaces: check error handling
+
+* error handling in getForwardSens
+
+* check all rule evaluations for optimization
+
+___TODO MAY 2007___
+
+* new SUNDIALS: can sensitivities be switched off, or does it require full
+  re-construction of solver??
+  DONE, via CVodeToggleOffSens...
+
+* reconstruction and re-initialization need to be moved completely,
+  best probably to first call of sensitivity, complete free or not
+  upon IntegratorInstance_(re)set
+  DONE, via new structure odeSense_t
+
+____TODO SEPT 2007___
+
+* find better solution to avoid problems with II_setVariableValue (events 
+  and external use)
+
+* cvodeSettings: set a flag, whether a change to settings requires reinit of solver
+  (reset, etc) to become active already for the next run
+
+* doxygen: link structure documentation to respective modules  

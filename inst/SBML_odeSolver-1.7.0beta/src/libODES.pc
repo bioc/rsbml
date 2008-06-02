@@ -1,0 +1,10 @@
+prefix=/home/larman/research/networks/rsbml/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+                                                                                       
+Name: libODES
+Description: The SBML ODE Solver library 
+Version: 1.7.0beta
+Libs: -L${libdir} -lODES
+Cflags: -I${includedir}
