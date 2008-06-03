@@ -9,7 +9,7 @@ typedef SpeciesReference_t SimpleSpeciesReference_t;
 SEXP
 rsbml_build_graph(SBMLDocument_t *doc)
 {
-  SEXP r_graph, r_nodes, r_edges, r_edge_name;
+  SEXP r_graph, r_nodes, r_edges, r_edge_name, r_graph_data;
   Model_t *model = SBMLDocument_getModel(doc);
   StringMap_t *id_map;
   int num_species, num_reactions;
@@ -17,6 +17,12 @@ rsbml_build_graph(SBMLDocument_t *doc)
   int *out_count, *out_pos;
   
   PROTECT(r_graph = NEW_OBJECT(MAKE_CLASS("graphNEL")));
+
+  r_graph_data = NEW_LIST(1);
+  SET_SLOT(r_graph, install("graphData"), r_graph_data);
+  SET_VECTOR_ELT(r_graph_data, 0, mkString("directed"));
+  SET_NAMES(r_graph_data, mkString("edgemode"));
+  
   SET_SLOT(r_graph, install("edgemode"), ScalarString(mkChar("directed")));
   
   num_species = Model_getNumSpecies(model);
