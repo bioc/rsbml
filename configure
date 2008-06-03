@@ -1332,7 +1332,7 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-soslib=yes|no|system          Enable SOSLib (simulation) support, 'yes' by default if libsbml 3.0.2 or higher detected.
+  --enable-soslib=yes|no|system          Enable SOSLib (simulation) support
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3808,10 +3808,6 @@ if test "${enable_soslib+set}" = set; then
 fi
 
 
-if test "${LIBSBML3}" != "no" && test -z "${enable_soslib}"; then
-  enable_soslib="yes"
-fi
-
 if test "${enable_soslib}" != "no"; then
   if test "${enable_soslib}" == "system";  then
 
@@ -3869,51 +3865,11 @@ fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$SOSLIB_PKG_ERRORS" >&5
 
-	{ { $as_echo "$as_me:$LINENO: error: Package requirements (libODES >= 1.7.0) were not met:
-
-$SOSLIB_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables SOSLIB_CFLAGS
-and SOSLIB_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-" >&5
-$as_echo "$as_me: error: Package requirements (libODES >= 1.7.0) were not met:
-
-$SOSLIB_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables SOSLIB_CFLAGS
-and SOSLIB_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-" >&2;}
-   { (exit 1); exit 1; }; }
+	{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+                SOSLIB="no"
 elif test $pkg_failed = untried; then
-	{ { $as_echo "$as_me:$LINENO: error: The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables SOSLIB_CFLAGS
-and SOSLIB_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details." >&5
-$as_echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables SOSLIB_CFLAGS
-and SOSLIB_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details." >&2;}
-   { (exit 1); exit 1; }; }
+	SOSLIB="no"
 else
 	SOSLIB_CFLAGS=$pkg_cv_SOSLIB_CFLAGS
 	SOSLIB_LIBS=$pkg_cv_SOSLIB_LIBS
@@ -3922,22 +3878,33 @@ $as_echo "yes" >&6; }
 	SOSLIB="yes"
 fi
   else
+    { $as_echo "$as_me:$LINENO: === Begin local SOSLib build ===" >&5
+$as_echo "$as_me: === Begin local SOSLib build ===" >&6;}
     SOURCE_DIR=`pwd`/local
     cd inst/SBML_odeSolver-1.7.0beta
     if test -z "${SOSLIB_CONFIGURE_ARGS}"; then
-      SOSLIB_CONFIGURE_ARGS="--without-xerces --with-sundials=/usr"
+      SOSLIB_CONFIGURE_ARGS="--with-sundials=/usr"
     fi
     SOSLIB_CONFIGURE_ARGS="${SOSLIB_CONFIGURE_ARGS} --prefix=${SOURCE_DIR}"
-    ./configure ${SOSLIB_CONFIGURE_ARGS}
-    make
-    make install
-    SOSLIB_CFLAGS="-I${SOURCE_DIR}/include"
-    SOSLIB_LIBS="-L${SOURCE_DIR}/lib -lODES"
+    SOSLIB="no"
+    if ./configure ${SOSLIB_CONFIGURE_ARGS} && make && make install; then
+        SOSLIB_CFLAGS="-I${SOURCE_DIR}/include"
+        SOSLIB_LIBS="-L${SOURCE_DIR}/lib -lODES"
+        SOSLIB="yes"
+    fi
     cd ../..
+    { $as_echo "$as_me:$LINENO: === End local SOSLib build ===" >&5
+$as_echo "$as_me: === End local SOSLib build ===" >&6;}
   fi
-  RSBML_CPPFLAGS="${RSBML_CPPFLAGS} -DSOSLIB ${SOSLIB_CFLAGS}"
-  LIBS="${LIBS} ${SOSLIB_LIBS}"
-  LIBS="${LIBS} -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
+  if test "${SOSLIB}" == "yes"; then
+     RSBML_CPPFLAGS="${RSBML_CPPFLAGS} -DSOSLIB ${SOSLIB_CFLAGS}"
+     LIBS="${LIBS} ${SOSLIB_LIBS}"
+     LIBS="${LIBS} -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
+  elif test -n "${enable_soslib}"; then
+     { { $as_echo "$as_me:$LINENO: error: SOSLib support requested, but prequisites failed" >&5
+$as_echo "$as_me: error: SOSLib support requested, but prequisites failed" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
 fi
 
 
