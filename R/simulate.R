@@ -18,6 +18,10 @@
                            useJacobian = TRUE, haltOnEvent = FALSE,
                            haltOnSteadyState = FALSE, storeResults = TRUE)
 {
+  if (!is.loaded("rsbml_R_SBML_odeSolver", "rsbml"))
+    stop("SOSLib (simulation) support not enabled in this build of rsbml. ",
+         "Consider rebuilding rsbml with the --enable-soslib configure option,",
+         " with the necessary dependencies (libsbml 3.0.2, sundials 2.3.0).")
   formParams <- formals(sys.function())
   odeMethod <- odeMethod[1]
   odeMethod <- match(match.arg(odeMethod), eval(formParams$odeMethod)) - 1
