@@ -59,9 +59,12 @@ if test "${enable_soslib}" != "no"; then
     PKG_CHECK_MODULES(SOSLIB, [libODES >= 1.7.0], [SOSLIB="yes"])
   else
     SOURCE_DIR=`pwd`/local
-    ## FIXME: need to use AC_CONFIG_SUBDIRS here
     cd inst/SBML_odeSolver-1.7.0beta
-    ./configure --prefix="${SOURCE_DIR}" LIBS="-lxml2" --without-xerces --with-sundials=/usr
+    if test -z "${SOSLIB_CONFIGURE_ARGS}"; then
+      SOSLIB_CONFIGURE_ARGS="--without-xerces --with-sundials=/usr"
+    fi
+    SOSLIB_CONFIGURE_ARGS="${SOSLIB_CONFIGURE_ARGS} --prefix=${SOURCE_DIR}"
+    ./configure ${SOSLIB_CONFIGURE_ARGS}
     make
     make install
     SOSLIB_CFLAGS="-I${SOURCE_DIR}/include"
