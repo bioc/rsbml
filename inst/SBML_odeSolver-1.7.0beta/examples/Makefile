@@ -205,11 +205,12 @@ PACKAGE_TARNAME = SBML_odeSolver
 PACKAGE_VERSION = 1.7.0beta
 PATH_SEPARATOR = :
 PERL = /usr/bin/perl
+PKG_CONFIG = /usr/bin/pkg-config
 RANLIB = ranlib
-SBML_CFLAGS = -I/usr/include -I/usr/include/sbml
-SBML_LDFLAGS = -L/usr/lib -Lno/lib
-SBML_LIBS = -lsbml -lexpat
-SBML_RPATH = -Wl,-rpath,/usr/lib
+SBML_CFLAGS = -I/usr/include/libxml2  
+SBML_LDFLAGS = 
+SBML_LIBS = -lsbml -lstdc++ -lm -lxml2  
+SBML_RPATH = 
 SET_MAKE = 
 SHAREDLIBEXT = so
 SHELL = /bin/sh
@@ -277,27 +278,27 @@ top_builddir = ..
 top_srcdir = ..
 
 # $Id: Makefile.am,v 1.27 2007/09/20 01:16:12 raimc Exp $
-INCLUDES = -I. -I../src -I/home/larman/research/networks/rsbml/local/include -I/usr/include -I/usr/include/sbml -I/usr/include 
+INCLUDES = -I. -I../src -I/home/larman/research/networks/rsbml/local/include -I/usr/include/libxml2   -I/usr/include 
 AM_CFLAGS = -g -O2 -Wno-unknown-pragmas -Wall -ansi -std=iso9899:1990
-AM_LDFLAGS = -Wl,-rpath,/usr/lib/graphviz  -Wl,-rpath,/usr/lib
+AM_LDFLAGS = -Wl,-rpath,/usr/lib/graphviz  
 printODEs_SOURCES = printODEModel.c
 printODEs_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                     -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                    -L/usr/lib -Lno/lib -lsbml -lexpat \
+                     -lsbml -lstdc++ -lm -lxml2   \
                       \
                     -L/usr/lib/graphviz -lgvc 
 
 defSeries_SOURCES = definedTimeSeries.c
 defSeries_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                     -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                    -L/usr/lib -Lno/lib -lsbml -lexpat \
+                     -lsbml -lstdc++ -lm -lxml2   \
                       \
                     -L/usr/lib/graphviz -lgvc
 
 integrate_SOURCES = integrate.c
 integrate_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                     -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                    -L/usr/lib -Lno/lib -lsbml -lexpat \
+                     -lsbml -lstdc++ -lm -lxml2   \
                       \
                     -L/usr/lib/graphviz -lgvc
 
@@ -305,115 +306,115 @@ sensitivity_SOURCES = sensitivity.c
 sensitivity_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                         \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                       -L/usr/lib/graphviz -lgvc
 
 senstest_SOURCES = senstest.c
 senstest_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                         \
                       -L/usr/lib/graphviz -lgvc
 
 adjsenstest_SOURCES = adjsenstest.c
 adjsenstest_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                         \
                       -L/usr/lib/graphviz -lgvc
 
 adjsenstest_ContDiscData_SOURCES = adjsenstest_ContDiscData.c
 adjsenstest_ContDiscData_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                         \
                       -L/usr/lib/graphviz -lgvc
 
 adj_sensitivity_SOURCES = adj_sensitivity.c
 adj_sensitivity_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                         \
                       -L/usr/lib/graphviz -lgvc
 
 batchIntegrate_SOURCES = batch_integrate.c
 batchIntegrate_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                          -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                         -L/usr/lib -Lno/lib -lsbml -lexpat \
+                          -lsbml -lstdc++ -lm -lxml2   \
                            \
                          -L/usr/lib/graphviz -lgvc
 
 simpleIntInst_SOURCES = simpleIntegratorInstance.c
 simpleIntInst_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                          -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                         -L/usr/lib -Lno/lib -lsbml -lexpat \
+                          -lsbml -lstdc++ -lm -lxml2   \
                            \
                          -L/usr/lib/graphviz -lgvc
 
 changeIntInst_SOURCES = ChangingIntegratorInstance.c
 changeIntInst_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                          -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                         -L/usr/lib -Lno/lib -lsbml -lexpat \
+                          -lsbml -lstdc++ -lm -lxml2   \
                            \
                          -L/usr/lib/graphviz -lgvc
 
 ASTIndexTest_SOURCES = ASTIndexTest.c
 ASTIndexTest_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
-                       -L/usr/lib -Lno/lib -lsbml -lexpat
+                        -lsbml -lstdc++ -lm -lxml2  
 
 analyzeJacobian_SOURCES = analyzeJacobian.c
 analyzeJacobian_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                           -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                          -L/usr/lib -Lno/lib -lsbml -lexpat \
+                           -lsbml -lstdc++ -lm -lxml2   \
                             \
                           -L/usr/lib/graphviz -lgvc
 
 analyzeSens_SOURCES = analyzeSensitivity.c
 analyzeSens_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                       -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                      -L/usr/lib -Lno/lib -lsbml -lexpat \
+                       -lsbml -lstdc++ -lm -lxml2   \
                         \
                       -L/usr/lib/graphviz -lgvc
 
 ParameterScanner_SOURCES = ParameterScanner.c
 ParameterScanner_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                         -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                        -L/usr/lib -Lno/lib -lsbml -lexpat \
+                         -lsbml -lstdc++ -lm -lxml2   \
                           \
                         -L/usr/lib/graphviz -lgvc
 
 Sense_SOURCES = Sense.c
 Sense_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                 -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                -L/usr/lib -Lno/lib -lsbml -lexpat \
+                 -lsbml -lstdc++ -lm -lxml2   \
                   \
                 -L/usr/lib/graphviz -lgvc
 
 root_SOURCES = findRoot.c
 root_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-               -L/usr/lib -Lno/lib -lsbml -lexpat \
+                -lsbml -lstdc++ -lm -lxml2   \
                  \
                -L/usr/lib/graphviz -lgvc
 
 integrateODEs_SOURCES = integrateODEs.c
 integrateODEs_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                         -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                        -L/usr/lib -Lno/lib -lsbml -lexpat \
+                         -lsbml -lstdc++ -lm -lxml2   \
                           \
                         -L/usr/lib/graphviz -lgvc
 
 compilerTest_SOURCES = testCompiler.c
 compilerTest_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                        -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                       -L/usr/lib -Lno/lib -lsbml -lexpat \
+                        -lsbml -lstdc++ -lm -lxml2   \
                          \
                        -L/usr/lib/graphviz -lgvc
 
 bistability_SOURCES = bistability.c
 bistability_LDADD = -L../src -L/home/larman/research/networks/rsbml/local/lib -lODES \
                        -L/usr/lib -lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial \
-                       -L/usr/lib -Lno/lib -lsbml -lexpat \
+                        -lsbml -lstdc++ -lm -lxml2   \
                          \
                        -L/usr/lib/graphviz -lgvc
 

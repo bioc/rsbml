@@ -1,6 +1,18 @@
-setClass("CVTerm", representation(qualifierType = "character", 
-  modelQualifierType = "character", biologicalQualifierType = "character", 
-  resources = "character"))
+setClass("CVTerm",
+         representation(qualifierType = "character",
+                        modelQualifierType = "character",
+                        biologicalQualifierType = "character",
+                        resources = "character"),
+         contains = "Describable")
+
+setMethod("describe", "CVTerm", function(object) {
+  qtype <- qualifierType(object)
+  if (qualifierType == "model")
+    type <- modelQualifierType(object)
+  else if (qualifierType == "biological")
+    type <- biologicalQualifierType(object)
+  paste(qtype, ":", type, ":", resources(object), sep = "")
+})
 
  setGeneric("qualifierType", function(object) standardGeneric("qualifierType"))
 setMethod("qualifierType", "CVTerm", function(object) object@qualifierType)

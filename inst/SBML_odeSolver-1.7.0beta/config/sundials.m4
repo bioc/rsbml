@@ -6,6 +6,7 @@ dnl
 AC_DEFUN([AC_SUNDIALS_PATH],
 [ AC_MSG_CHECKING([for SUNDIALS Library headers])
   for ac_dir in                 \
+    /usr                        \
     /usr/local                  \
     /usr/local/sundials         \
     /usr/local/include/sundials \

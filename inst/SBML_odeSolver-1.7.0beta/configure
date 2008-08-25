@@ -737,12 +737,13 @@ MAKE
 AR
 SWIG
 PERL
+PKG_CONFIG
+SBML_CFLAGS
+SBML_LIBS
 USE_SBML
 OLD_LIBSBML
-SBML_CFLAGS
 SBML_LDFLAGS
 SBML_RPATH
-SBML_LIBS
 USE_SUNDIALS
 SUNDIALS_LDFLAGS
 SUNDIALS_LIBS
@@ -767,8 +768,6 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 with_libsbml
-with_xerces
-with_expat
 with_sundials
 with_grace
 with_graphviz
@@ -785,7 +784,10 @@ CCC
 CC
 CFLAGS
 FPIC
-CPP'
+CPP
+PKG_CONFIG
+SBML_CFLAGS
+SBML_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1423,8 +1425,6 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-libsbml=PREFIX   Use SBML Library
-  --with-xerces=PREFIX    Use Xerces XML Library
-  --with-expat=PREFIX     Use Expat XML Library
   --with-sundials=PREFIX  Use SUNDIALS Library
   --with-grace=PREFIX     Use GRACE Library
   --with-graphviz=PREFIX  Use GRAPHVIZ Library
@@ -1442,6 +1442,9 @@ Some influential environment variables:
   FPIC        compiler flag for generating PIC code that can be used in a
               shared library
   CPP         C preprocessor
+  PKG_CONFIG  path to pkg-config utility
+  SBML_CFLAGS C compiler flags for SBML, overriding pkg-config
+  SBML_LIBS   linker flags for SBML, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -4861,6 +4864,126 @@ fi
 
 
 
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:$LINENO: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:$LINENO: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:$LINENO: WARNING: In the future, Autoconf will not detect cross-tools
+whose name does not start with the host triplet.  If you think this
+configuration is useful to you, please write to autoconf@gnu.org." >&5
+$as_echo "$as_me: WARNING: In the future, Autoconf will not detect cross-tools
+whose name does not start with the host triplet.  If you think this
+configuration is useful to you, please write to autoconf@gnu.org." >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:$LINENO: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+
+fi
+
+
 # Check whether --with-libsbml was given.
 if test "${with_libsbml+set}" = set; then
   withval=$with_libsbml; with_libsbml=$withval
@@ -4869,34 +4992,85 @@ else
 fi
 
 
-
-# Check whether --with-xerces was given.
-if test "${with_xerces+set}" = set; then
-  withval=$with_xerces; with_xerces=$withval
-else
-  with_xerces=yes
-fi
-
-
-
-# Check whether --with-expat was given.
-if test "${with_expat+set}" = set; then
-  withval=$with_expat; with_expat=$withval
-else
-  with_expat=no
-fi
-
-
-
-
     SBML_CFLAGS=
   SBML_LDFLAGS=
   SBML_RPATH=
   SBML_LIBS=
   if test $with_libsbml = yes; then
-     { $as_echo "$as_me:$LINENO: checking for SBML Library headers" >&5
+
+pkg_failed=no
+{ $as_echo "$as_me:$LINENO: checking for SBML" >&5
+$as_echo_n "checking for SBML... " >&6; }
+
+if test -n "$SBML_CFLAGS"; then
+    pkg_cv_SBML_CFLAGS="$SBML_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libsbml\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libsbml") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_SBML_CFLAGS=`$PKG_CONFIG --cflags "libsbml" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SBML_LIBS"; then
+    pkg_cv_SBML_LIBS="$SBML_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { ($as_echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libsbml\"") >&5
+  ($PKG_CONFIG --exists --print-errors "libsbml") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_SBML_LIBS=`$PKG_CONFIG --libs "libsbml" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SBML_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libsbml" 2>&1`
+        else
+	        SBML_PKG_ERRORS=`$PKG_CONFIG --print-errors "libsbml" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SBML_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+                { $as_echo "$as_me:$LINENO: WARNING: libsbml 3.0 not found by pkg-config" >&5
+$as_echo "$as_me: WARNING: libsbml 3.0 not found by pkg-config" >&2;}
+elif test $pkg_failed = untried; then
+	{ $as_echo "$as_me:$LINENO: WARNING: libsbml 3.0 not found by pkg-config" >&5
+$as_echo "$as_me: WARNING: libsbml 3.0 not found by pkg-config" >&2;}
+else
+	SBML_CFLAGS=$pkg_cv_SBML_CFLAGS
+	SBML_LIBS=$pkg_cv_SBML_LIBS
+        { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+	have_libsbml=yes
+fi
+    if test "x$have_libsbml" != "xyes"; then # fall back if pkg-config fails
+         { $as_echo "$as_me:$LINENO: checking for SBML Library headers" >&5
 $as_echo_n "checking for SBML Library headers... " >&6; }
   for ac_dir in             \
+    /usr                    \
     /usr/local/include      \
     /usr/include            \
     /usr/local/share        \
@@ -4931,6 +5105,7 @@ $as_echo "yes" >&6; }
     fi
   done
 
+    fi
   else
         SBML_CFLAGS="-I$with_libsbml/include -I$with_libsbml/include/sbml"
     SBML_LDFLAGS="-L$with_libsbml/lib"
@@ -4942,27 +5117,6 @@ $as_echo "yes" >&6; }
     fi
 
     SBML_LIBS="-lsbml"
-  fi
-
-
-    if test $with_expat != no; then
-     with_xerces=no
-  fi
-
-    if test $with_xerces != no; then
-     if test $with_xerces == yes; then
-       SBML_LIBS="$SBML_LIBS -lxerces-c"
-     else
-       SBML_LDFLAGS="$SBML_LDFLAGS -L$with_xerces/lib"
-       SBML_LIBS="$SBML_LIBS -lxerces-c"
-     fi
-  else
-     if test $with_expat == yes; then
-      SBML_LIBS="$SBML_LIBS -lexpat"
-     else
-      SBML_LIBS="$SBML_LIBS -lexpat"
-      SBML_LDFLAGS="$SBML_LDFLAGS -L$with_expat/lib"
-     fi
   fi
 
     { $as_echo "$as_me:$LINENO: checking for correct functioning of SBML" >&5
@@ -5114,6 +5268,7 @@ fi
      { $as_echo "$as_me:$LINENO: checking for SUNDIALS Library headers" >&5
 $as_echo_n "checking for SUNDIALS Library headers... " >&6; }
   for ac_dir in                 \
+    /usr                        \
     /usr/local                  \
     /usr/local/sundials         \
     /usr/local/include/sundials \
@@ -6567,72 +6722,28 @@ done
 
 
 
-
- { $as_echo "$as_me:$LINENO: checking whether byte ordering is bigendian" >&5
+{ $as_echo "$as_me:$LINENO: checking whether byte ordering is bigendian" >&5
 $as_echo_n "checking whether byte ordering is bigendian... " >&6; }
 if test "${ac_cv_c_bigendian+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
-  ac_cv_c_bigendian=unknown
-    # See if __BIG_ENDIAN__ or __LITTLE_ENDIAN__ is defined.
-       cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#if ! (defined __BIG_ENDIAN__ || defined __LITTLE_ENDIAN__)
-	       neither is defined;
-	     #endif
-	     typedef int dummy;
-
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  ac_cv_c_bigendian=universal
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    if test $ac_cv_c_bigendian = unknown; then
-      # See if sys/param.h defines the BYTE_ORDER macro.
-      cat >conftest.$ac_ext <<_ACEOF
+  # See if sys/param.h defines the BYTE_ORDER macro.
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <sys/types.h>
-	     #include <sys/param.h>
+#include <sys/param.h>
 
 int
 main ()
 {
-#if ! (defined BYTE_ORDER && defined BIG_ENDIAN \
-		     && defined LITTLE_ENDIAN && BYTE_ORDER && BIG_ENDIAN \
-		     && LITTLE_ENDIAN)
-	      bogus endian macros
-	     #endif
+#if  ! (defined BYTE_ORDER && defined BIG_ENDIAN && defined LITTLE_ENDIAN \
+	&& BYTE_ORDER && BIG_ENDIAN && LITTLE_ENDIAN)
+ bogus endian macros
+#endif
 
   ;
   return 0;
@@ -6657,21 +6768,21 @@ $as_echo "$ac_try_echo") >&5
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
   # It does; now see whether it defined to BIG_ENDIAN or not.
-	 cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #include <sys/types.h>
-		#include <sys/param.h>
+#include <sys/param.h>
 
 int
 main ()
 {
 #if BYTE_ORDER != BIG_ENDIAN
-		 not big endian
-		#endif
+ not big endian
+#endif
 
   ;
   return 0;
@@ -6708,28 +6819,26 @@ else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    if test $ac_cv_c_bigendian = unknown; then
-      # See if <limits.h> defines _LITTLE_ENDIAN or _BIG_ENDIAN (e.g., Solaris).
-      cat >conftest.$ac_ext <<_ACEOF
+	# It does not; compile a test program.
+if test "$cross_compiling" = yes; then
+  # try to guess the endianness by grepping values into an object file
+  ac_cv_c_bigendian=unknown
+  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <limits.h>
-
+short int ascii_mm[] = { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
+short int ascii_ii[] = { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
+void _ascii () { char *s = (char *) ascii_mm; s = (char *) ascii_ii; }
+short int ebcdic_ii[] = { 0x89D3, 0xE3E3, 0x8593, 0x95C5, 0x89C4, 0x9581, 0 };
+short int ebcdic_mm[] = { 0xC2C9, 0xC785, 0x95C4, 0x8981, 0x95E2, 0xA8E2, 0 };
+void _ebcdic () { char *s = (char *) ebcdic_mm; s = (char *) ebcdic_ii; }
 int
 main ()
 {
-#if ! (defined _LITTLE_ENDIAN || defined _BIG_ENDIAN)
-	      bogus endian macros
-	     #endif
-
+ _ascii (); _ebcdic ();
   ;
   return 0;
 }
@@ -6752,125 +6861,17 @@ $as_echo "$ac_try_echo") >&5
 	 test -z "$ac_c_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
-  # It does; now see whether it defined to _BIG_ENDIAN or not.
-	 cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <limits.h>
-
-int
-main ()
-{
-#ifndef _BIG_ENDIAN
-		 not big endian
-		#endif
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
+  if grep BIGenDianSyS conftest.$ac_objext >/dev/null ; then
   ac_cv_c_bigendian=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_c_bigendian=no
 fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-
+if grep LiTTleEnDian conftest.$ac_objext >/dev/null ; then
+  if test "$ac_cv_c_bigendian" = unknown; then
+    ac_cv_c_bigendian=no
+  else
+    # finding both strings is unlikely to happen, but who knows?
+    ac_cv_c_bigendian=unknown
+  fi
 fi
-
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-    fi
-    if test $ac_cv_c_bigendian = unknown; then
-      # Compile a test program.
-      if test "$cross_compiling" = yes; then
-  # Try to guess by grepping values from an object file.
-	 cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-short int ascii_mm[] =
-		  { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
-		short int ascii_ii[] =
-		  { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
-		int use_ascii (int i) {
-		  return ascii_mm[i] + ascii_ii[i];
-		}
-		short int ebcdic_ii[] =
-		  { 0x89D3, 0xE3E3, 0x8593, 0x95C5, 0x89C4, 0x9581, 0 };
-		short int ebcdic_mm[] =
-		  { 0xC2C9, 0xC785, 0x95C4, 0x8981, 0x95E2, 0xA8E2, 0 };
-		int use_ebcdic (int i) {
-		  return ebcdic_mm[i] + ebcdic_ii[i];
-		}
-		extern int foo;
-
-int
-main ()
-{
-return use_ascii (foo) == use_ebcdic (foo);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (ac_try="$ac_compile"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_compile") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest.$ac_objext; then
-  if grep BIGenDianSyS conftest.$ac_objext >/dev/null; then
-	      ac_cv_c_bigendian=yes
-	    fi
-	    if grep LiTTleEnDian conftest.$ac_objext >/dev/null ; then
-	      if test "$ac_cv_c_bigendian" = unknown; then
-		ac_cv_c_bigendian=no
-	      else
-		# finding both strings is unlikely to happen, but who knows?
-		ac_cv_c_bigendian=unknown
-	      fi
-	    fi
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -6891,14 +6892,14 @@ int
 main ()
 {
 
-	     /* Are we little or big endian?  From Harbison&Steele.  */
-	     union
-	     {
-	       long int l;
-	       char c[sizeof (long int)];
-	     } u;
-	     u.l = 1;
-	     return u.c[sizeof (long int) - 1] == 1;
+  /* Are we little or big endian?  From Harbison&Steele.  */
+  union
+  {
+    long int l;
+    char c[sizeof (long int)];
+  } u;
+  u.l = 1;
+  return u.c[sizeof (long int) - 1] == 1;
 
   ;
   return 0;
@@ -6940,27 +6941,28 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$a
 fi
 
 
-    fi
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:$LINENO: result: $ac_cv_c_bigendian" >&5
 $as_echo "$ac_cv_c_bigendian" >&6; }
- case $ac_cv_c_bigendian in #(
-   yes)
-     cat >>confdefs.h <<\_ACEOF
+case $ac_cv_c_bigendian in
+  yes)
+
+cat >>confdefs.h <<\_ACEOF
 #define WORDS_BIGENDIAN 1
 _ACEOF
-;; #(
-   no)
-      ;; #(
-   universal)
-      ;; #(
-   *)
-     { { $as_echo "$as_me:$LINENO: error: unknown endianness
- presetting ac_cv_c_bigendian=no (or yes) will help" >&5
+ ;;
+  no)
+     ;;
+  *)
+    { { $as_echo "$as_me:$LINENO: error: unknown endianness
+presetting ac_cv_c_bigendian=no (or yes) will help" >&5
 $as_echo "$as_me: error: unknown endianness
- presetting ac_cv_c_bigendian=no (or yes) will help" >&2;}
+presetting ac_cv_c_bigendian=no (or yes) will help" >&2;}
    { (exit 1); exit 1; }; } ;;
- esac
+esac
 
 { $as_echo "$as_me:$LINENO: checking for an ANSI C-conforming const" >&5
 $as_echo_n "checking for an ANSI C-conforming const... " >&6; }
@@ -7192,7 +7194,7 @@ case $host in
 esac
 
 
-ac_config_files="$ac_config_files ./Makefile"
+ac_config_files="$ac_config_files Makefile"
 
 ac_config_files="$ac_config_files examples/Makefile"
 
@@ -7659,9 +7661,9 @@ _ACEOF
 
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 # Files that config.status was made for.
-config_files="$ac_config_files"
-config_headers="$ac_config_headers"
-config_commands="$ac_config_commands"
+config_files="`echo $ac_config_files`"
+config_headers="`echo $ac_config_headers`"
+config_commands="`echo $ac_config_commands`"
 
 _ACEOF
 
@@ -7821,7 +7823,7 @@ do
   case $ac_config_target in
     "src/sbmlsolver/config.h") CONFIG_HEADERS="$CONFIG_HEADERS src/sbmlsolver/config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-    "./Makefile") CONFIG_FILES="$CONFIG_FILES ./Makefile" ;;
+    "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "examples/Makefile") CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
     "odeSolver/Makefile") CONFIG_FILES="$CONFIG_FILES odeSolver/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;

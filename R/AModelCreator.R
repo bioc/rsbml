@@ -1,5 +1,12 @@
-setClass("ModelCreator", representation(familyName = "character", 
-  givenName = "character", email = "character", organization = "character"))
+setClass("ModelCreator",
+         representation(familyName = "character", givenName = "character",
+                        email = "character", organization = "character"),
+         contains = "Describable")
+
+setMethod("describe", "ModelCreator",
+          function(object) paste(givenName(object), " ", familyName(object),
+                                 "(", email(object), ") at",
+                                 organization(object), sep = ""))
 
  setGeneric("familyName", function(object) standardGeneric("familyName"))
 setMethod("familyName", "ModelCreator", function(object) object@familyName)

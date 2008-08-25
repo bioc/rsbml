@@ -1,9 +1,18 @@
-setClass("Compartment", representation(id = "character", name = "character", 
-  spatialDimensions = "integer", size = "numeric", units = "character", 
-  outside = "character", constant = "logical"), 
-  prototype = list(spatialDimensions = as.integer(3), constant = TRUE), 
-  contains = "SBase")
+setClass("Compartment",
+         representation(id = "character", name = "character", 
+                        spatialDimensions = "integer", size = "numeric",
+                        units = "character", outside = "character",
+                        constant = "logical"), 
+         prototype = list(spatialDimensions = as.integer(3), constant = TRUE), 
+         contains = "SBase")
 
+setMethod("describe", "Compartment",
+          function(object) {
+            desc <- id(object)
+            if (length(name(object)))
+              paste(desc, " (", name(object), ")", sep = "")
+            desc
+          })
  
 setMethod("id", "Compartment", function(object) object@id)
 

@@ -1,6 +1,9 @@
 setClass("EventAssignment", representation(variable = "character", math = "expression"), 
   contains = "SBase")
 
+setMethod("describe", "EventAssignment",
+          function(object) paste(variable, "=", math))
+
  setGeneric("variable", function(object) standardGeneric("variable"))
 setMethod("variable", "EventAssignment", function(object) object@variable)
 

@@ -2,6 +2,13 @@ setClass("SBML", representation(level = "integer", ver = "integer", model = "Mod
   contains = "SBase", prototype = list(level = as.integer(2), ver = as.integer(1)),
   validity = function(object) rsbml_check(rsbml_doc(object)))
 
+setMethod("describe", "SBML",
+          function(object) {
+            desc <- paste("SBML Document (level = ", level(object),
+                          ", version = ", version(object), ")", sep = "")
+            c(desc, "", describe(model(object)))
+          })
+
 setGeneric("level", function(object) standardGeneric("level"))
 setMethod("level", "SBML", function(object) object@level)
 

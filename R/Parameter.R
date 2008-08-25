@@ -2,7 +2,12 @@ setClass("Parameter", representation(id = "character", name = "character",
   value = "numeric", units = "character", constant = "logical"), 
   contains = "SBase")
 
- 
+setMethod("describe", "Parameter",
+          function(object) {
+            op <- ifelse(constant(object), ":=", "=")
+            paste(id(object), op, value(object), units(object))
+          })
+
 setMethod("id", "Parameter", function(object) object@id)
 
  

@@ -194,18 +194,25 @@ SEXP rmathml_SEXP(const ASTNode_t *node) {
   case AST_FUNCTION_TANH:
     sym = install("tanh");
     break;
-    /* FIXME: and, or, and xor broken for > 2 args, use
-       ASTNode_reduceToBinary in next version of libsbml */
   case AST_LOGICAL_AND:
+#if (LIBSBML_VERSION >= 30200)
+    ASTNode_reduceToBinary(node);
+#endif
     sym = install("&");
     break;
   case AST_LOGICAL_NOT:
     sym = install("!");
     break;
   case AST_LOGICAL_OR:
+#if (LIBSBML_VERSION >= 30200)
+    ASTNode_reduceToBinary(node);
+#endif
     sym = install("|");
     break;
   case AST_LOGICAL_XOR:
+#if (LIBSBML_VERSION >= 30200)
+    ASTNode_reduceToBinary(node);
+#endif
     sym = install("xor");
     break;
   case AST_RELATIONAL_EQ:

@@ -7,6 +7,7 @@ dnl
 AC_DEFUN([AC_SBML_PATH],
 [ AC_MSG_CHECKING([for SBML Library headers])
   for ac_dir in             \
+    /usr                    \
     /usr/local/include      \
     /usr/include            \
     /usr/local/share        \
@@ -51,29 +52,16 @@ AC_DEFUN([CONFIG_LIB_SBML],
               [with_libsbml=$withval],
               [with_libsbml=yes])
 
-  dnl specify prefix for libxerces-c
-  AC_ARG_WITH([xerces],
-  AC_HELP_STRING([--with-xerces=PREFIX],
-                 [Use Xerces XML Library]),
-  [with_xerces=$withval],
-  [with_xerces=yes])
-
-  dnl specify prefix for libexpat
-  AC_ARG_WITH([expat],
-  AC_HELP_STRING([--with-expat=PREFIX],
-                 [Use Expat XML Library]),
-            [with_expat=$withval],
-            [with_expat=no])
-
-
-
   dnl set SBML related variables
   SBML_CFLAGS=
   SBML_LDFLAGS=
   SBML_RPATH=
   SBML_LIBS=
   if test $with_libsbml = yes; then
-    AC_SBML_PATH
+    PKG_CHECK_MODULES(SBML, libsbml, have_libsbml=yes, AC_MSG_WARN(libsbml 3.0 not found by pkg-config, SOSlib might not build))
+    if test "x$have_libsbml" != "xyes"; then # fall back if pkg-config fails
+        AC_SBML_PATH
+    fi
   else
     dnl include /sbml folder for libSBML 2.3.4 bugs
     SBML_CFLAGS="-I$with_libsbml/include -I$with_libsbml/include/sbml"
@@ -87,29 +75,6 @@ AC_DEFUN([CONFIG_LIB_SBML],
     fi   
     
     SBML_LIBS="-lsbml"
-  fi
-
- 
-  dnl set with_xerces=no if option --with-expat was given		 
-  if test $with_expat != no; then
-     with_xerces=no
-  fi
-  
-  dnl dispach xerces versus expat
-  if test $with_xerces != no; then
-     if test $with_xerces == yes; then
-       SBML_LIBS="$SBML_LIBS -lxerces-c"
-     else
-       SBML_LDFLAGS="$SBML_LDFLAGS -L$with_xerces/lib"
-       SBML_LIBS="$SBML_LIBS -lxerces-c"
-     fi     
-  else
-     if test $with_expat == yes; then
-      SBML_LIBS="$SBML_LIBS -lexpat"
-     else
-      SBML_LIBS="$SBML_LIBS -lexpat"
-      SBML_LDFLAGS="$SBML_LDFLAGS -L$with_expat/lib"
-     fi
   fi
 
   dnl check if SBML Library is functional

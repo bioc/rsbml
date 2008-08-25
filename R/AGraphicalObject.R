@@ -1,6 +1,11 @@
 setClass("GraphicalObject", representation(id = "character", boundingBox = "BoundingBox"), 
   contains = "SBase")
 
+setMethod("describe", "GraphicalObject",
+          function(object) {
+            paste("in ", describe(boundingBox(object)), ": ", sep = "")
+          })
+
 setMethod("id", "GraphicalObject", function(object) object@id)
 
  setGeneric("boundingBox", function(object) standardGeneric("boundingBox"))

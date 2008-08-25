@@ -1,5 +1,13 @@
 setClass("CompartmentType", representation(id = "character", name = "character"), contains = "SBase")
 
+setMethod("describe", "CompartmentType",
+          function(object) {
+            desc <- id(object)
+            if (length(name(object)))
+              paste(desc, " (", name(object), ")", sep = "")
+            desc
+          })
+
 setMethod("id", "CompartmentType", function(object) object@id)
 
 setGeneric("name", function(object) standardGeneric("name"))

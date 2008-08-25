@@ -3,6 +3,14 @@ setClass("ReactionGlyph",
                         speciesReferenceGlyphs = "list"),
          contains = "GraphicalObject")
 
+setMethod("describe", "ReactionGlyph",
+          function(object) {
+            desc <- reaction(object)
+            if (!is.null(glyphCurve(object)))
+              desc <- paste("from", glyphCurve(object))
+            paste(desc, callNextMethod(object))
+          })
+
  setGeneric("reaction", function(object) standardGeneric("reaction"))
 setMethod("reaction", "ReactionGlyph", function(object) object@reaction)
 

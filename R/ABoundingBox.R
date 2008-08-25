@@ -1,6 +1,10 @@
 setClass("BoundingBox", representation(id = "character", position = "Point", 
   dimensions = "Dimensions"), contains = "SBase")
 
+setMethod("describe", "BoundingBox", function(object) {
+  paste(describe(dimensions(object)), "@", describe(position(object)))
+})
+
  setGeneric("id", function(object) standardGeneric("id"))
 setMethod("id", "BoundingBox", function(object) object@id)
 

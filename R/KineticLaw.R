@@ -2,6 +2,15 @@ setClass("KineticLaw", representation(math = "expression", parameters = "list",
   timeUnits = "character", substanceUnits = "character"), 
   contains = "SBase")
 
+setMethod("describe", "KineticLaw",
+          function(object) {
+            desc <- as.character(math(object))
+            paramDescs <- paste(sapply(parameters, describe), collapse = ", ")
+            if (length(paramDescs))
+              desc <- paste(desc, "where", paramDescs)
+            desc
+          })
+
 setMethod("math", "KineticLaw", function(object) object@math)
 
  setGeneric("parameters", function(object) standardGeneric("parameters"))

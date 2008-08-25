@@ -5,7 +5,17 @@ setClass("Event",
                         timeUnits = "character", eventAssignments = "list"),
          contains = "SBase")
 
- 
+setMethod("describe", "Event",
+          function(object) {
+            assignments <- sapply(eventAssignments(object), describe)
+            assignments <- paste(assignments, collapse = ", ")
+            desc <- paste("When", describe(trigger(object)), ":", assignments)
+            if (!is.null(delay))
+              desc <- paste(desc, "after", describe(eventDelay(object)),
+                            timeUnits(object))
+            desc
+          })
+
 setMethod("id", "Event", function(object) object@id)
 
  

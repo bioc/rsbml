@@ -10,7 +10,34 @@ setClass("Model",
                         modelHistory = "OptionalModelHistory"),
          contains = "SBase")
 
- 
+setMethod("describe", "Model", function(object) {
+  descs <- paste("Model ", id(object) , " (", name(object), "):", sep = "")
+  if (!is.null(modelHistory(object)))
+    descs <- c(descs, describe(modelHistory(object)))
+  descList <- function(name, max = 4) {
+    l <- do.call(name, list(object))
+    n <- length(l)
+    if (n) {
+      substring(name, 1, 1) <- toupper(substring(name, 1, 1))
+      c("", paste(name, " (", n, "):", sep = ""), describe(l, max))
+    } else NULL
+  }
+  descs <- c(descs,
+             descList("compartments"),
+             descList("species"),
+             descList("reactions"),
+             descList("parameters"),
+             descList("rules"),
+             descList("unitDefinitions"),
+             descList("events"),
+             descList("initialAssignments"),
+             descList("constraints"),
+             descList("speciesTypes"),
+             descList("compartmentTypes"),
+             descList("layouts", NA))
+  descs
+})
+
 setMethod("id", "Model", function(object) object@id)
 
  

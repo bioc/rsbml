@@ -1,6 +1,10 @@
 setClass("Dimensions", representation(width = "numeric", 
   height = "numeric", depth = "numeric"), prototype = list(depth = 0), contains = "SBase")
 
+setMethod("describe", "Dimensions", function(object) {
+  paste(width(object), height(object), depth(object), sep = "x")
+})
+
  setGeneric("width", function(object) standardGeneric("width"))
 setMethod("width", "Dimensions", function(object) object@width)
 

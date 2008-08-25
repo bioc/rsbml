@@ -1,5 +1,16 @@
-setClass("ModelHistory", representation(createdDate = "character", 
-  modifiedDate = "character", creators = "list"))
+setClass("ModelHistory",
+         representation(createdDate = "character", modifiedDate = "character",
+                        creators = "list"),
+         contains = "Describable")
+
+setMethod("describe", "ModelHistory",
+          function(object) {
+            creatorDescs <- paste(sapply(creators(object), describe),
+                                  collapse = ", ")
+            c(paste("Created:", createdDate(object),
+                    "Last modified:", modifiedDate(object)),
+              paste("Creators:", creatorDescs))
+          })
 
  setGeneric("createdDate", function(object) standardGeneric("createdDate"))
 setMethod("createdDate", "ModelHistory", function(object) object@createdDate)

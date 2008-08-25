@@ -1,5 +1,9 @@
 setClass("CompartmentGlyph", representation(compartment = "character"), contains = "GraphicalObject")
 
+setMethod("describe", "CompartmentGlyph", function(object) {
+  paste(describe(compartment(object)), callNextMethod(object))
+})
+
  setGeneric("compartment", function(object) standardGeneric("compartment"))
 setMethod("compartment", "CompartmentGlyph", function(object) object@compartment)
 

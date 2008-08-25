@@ -1,7 +1,9 @@
 setClass("FunctionDefinition", representation(id = "character", name = "character", math = "expression"), 
   contains = "SBase") 
 
- 
+setMethod("describe", "FunctionDefinition",
+          function(object) paste(id(object), "<-", math(object)))
+
 setMethod("id", "FunctionDefinition", function(object) object@id)
 
  

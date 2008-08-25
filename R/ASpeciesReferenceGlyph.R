@@ -5,6 +5,16 @@ setClass("SpeciesReferenceGlyph",
                         glyphCurve = "OptionalCurve"), 
          prototype(role = "undefined"), "GraphicalObject")
 
+setMethod("describe", "SpeciesReferenceGlyph",
+          function(object) {
+            desc <- speciesReference(object)
+            if (length(role(object)))
+              desc <- paste(desc, "as", role(object))
+            if (!is.null(glyphCurve))
+              desc <- paste(desc, "via", describe(glyphCurve(object)))
+            paste(desc, callNextMethod(object))
+          })
+
  setGeneric("speciesGlyph", function(object) standardGeneric("speciesGlyph"))
 setMethod("speciesGlyph", "SpeciesReferenceGlyph", function(object) object@speciesGlyph)
 

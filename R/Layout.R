@@ -2,6 +2,28 @@ setClass("Layout", representation(id = "character", dimensions = "Dimensions",
   compartmentGlyphs = "list", speciesGlyphs = "list", reactionGlyphs = "list", 
   textGlyphs = "list", additionalGraphicalObjects = "list"), contains = "SBase")
 
+setMethod("describe", "Layout",
+          function(object) {
+            descs <- paste("Layout", id(object), "on",
+                           describe(dimensions(object)))
+            if (length(compartmentGlyphs(object)))
+              descs <- c(descs, "", "Compartment glyphs:",
+                         describe(compartmentGlyphs(object)))
+            if (length(speciesGlyphs(object)))
+              descs <- c(descs, "", "Species glyphs:",
+                         describe(speciesGlyphs(object)))
+            if (length(reactionGlyphs(object)))
+              descs <- c(descs, "", "Reaction glyphs:",
+                         describe(reactionGlyphs(object)))
+            if (length(textGlyphs(object)))
+              descs <- c(descs, "", "Text glyphs:",
+                         describe(textGlyphs(object)))
+            if (length(additionalGraphicalObjects(object)))
+              descs <- c(descs, "", "Other:",
+                         describe(additionalGraphicalObjects(object)))
+            descs
+          })
+
 setMethod("id", "Layout", function(object) object@id)
 
 setMethod("dimensions", "Layout", function(object) object@dimensions)

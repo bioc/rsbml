@@ -43,16 +43,11 @@ Class \code{"\linkS4class{oldClass}"}, directly.
 	 }
 }
 \examples{
-  # Read a document
-  doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package = "rsbml"))
+  # Read a document into an R DOM
+  dom <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package
+= "rsbml"))
   
-  # Check the document
-  rsbml_check(doc)
-  
-  # Convert it to an S4 DOM
-  dom <- rsbml_dom(doc)
-  
-  # Or a graph
+  # Convert to a graph
   graph <- rsbml_graph(doc)
   
   # Write it out to a file
@@ -60,6 +55,13 @@ Class \code{"\linkS4class{oldClass}"}, directly.
   
   # Or convert it to a string of XML
   rsbml_xml(doc)
+
+  # Read into external libsbml data structure
+  doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package
+= "rsbml"), dom = FALSE)
+  
+  # Convert it explicitly to an S4 DOM
+  dom <- rsbml_dom(doc)
 }
 \references{\url{http://sbml.org/documents/}}
 \author{Michael Lawrence}

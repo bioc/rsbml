@@ -1,9 +1,10 @@
 setClass("SimpleSpeciesReference", representation(id = "character", species = "character"), 
   contains = "SBase")
 
- 
-setMethod("id", "SimpleSpeciesReference", function(object) object@id)
+setMethod("describe", "SimpleSpeciesReference",
+          function(object) species(object))
 
+setMethod("id", "SimpleSpeciesReference", function(object) object@id)
  
 setReplaceMethod("id", "SimpleSpeciesReference", function(object, value) {
   object@id <- value

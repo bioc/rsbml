@@ -1,6 +1,13 @@
 setClass("CubicBezier", representation(basePoint1 = "Point", basePoint2 = "Point"), 
   contains = "LineSegment")
 
+setMethod("describe", "CubicBezier",
+          function(object)
+          {
+            paste(callNextMethod(object), "via", describe(basePoint1(object)),
+                  "and", basePoint2(object))
+          })
+
  setGeneric("basePoint1", function(object) standardGeneric("basePoint1"))
 setMethod("basePoint1", "CubicBezier", function(object) object@basePoint1)
 

@@ -1,5 +1,9 @@
 setClass("Curve", representation(curveSegments = "list"), contains = "SBase")
 
+setMethod("describe", "Curve", function(object) {
+  paste(sapply(curveSegments(object), describe), collapse = " to ")
+})
+
  setGeneric("curveSegments", function(object) standardGeneric("curveSegments"))
 setMethod("curveSegments", "Curve", function(object) object@curveSegments)
 

@@ -1,5 +1,8 @@
 setClass("InitialAssignment", representation(symbol = "character", math = "expression"), contains = "SBase")
 
+setMethod("describe", "InitialAssignment",
+          function(object) paste(symbol(object), "=", math(object)))
+
  setGeneric("symbol", function(object) standardGeneric("symbol"))
 setMethod("symbol", "InitialAssignment", function(object) object@symbol)
 

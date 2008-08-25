@@ -2,6 +2,18 @@ setClass("Unit", representation(kind = "character", exponent = "integer",
   unitScale = "integer", multiplier = "numeric", offset = "numeric"), 
   contains = "SBase")
 
+setMethod("describe", "Unit",
+          function(object) {
+            if (length(multiplier(object)))
+              desc <- paste(multiplier(object), "*", sep = "")
+            if (length(unitScale(object)))
+              desc <- paste(desc, "10^", unitScale(object), "*", sep = "")
+            desc <- paste(desc, kind(object), sep = "")
+            if (length(exponent(object)))
+              desc <- paste("(", desc, ")^", exponent(object), sep = "")
+            desc
+          })
+
  setGeneric("kind", function(object) standardGeneric("kind"))
 setMethod("kind", "Unit", function(object) object@kind)
 

@@ -1,8 +1,19 @@
 setClass("TextGlyph", representation(graphicalObject = "character", text = "character",
   originOfText = "character"), contains = "GraphicalObject")
 
+setMethod("describe", "TextGlyph",
+          function(object) {
+            if (length(originOfText(object)))
+              desc <- paste("label(", originOfText(object), ")", sep = "")
+            else desc <- paste("\"", text(object), "\"", sep = "")
+            if (length(graphicalObject(object)))
+              desc <- paste(desc, "on", graphicalObject(object))
+            paste(desc, callNextMethod(object))
+        })
+          
  setGeneric("graphicalObject", function(object) standardGeneric("graphicalObject"))
 setMethod("graphicalObject", "TextGlyph", function(object) object@graphicalObject)
+
 
  setGeneric("text", function(x, ...) standardGeneric("text"))
 setMethod("text", "TextGlyph", function(x, ...) x@text)

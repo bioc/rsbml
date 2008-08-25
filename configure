@@ -3882,9 +3882,6 @@ fi
 $as_echo "$as_me: === Begin local SOSLib build ===" >&6;}
     SOURCE_DIR=`pwd`/local
     cd inst/SBML_odeSolver-1.7.0beta
-    if test -z "${SOSLIB_CONFIGURE_ARGS}"; then
-      SOSLIB_CONFIGURE_ARGS="--with-sundials=/usr"
-    fi
     SOSLIB_CONFIGURE_ARGS="${SOSLIB_CONFIGURE_ARGS} --prefix=${SOURCE_DIR}"
     SOSLIB="no"
     if ./configure ${SOSLIB_CONFIGURE_ARGS} && make && make install; then
@@ -4384,7 +4381,7 @@ _ACEOF
 
 cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 # Files that config.status was made for.
-config_files="$ac_config_files"
+config_files="`echo $ac_config_files`"
 
 _ACEOF
 

@@ -1,6 +1,9 @@
 setClass("AssignmentRule", representation(variable = "character", type = "character"), 
   contains = "Rule")
 
+setMethod("describe", "AssignmentRule",
+          function(object) paste(variable(object), ":=", math(object)))
+
 setGeneric("type", function(object) standardGeneric("type"))
 setMethod("type", "AssignmentRule", function(object) object@type)
 

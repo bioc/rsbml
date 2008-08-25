@@ -1,18 +1,21 @@
 setClass("Constraint", representation(math = "expression", message = "character"), contains = "SBase")
 
+setMethod("describe", "Constraint",
+          function(object)
+          paste(math(object), " (", msg(object), ")", sep = ""))
+
 setMethod("math", "Constraint", function(object) object@math)
 
- setGeneric("message", function(..., domain = NULL, appendLF = TRUE) standardGeneric("message"))
-setMethod("message", "Constraint", function(..., domain = NULL, appendLF = TRUE) 
-  list(...)[[1]]@message)
+setGeneric("msg", function(object) standardGeneric("msg"))
+setMethod("msg", "Constraint", function(object) object@message)
 
 setReplaceMethod("math", "Constraint", function(object, value) {
   object@math <- value
   object
 })
 
- setGeneric("message<-", function(object, value) standardGeneric("message<-"))
-setReplaceMethod("message", "Constraint", function(object, value) {
+setGeneric("msg<-", function(object, value) standardGeneric("msg<-"))
+setReplaceMethod("msg", "Constraint", function(object, value) {
   object@message <- value
   object
 })

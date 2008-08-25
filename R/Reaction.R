@@ -6,7 +6,20 @@ setClass("Reaction",
                         reversible = "logical", fast = "logical"),
          contains = "SBase")
 
- 
+setMethod("describe", "Reaction",
+          function(object) {
+            r <- paste(describe(reactants(object)), collapse = "+")
+            p <- paste(describe(products(object)), collapse = "+")
+            rev <- reversible(object)
+            if (!length(rev))
+              rev <- FALSE
+            fast <- fast(object)
+            if (!length(fast))
+              fast <- FALSE
+            op <- ifelse(rev, "<->", ifelse(fast, "->>", "->"))
+            paste(r, op, p)
+          })
+
 setMethod("id", "Reaction", function(object) object@id)
 
  

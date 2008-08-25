@@ -1,6 +1,10 @@
 setClass("Point", representation(x = "numeric", y = "numeric", 
   z = "numeric"), prototype = list(z = 0), contains = "SBase")
 
+setMethod("describe", "Point", function(object) {
+  paste("(", paste(x(object), y(object), z(object), sep = ", "), ")", sep = "")
+})
+
  setGeneric("x", function(object) standardGeneric("x"))
 setMethod("x", "Point", function(object) object@x)
 

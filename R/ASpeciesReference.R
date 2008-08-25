@@ -4,6 +4,13 @@ setClass("SpeciesReference",
                         stoichiometryMath = "OptionalStoichiometryMath"), 
          prototype(stoichiometry = 1), "SimpleSpeciesReference")
 
+setMethod("describe", "SpeciesReference", function(object) {
+  stoich <- ifelse(is.null(stoichiometryMath(object)), stoichiometry(object),
+                   paste("(", describe(stoichiometryMath(object)), ")",
+                         sep = ""))
+  paste(stoich, callNextMethod(object), sep = "")
+})
+
  setGeneric("stoichiometry", function(object) standardGeneric("stoichiometry"))
 setMethod("stoichiometry", "SpeciesReference", function(object) object@stoichiometry)
 
@@ -18,13 +25,7 @@ setReplaceMethod("stoichiometry", "SpeciesReference", function(object, value) {
 
  setGeneric("stoichiometryMath<-", function(object, value) standardGeneric("stoichiometryMath<-"))
 setReplaceMethod("stoichiometryMath", "SpeciesReference", function(object, value) {
-  if (is.null(value))
-    new("SpeciesReference", notes = notes(object), annotation = annotation(object),
-      metaId = metaId(object), id = id(object), species = species(object), 
-      stoichiometry = stoichiometry(object))
-  else {
-    object@stoichiometryMath <- as.expression(value)
-    object
-  }
+  object@stoichiometryMath <- value
+  object
 })
 

@@ -1,6 +1,6 @@
 setClass("SBase", representation(metaId = "character", notes = "character", 
-  annotation = "character", cvTerms = "list", sboTerm = "integer"), contains=("VIRTUAL"))
-  
+  annotation = "character", cvTerms = "list", sboTerm = "integer"), contains=c("VIRTUAL", "Describable"))
+
 setGeneric("metaId", function(object) standardGeneric("metaId"))
 setMethod("metaId", "SBase", function(object) object@metaId)
 

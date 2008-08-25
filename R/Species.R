@@ -4,7 +4,10 @@ setClass("Species", representation(id = "character", name = "character",
   boundaryCondition = "logical", charge = "integer", constant = "logical", units = "character"), 
   contains = "SBase", prototype = list(boundaryCondition = FALSE))
 
- 
+setMethod("describe", "Species",
+          function(object) paste(id(object), "(", name(object), ") in ",
+                                 compartment(object), sep = ""))
+
 setMethod("id", "Species", function(object) object@id)
 
  

@@ -1,7 +1,12 @@
-setClass("UnitDefinition", representation(id = "character", name = "character", units = "list"), 
-  contains = "SBase")
+setClass("UnitDefinition",
+         representation(id = "character", name = "character", units = "list"), 
+         contains = "SBase")
 
- 
+setMethod("describe", "UnitDefinition",
+          function(object)
+          paste(id(object), ":=",
+                paste(describe(units(object)), collapse = ", ")))
+          
 setMethod("id", "UnitDefinition", function(object) object@id)
 
  
