@@ -48,13 +48,13 @@ Class \code{"\linkS4class{oldClass}"}, directly.
 = "rsbml"))
   
   # Convert to a graph
-  graph <- rsbml_graph(doc)
+  graph <- rsbml_graph(dom)
   
   # Write it out to a file
-  \dontrun{rsbml_write(doc, "my.xml")}
+  \dontrun{rsbml_write(dom, "my.xml")}
   
   # Or convert it to a string of XML
-  rsbml_xml(doc)
+  rsbml_xml(dom)
 
   # Read into external libsbml data structure
   doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package

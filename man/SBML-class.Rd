@@ -77,8 +77,7 @@ Class \code{"\linkS4class{SBase}"}, directly.
 }
 \examples{
   # Get a DOM
-  doc <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package = "rsbml"))
-  dom <- rsbml_dom(doc)
+  dom <- rsbml_read(system.file("sbml", "GlycolysisLayout.xml", package = "rsbml"))
   
   # Get the species ID's
   sapply(species(model(dom)), id)
