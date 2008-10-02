@@ -63,6 +63,7 @@ extern "C" {
     TCCState *s;
 #else
 #ifdef WIN32
+    #include <windows.h>
     HMODULE dllHandle;
 #else
     void *dllHandle;
