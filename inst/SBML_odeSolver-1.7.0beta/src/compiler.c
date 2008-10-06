@@ -325,7 +325,7 @@ compiled_code_t *Compiler_compile(const char *sourceCode)
 
 #ifdef WIN32
 
-  code = Compiler_compile_with_tcc(sourceCode);
+  code = Compiler_compile_win32_tcc(sourceCode);
   
 #else
 
