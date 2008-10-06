@@ -1,8 +1,8 @@
 /*
   Last changed Time-stamp: <2007-10-02 01:03:12 raim>
-  $Id: solverError.c,v 1.18 2007/10/01 23:05:25 raimc Exp $ 
+  $Id: solverError.c,v 1.18 2007/10/01 23:05:25 raimc Exp $
 */
-/* 
+/*
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -103,7 +103,7 @@ SBML_ODESOLVER_API char *SolverError_getMessage(errorType_t type, int errorNum)
 /** get error code */
 SBML_ODESOLVER_API errorCode_t SolverError_getCode(errorType_t type, int errorNum)
 {
-  return SolverError_getError(type, errorNum)->errorCode ; 
+  return SolverError_getError(type, errorNum)->errorCode ;
 }
 
 /** get error code of last error stored of given type */
@@ -195,7 +195,7 @@ SBML_ODESOLVER_API void SolverError_haltOnErrors()
 SBML_ODESOLVER_API char *SolverError_dumpToString()
 {
   char *result;
-    
+
   if ( !memoryExhaustion )
   {
     int bufferSize = SolverError_dumpHelper(NULL);
@@ -242,11 +242,11 @@ SBML_ODESOLVER_API void *SolverError_calloc(size_t num, size_t size)
   if (noOfCalls > 1)
   result = NULL ;
   else */
-    
+
   result = calloc(num, size);
 
   memoryExhaustion = memoryExhaustion || !result ;
-    
+
   return result ;
 }
 
@@ -274,8 +274,8 @@ void SolverError_storeLastWin32Error(const char *context)
 
   SolverError_error(ERROR_ERROR_TYPE, SOLVER_ERROR_WIN32_ERROR,
 		    "%s - %s", context, (const char *)lpMsgBuf);
-    
-  // Free the buffer.
+
+  /* Free the buffer. */
   LocalFree( lpMsgBuf );
 }
 #endif
@@ -342,7 +342,7 @@ static int SolverError_dumpHelper(char *s)
 	solverErrorMessage_t *error = List_get(errors, j);
 
 	SolverError_itoa(error->errorCode, errorCodeString, 10);
-                    
+
 	if ( s )
 	{
 	  result = sprintf(s, "%s\t%s\t%s\n",
