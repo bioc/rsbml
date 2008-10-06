@@ -85,7 +85,7 @@ CONFIG_LIB_GRACE
 CONFIG_LIB_GRAPHVIZ
 	
 CFLAGS="-g -O2 -Wno-unknown-pragmas -Wall -ansi -std=iso9899:1990"
-LIBS="-ldl -lm -lstdc++"
+LIBS="-lm -lstdc++"
 
 	  
 dnl add the CFLAGS and LDFLAGS for tcc online compilation

@@ -45,6 +45,8 @@ extern "C" {
 #ifndef WIN32
 #include "config.h"
 #define MAX_PATH 256
+#else
+#include <windows.h>
 #endif
 
 #if USE_TCC == 1
@@ -61,15 +63,13 @@ extern "C" {
   {
 #if USE_TCC == 1
     TCCState *s;
-#else
+#endif
 #ifdef WIN32
-    #include <windows.h>
     HMODULE dllHandle;
 #else
     void *dllHandle;
 #endif /* WIN32 */
     char *dllFileName;
-#endif /* USE_TCC == 1 */
   };
 
   /**
