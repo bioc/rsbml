@@ -36,9 +36,10 @@ bin_PROGRAMS = defSeries$(EXEEXT) integrate$(EXEEXT) \
 	sensitivity$(EXEEXT) adj_sensitivity$(EXEEXT) \
 	batchIntegrate$(EXEEXT) simpleIntInst$(EXEEXT) \
 	changeIntInst$(EXEEXT) ASTIndexTest$(EXEEXT) \
-	ParameterScanner$(EXEEXT) Sense$(EXEEXT) printODEs$(EXEEXT) \
-	analyzeJacobian$(EXEEXT) analyzeSens$(EXEEXT) root$(EXEEXT) \
-	senstest$(EXEEXT) adjsenstest$(EXEEXT) integrateODEs$(EXEEXT) \
+	ASTgetIndexTest$(EXEEXT) ParameterScanner$(EXEEXT) \
+	Sense$(EXEEXT) printODEs$(EXEEXT) analyzeJacobian$(EXEEXT) \
+	analyzeSens$(EXEEXT) root$(EXEEXT) senstest$(EXEEXT) \
+	adjsenstest$(EXEEXT) integrateODEs$(EXEEXT) \
 	compilerTest$(EXEEXT) adjsenstest_ContDiscData$(EXEEXT) \
 	bistability$(EXEEXT)
 subdir = examples
@@ -59,6 +60,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_ASTIndexTest_OBJECTS = ASTIndexTest.$(OBJEXT)
 ASTIndexTest_OBJECTS = $(am_ASTIndexTest_OBJECTS)
 ASTIndexTest_DEPENDENCIES =
+am_ASTgetIndexTest_OBJECTS = ASTgetIndexTest.$(OBJEXT)
+ASTgetIndexTest_OBJECTS = $(am_ASTgetIndexTest_OBJECTS)
+ASTgetIndexTest_DEPENDENCIES =
 am_ParameterScanner_OBJECTS = ParameterScanner.$(OBJEXT)
 ParameterScanner_OBJECTS = $(am_ParameterScanner_OBJECTS)
 ParameterScanner_DEPENDENCIES =
@@ -125,26 +129,26 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(ASTIndexTest_SOURCES) $(ParameterScanner_SOURCES) \
-	$(Sense_SOURCES) $(adj_sensitivity_SOURCES) \
-	$(adjsenstest_SOURCES) $(adjsenstest_ContDiscData_SOURCES) \
-	$(analyzeJacobian_SOURCES) $(analyzeSens_SOURCES) \
-	$(batchIntegrate_SOURCES) $(bistability_SOURCES) \
-	$(changeIntInst_SOURCES) $(compilerTest_SOURCES) \
-	$(defSeries_SOURCES) $(integrate_SOURCES) \
-	$(integrateODEs_SOURCES) $(printODEs_SOURCES) $(root_SOURCES) \
-	$(sensitivity_SOURCES) $(senstest_SOURCES) \
-	$(simpleIntInst_SOURCES)
-DIST_SOURCES = $(ASTIndexTest_SOURCES) $(ParameterScanner_SOURCES) \
-	$(Sense_SOURCES) $(adj_sensitivity_SOURCES) \
-	$(adjsenstest_SOURCES) $(adjsenstest_ContDiscData_SOURCES) \
-	$(analyzeJacobian_SOURCES) $(analyzeSens_SOURCES) \
-	$(batchIntegrate_SOURCES) $(bistability_SOURCES) \
-	$(changeIntInst_SOURCES) $(compilerTest_SOURCES) \
-	$(defSeries_SOURCES) $(integrate_SOURCES) \
-	$(integrateODEs_SOURCES) $(printODEs_SOURCES) $(root_SOURCES) \
-	$(sensitivity_SOURCES) $(senstest_SOURCES) \
-	$(simpleIntInst_SOURCES)
+SOURCES = $(ASTIndexTest_SOURCES) $(ASTgetIndexTest_SOURCES) \
+	$(ParameterScanner_SOURCES) $(Sense_SOURCES) \
+	$(adj_sensitivity_SOURCES) $(adjsenstest_SOURCES) \
+	$(adjsenstest_ContDiscData_SOURCES) $(analyzeJacobian_SOURCES) \
+	$(analyzeSens_SOURCES) $(batchIntegrate_SOURCES) \
+	$(bistability_SOURCES) $(changeIntInst_SOURCES) \
+	$(compilerTest_SOURCES) $(defSeries_SOURCES) \
+	$(integrate_SOURCES) $(integrateODEs_SOURCES) \
+	$(printODEs_SOURCES) $(root_SOURCES) $(sensitivity_SOURCES) \
+	$(senstest_SOURCES) $(simpleIntInst_SOURCES)
+DIST_SOURCES = $(ASTIndexTest_SOURCES) $(ASTgetIndexTest_SOURCES) \
+	$(ParameterScanner_SOURCES) $(Sense_SOURCES) \
+	$(adj_sensitivity_SOURCES) $(adjsenstest_SOURCES) \
+	$(adjsenstest_ContDiscData_SOURCES) $(analyzeJacobian_SOURCES) \
+	$(analyzeSens_SOURCES) $(batchIntegrate_SOURCES) \
+	$(bistability_SOURCES) $(changeIntInst_SOURCES) \
+	$(compilerTest_SOURCES) $(defSeries_SOURCES) \
+	$(integrate_SOURCES) $(integrateODEs_SOURCES) \
+	$(printODEs_SOURCES) $(root_SOURCES) $(sensitivity_SOURCES) \
+	$(senstest_SOURCES) $(simpleIntInst_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -277,7 +281,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
-# $Id: Makefile.am,v 1.27 2007/09/20 01:16:12 raimc Exp $
+# $Id: Makefile.am,v 1.28 2008/09/22 10:28:49 raimc Exp $
 INCLUDES = -I. -I../src -I@prefix@/include @SBML_CFLAGS@ @SUNDIALS_CFLAGS@ 
 AM_CFLAGS = @CFLAGS@
 AM_LDFLAGS = @GRAPHVIZ_RPATH@ @GRACE_RPATH@ @SBML_RPATH@
@@ -360,6 +364,10 @@ changeIntInst_LDADD = -L../src -L@prefix@/lib -lODES \
 
 ASTIndexTest_SOURCES = ASTIndexTest.c
 ASTIndexTest_LDADD = -L../src -L@prefix@/lib -lODES \
+                       @SBML_LDFLAGS@ @SBML_LIBS@
+
+ASTgetIndexTest_SOURCES = ASTgetIndexTest.c
+ASTgetIndexTest_LDADD = -L../src -L@prefix@/lib -lODES \
                        @SBML_LDFLAGS@ @SBML_LIBS@
 
 analyzeJacobian_SOURCES = analyzeJacobian.c
@@ -477,6 +485,9 @@ clean-binPROGRAMS:
 ASTIndexTest$(EXEEXT): $(ASTIndexTest_OBJECTS) $(ASTIndexTest_DEPENDENCIES) 
 	@rm -f ASTIndexTest$(EXEEXT)
 	$(LINK) $(ASTIndexTest_OBJECTS) $(ASTIndexTest_LDADD) $(LIBS)
+ASTgetIndexTest$(EXEEXT): $(ASTgetIndexTest_OBJECTS) $(ASTgetIndexTest_DEPENDENCIES) 
+	@rm -f ASTgetIndexTest$(EXEEXT)
+	$(LINK) $(ASTgetIndexTest_OBJECTS) $(ASTgetIndexTest_LDADD) $(LIBS)
 ParameterScanner$(EXEEXT): $(ParameterScanner_OBJECTS) $(ParameterScanner_DEPENDENCIES) 
 	@rm -f ParameterScanner$(EXEEXT)
 	$(LINK) $(ParameterScanner_OBJECTS) $(ParameterScanner_LDADD) $(LIBS)
@@ -542,6 +553,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ASTIndexTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ASTgetIndexTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChangingIntegratorInstance.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterScanner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sense.Po@am__quote@
