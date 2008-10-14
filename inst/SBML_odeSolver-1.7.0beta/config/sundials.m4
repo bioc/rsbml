@@ -1,4 +1,4 @@
-dnl $Id: sundials.m4,v 1.13 2007/09/08 11:12:55 raimc Exp $
+dnl $Id: sundials.m4,v 1.14 2008/06/03 14:39:09 raimc Exp $
 
 dnl
 dnl look for SUNDIALS Library headers in some standard set of directories
@@ -29,12 +29,6 @@ AC_DEFUN([AC_SUNDIALS_PATH],
   for ac_extension in a so sl dylib; do
     if test -r $ac_dir/lib/libsundials_cvodes.$ac_extension; then
       SUNDIALS_LDFLAGS="-L$ac_dir/lib"
-      SUNDIALS_LIBS="-lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
-      AC_MSG_RESULT([yes])
-      break
-    fi
-    if test -r $ac_dir/lib64/libsundials_cvodes.$ac_extension; then
-      SUNDIALS_LDFLAGS="-L$ac_dir/lib64"
       SUNDIALS_LIBS="-lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
       AC_MSG_RESULT([yes])
       break

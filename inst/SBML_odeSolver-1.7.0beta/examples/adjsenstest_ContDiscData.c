@@ -59,6 +59,8 @@ main (int argc, char *argv[]){
   /* Setting SBML ODE Solver integration parameters  */
   set = CvodeSettings_create();
 
+  CvodeSettings_setCompileFunctions(set, 1);
+
   /* use time series data as discrete observations and set corresponding print steps */ 
   CvodeSettings_setDiscreteObservation(set);
   
@@ -98,7 +100,7 @@ main (int argc, char *argv[]){
 
   for (RunIndexOuter=0; RunIndexOuter<NRuns*2; RunIndexOuter++)
   {
-    fprintf(stderr, "\n\n");
+    fprintf(stdout, "\n\n");
 
     if (RunIndexOuter >=NRuns )
     {   
@@ -110,7 +112,7 @@ main (int argc, char *argv[]){
 
         if (RunIndexOuter == NRuns)
 	{
-         IntegratorInstance_printStatistics(ii, stderr);
+         IntegratorInstance_printStatistics(ii, stdout);
          printf("\n\n==== NOW TREATING DATA AS BEING CONTINUOUS ====\n\n\n\n");
 	}
     }
@@ -124,20 +126,20 @@ main (int argc, char *argv[]){
    
     if (ii->opt->observation_data_type == 1)
     { /* discrete observation */
-      fprintf(stderr, "Reading in objective '%s' ... ",    ObjFuncFileNames[RunIndex]);
+      fprintf(stdout, "Reading in objective '%s' ... ",    ObjFuncFileNames[RunIndex]);
       flag = IntegratorInstance_setObjectiveFunction(ii,   ObjFuncFileNames[RunIndex]);
       if (flag!=1)
 	return(EXIT_FAILURE);
     }
     else
     {  /* continuous observation */
-      fprintf(stderr, "Reading in objective '%s' ... ",  "MAPK_withData.objfun");
+      fprintf(stdout, "Reading in objective '%s' ... ",  "MAPK_withData.objfun");
       flag = IntegratorInstance_setObjectiveFunction(ii, "MAPK_withData.objfun");
       if (flag!=1)
 	return(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "and data '%s'\n", DataFileNames[RunIndex] );
+    fprintf(stdout, "and data '%s'\n", DataFileNames[RunIndex] );
 
     flag = IntegratorInstance_readTimeSeriesData(ii, DataFileNames[RunIndex]);
 
@@ -159,8 +161,8 @@ main (int argc, char *argv[]){
 	   IntegratorInstance_getIntegrationTime(ii));
 
     
-    fprintf(stderr, "### Printing Objective Value:\n"); 
-    flag = IntegratorInstance_printQuad(ii, stderr);
+    fprintf(stdout, "### Printing Objective Value:\n"); 
+    flag = IntegratorInstance_printQuad(ii, stdout);
     if (flag!=1)
       return(EXIT_FAILURE);
     
@@ -189,14 +191,14 @@ main (int argc, char *argv[]){
     
     printf("\nAdjoint integration time was %g\n", IntegratorInstance_getIntegrationTime(ii));
     
-    fprintf(stderr, "### Printing Adjoint Sensitivities:\n");
-    flag = IntegratorInstance_printQuad(ii, stderr);
+    fprintf(stdout, "### Printing Adjoint Sensitivities:\n");
+    flag = IntegratorInstance_printQuad(ii, stdout);
     if (flag!=1)
       return(EXIT_FAILURE);     
  
   }
 
-  IntegratorInstance_printStatistics(ii, stderr);
+  IntegratorInstance_printStatistics(ii, stdout);
 
   /* now we have the results and can free the inputs */
   IntegratorInstance_free(ii); 

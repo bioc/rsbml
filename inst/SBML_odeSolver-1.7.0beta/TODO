@@ -47,8 +47,6 @@ ___TODO MARCH 2007__
 * recreate solver structures when choosing new solver/iteration methods
 * implement max. order
 
-* check old valgrind memory leaks
-
 * check n-ary for relational operators
 
 * remove space() and fprintf(stderr,...)
@@ -71,23 +69,53 @@ also see odeModel.c line 175
 
 * check all rule evaluations for optimization
 
-___TODO MAY 2007___
-
-* new SUNDIALS: can sensitivities be switched off, or does it require full
-  re-construction of solver??
-  DONE, via CVodeToggleOffSens...
-
-* reconstruction and re-initialization need to be moved completely,
-  best probably to first call of sensitivity, complete free or not
-  upon IntegratorInstance_(re)set
-  DONE, via new structure odeSense_t
 
 ____TODO SEPT 2007___
 
 * find better solution to avoid problems with II_setVariableValue (events 
   and external use)
 
-* cvodeSettings: set a flag, whether a change to settings requires reinit of solver
-  (reset, etc) to become active already for the next run
+* cvodeSettings: set a flag, whether a change to settings requires
+  reinit of solver (reset, etc) to become active already for the next run
 
 * doxygen: link structure documentation to respective modules  
+
+
+____TODO JUNE 2008___
+
+* configure process
+** update messages: on failure, name required packages/versions!
+
+
+
+____TODO SEPT 2008___
+
+FOR RELEASE:
+
+todo:
+* clean-up configure process
+* swig-bindings
+* Windows, MSCV projects?
+* optimize gcc compilation for big models
+**  compile adjoint stuff separately
+* arithmeticCompiler:
+** failed tests:
+   mathml-log, mathml-logbase,
+   discontinuityTimeAndDelay-xor,
+   discontinuityTimeAndDelay-or, discontinuityTimeAndDelay-not,
+   discontinuityTimeAndDelay-lt, discontinuityTimeAndDelay-leq,
+   discontinuityTimeAndDelay-geq, discontinuityTimeAndDelay-discontinuity,
+   discontinuityTimeAndDelay-and 
+
+* FUNCTIONALITY AND OPTIMIZATION
+** write matrix of SBML functionalities
+** write INFO for optimal use/efficiency (storeResults, compilers, etc.)
+
+wishlist:
+* ida solver, see CellML API
+* kin solver
+* ipopt: local optimization run, odeOptimizer
+
+
+
+

@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <2008-01-30 14:47:45 raim>
-  $Id: processAST.c,v 1.55 2008/01/30 13:48:27 raimc Exp $
+  Last changed Time-stamp: <2008-10-08 16:44:44 raim>
+  $Id: processAST.c,v 1.64 2008/10/08 17:07:16 raimc Exp $
 */
 /* 
  *
@@ -181,7 +181,9 @@ ASTNode_t *copyAST(const ASTNode_t *f)
       ASTNode_setIndex(copy, ASTNode_getIndex((ASTNode_t *)f));
     }
     ASTNode_setName(copy, ASTNode_getName(f));
-
+    /* time and delay nodes */
+    ASTNode_setType(copy, ASTNode_getType(f)); 
+    
     if ( ASTNode_isSetData((ASTNode_t *)f) )
       ASTNode_setData(copy);
   }
@@ -316,7 +318,11 @@ SBML_ODESOLVER_API double evaluateAST(ASTNode_t *n, cvodeData_t *data)
 	}
       }
       else
-      { 
+      {
+	/* majority case: just return the
+	   according value from data->values
+	   from the index stored by SOSlib
+	   ASTIndexNameNode sub-class of libSBML's ASTNode */
 	result = data->value[ASTNode_getIndex(n)];
   
       }
@@ -324,17 +330,6 @@ SBML_ODESOLVER_API double evaluateAST(ASTNode_t *n, cvodeData_t *data)
        found++;
     }
 
-
-    if ( found == 0 )
-    {
-      if ( strcmp(ASTNode_getName(n),"time") == 0 ||
-	   strcmp(ASTNode_getName(n),"Time") == 0 ||
-	   strcmp(ASTNode_getName(n),"TIME") == 0 )
-      {
-	result = (double) data->currenttime;
-	found++;
-      }
-    }
     if ( found == 0 )
     {
       for ( j=0; j<data->nvalues; j++ )
@@ -347,6 +342,7 @@ SBML_ODESOLVER_API double evaluateAST(ASTNode_t *n, cvodeData_t *data)
 	}
       }
     }
+
     if ( found == 0 )
     {
       SolverError_error(FATAL_ERROR_TYPE,
@@ -1847,6 +1843,9 @@ ASTNode_t *indexAST(const ASTNode_t *f, int nvalues, char **names)
     /* free mem */
     if ( short_str != NULL )
       free(short_str);
+    
+    /* time and delay nodes */
+    ASTNode_setType(index, ASTNode_getType(f)); 
   }
   /* constants */
   /* functions, operators */
@@ -1922,7 +1921,7 @@ SBML_ODESOLVER_API ASTNode_t *simplifyAST(ASTNode_t *f)
 	 ASTNode_setData(simple);
     } 
     ASTNode_setName(simple, ASTNode_getName(f));
-
+    ASTNode_setType(simple, ASTNode_getType(f));
   }
   /* --------------- operators with possible simplifications -------------- */
   /* special operator: unary minus */
@@ -2311,8 +2310,56 @@ void ASTNode_getSymbols(ASTNode_t *node, List_t *symbols)
   if ( ASTNode_getType(node) == AST_NAME )
     List_add(symbols, (char*) ASTNode_getName(node));
 
-  for ( i = 0; i != ASTNode_getNumChildren(node); i++ )
+  for ( i=0; i<ASTNode_getNumChildren(node); i++ )
     ASTNode_getSymbols(ASTNode_getChild(node, i), symbols);
+}
+/* appends the indices in the given indexed AST to the given list. */
+int ASTNode_getIndices(ASTNode_t *node, List_t *indices)
+{
+  int i; 
+
+  if ( ASTNode_isSetIndex(node) )
+  {
+    int *idx;
+    ASSIGN_NEW_MEMORY(idx, int, 0);
+    *idx = ASTNode_getIndex(node);
+    List_add(indices, idx);
+  }
+
+  for ( i=0; i<ASTNode_getNumChildren(node); i++ )
+    ASTNode_getIndices(ASTNode_getChild(node, i), indices);
+
+  return 1;
+}
+/* generates a boolean vector of size nvalues, indicating whether
+   an index occurs in the given indexed AST */
+int *ASTNode_getIndexArray(ASTNode_t *node, int nvalues)
+{
+  int i;
+  int *result;
+  List_t *indices = List_create();
+
+  ASSIGN_NEW_MEMORY_BLOCK(result, nvalues, int, NULL);
+  /* init. with 0 */
+  for ( i=0; i<nvalues; i++ ) result[i] = 0;
+
+  if ( node != NULL )
+  {
+    /* get indices from equation */
+    ASTNode_getIndices(node, indices);
+    
+    /* set indices to 1 and free list items */
+    while ( List_size(indices) )
+    {
+      int *k;
+      k = (int *) List_remove(indices, 0);
+      result[*k] = 1;
+      free(k);
+    }
+  }  
+  List_free(indices);
+
+  return result;
 }
 
 /* returns boolean result: whether the given AST contains a time symbol. */
@@ -2320,11 +2367,11 @@ int ASTNode_containsTime(ASTNode_t *node)
 {
   int i ;
 
-  if ( ASTNode_getType(node) == AST_NAME_TIME ||
-       (ASTNode_getType(node) == AST_NAME &&
-	(strcmp(ASTNode_getName(node),"time") == 0 ||
-	 strcmp(ASTNode_getName(node),"Time") == 0 ||
-	 strcmp(ASTNode_getName(node),"TIME") == 0)) )
+  if ( ASTNode_getType(node) == AST_NAME_TIME /* || */
+/*        (ASTNode_getType(node) == AST_NAME && */
+/* 	(strcmp(ASTNode_getName(node),"time") == 0 || */
+/* 	 strcmp(ASTNode_getName(node),"Time") == 0 || */
+/* 	 strcmp(ASTNode_getName(node),"TIME") == 0)) */ )
     return 1;
 
   for ( i = 0; i != ASTNode_getNumChildren(node); i++ )
@@ -2500,18 +2547,6 @@ void ASTNode_generateName(charBuffer_t *expressionStream, const ASTNode_t *n)
     found++;
   }
 
-  /* this isn't the correct behaviour for SBML strickly speaking - AMF */
-  if ( found == 0 )
-  {
-    if ( strcmp(ASTNode_getName(n),"time") == 0 ||
-	 strcmp(ASTNode_getName(n),"Time") == 0 ||
-	 strcmp(ASTNode_getName(n),"TIME") == 0 )
-    {
-      CharBuffer_append(expressionStream, "data->currenttime");
-      found++;
-    }
-  }
-
   /* this is what we'd do if the index isn't always set -
      this should not be neccessary IMHO - AMF 
      if ( found == 0 ) {
@@ -2531,9 +2566,9 @@ void ASTNode_generateName(charBuffer_t *expressionStream, const ASTNode_t *n)
   {
     SolverError_error(FATAL_ERROR_TYPE,
 		      SOLVER_ERROR_AST_COMPILATION_FAILED_MISSING_VALUE,
-		      "No value found for AST_NAME %s . Defaults to Zero "
+		      "ASTNode_generateName: "
+		      "No value found for AST_NAME %s. Defaults to Zero "
 		      "to avoid program crash", ASTNode_getName(n));
-
     CharBuffer_append(expressionStream, "0.0");
   }
 }
@@ -2558,7 +2593,8 @@ void generateMacros(charBuffer_t *buffer)
 		    "#define coth(x) (cosh(x) / sinh(x))\n"\
 		    "#define csch(x) (1.0/sinh(x))\n"\
 		    "#define MyLog(x,y) (log10(y)/log10(x))\n"\
-		    "#define piecewise(x, y, z) ((x) ? (y) : (z))\n"\
+		    /*!!! account for piecewise with more then 3 children!*/
+		    "#define piecewise(x, y, z) ((y) ? (x) : (z))\n"\
 		    /*!!! account for odd root degrees of negative values!*/
 		    "#define root(x, y) pow(y, 1.0 / (x))\n"\
 		    "#define sec(x) (1.0/cos(x))\n"\

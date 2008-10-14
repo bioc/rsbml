@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <2007-10-26 18:31:07 raim>
-  $Id: cvodeData.c,v 1.27 2007/10/26 17:52:29 raimc Exp $
+  Last changed Time-stamp: <2008-10-09 15:55:03 raim>
+  $Id: cvodeData.c,v 1.36 2008/10/09 16:33:35 raimc Exp $
 */
 /* 
  *
@@ -84,14 +84,19 @@ static cvodeData_t *CvodeData_allocate(int nvalues, int nevents, int neq)
   ASSIGN_NEW_MEMORY_BLOCK(data->trigger, nevents, int, NULL);
   ASSIGN_NEW_MEMORY_BLOCK(data->value, nvalues, double, NULL);
 
+  data->nvalues = nvalues;
+  data->nevents = nevents;
   data->neq = neq;
   data->opt = NULL;
-  
+
+  /* Sensitivity-specific - done later */
   data->sensitivity = NULL;
   data->p = NULL;
   data->p_orig  = NULL;
-
-  /* Adjoint specific */
+  /* default: don't use data->p */
+  data->use_p = 0;
+  
+  /* Adjoint-specific */
   /*!!! should this be moved to adjoint specific initiation? */
   ASSIGN_NEW_MEMORY_BLOCK(data->adjvalue, nvalues, double, NULL);
 
@@ -126,113 +131,63 @@ static int CvodeData_allocateSens(cvodeData_t *data, int neq, int nsens)
 */
 SBML_ODESOLVER_API cvodeData_t *CvodeData_create(odeModel_t *om)
 {
-  int neq, nconst, nass, nvalues, nevents;
+  int nvalues;
   cvodeData_t *data;
 
-  neq    = om->neq;
-  nconst = om->nconst;
-  nass   = om->nass;
-  if ( om->simple != NULL ) nevents = Model_getNumEvents(om->simple);
-  else nevents = 0;
-  nvalues = neq + nconst + nass;
+  nvalues = om->neq + om->nconst + om->nass;
 
   /* allocate memory for current integration data storage */
-  data = CvodeData_allocate(nvalues, nevents, neq);
+  data = CvodeData_allocate(nvalues, om->nevents, om->neq);
   RETURN_ON_FATALS_WITH(NULL);
 
-  data->nvalues = nvalues;
-  data->nevents = nevents;
-
+  data->allRulesUpdated = 0;
+  
   /* set pointer to input model */
   data->model = om ;
 
-  /* initialize values, this function call is only required for
-     separate creation of data for analytic purposes */
-  CvodeData_initializeValues(data);
-  
   return data;
 }
 
 
-/** Writes values from the input SBML model into
-    the data structure */
+/** Writes values (initial conditions and parameters)
+    from the input ODE model into the data structure */
 
 SBML_ODESOLVER_API void CvodeData_initializeValues(cvodeData_t *data)
 {
   int i;
-  Parameter_t *p;
-  Species_t *s;
-  Compartment_t *c;
   odeModel_t *om = data->model;
-  Model_t *ode = om->simple;
 
   /* First, fill cvodeData_t  structure with data from
      the derived SBML model  */
 
+  /* get initial values (these come directly from SBML model) */
   for ( i=0; i<data->nvalues; i++ )
-  {
-    /* 1: distinguish between SBML-based or direct odeModel */
-    /* 1a SBML based initialization */
-    /*!!! it might be better to write original SBML values also into this values array!!!*/
-    if ( om->values == NULL )
-    {
-      if ( (s = Model_getSpeciesById(ode, om->names[i])) )
-      {
-	if ( Species_isSetInitialConcentration(s) )
-	  data->value[i] = Species_getInitialConcentration(s);
-	else if ( Species_isSetInitialAmount(s) )
-	  data->value[i] = Species_getInitialAmount(s);
-	else if ( i < om->neq || i >= (om->neq+om->nass) ) 
-	  SolverError_error(WARNING_ERROR_TYPE,
-			    SOLVER_ERROR_REQUESTED_PARAMETER_NOT_FOUND,
-			    "No value found for species %s, value " \
-			    "remains uninitialized!",
-			    om->names[i]);
-      }
-      else if ( (c = Model_getCompartmentById(ode, om->names[i])) )
-      {
-	if ( Compartment_isSetSize(c) )
-	  data->value[i] = Compartment_getSize(c);
-	else if ( i < om->neq || i >= (om->neq+om->nass) ) 
-	  SolverError_error(WARNING_ERROR_TYPE,
-			    SOLVER_ERROR_REQUESTED_PARAMETER_NOT_FOUND,
-			    "No value found for compartment %s, value " \
-			    "remains uninitialized!",
-			    om->names[i]);      
-      }
-      else if ( (p = Model_getParameterById(ode, om->names[i])) )
-      {
-	if ( Parameter_isSetValue(p) )
-	  data->value[i] = Parameter_getValue(p);
-	else if ( i < om->neq || i >= (om->neq+om->nass) ) 
-	  SolverError_error(WARNING_ERROR_TYPE,
-			    SOLVER_ERROR_REQUESTED_PARAMETER_NOT_FOUND,
-			    "No value found for parameter %s, value " \
-			    "remains uninitialized!",
-			    om->names[i]);      	
-      }
-    }
-    else if ( om->values != NULL )
-    {
-      /* 1b direct odeModel creation from ODEs */
-      for ( i=0; i<om->neq+om->nass+om->nconst; i++ )
-	data->value[i] = om->values[i];
-    }
-  }
+    data->value[i] = om->values[i];  
  
-  /* initialize assigned parameters */
-  for ( i=0; i<om->nass; i++ ) 
-    data->value[om->neq+i] = evaluateAST(om->assignment[i],data);
-
   /* set current time to 0 */
   data->currenttime = 0.0;
 
+
+  /* Then execute complete rule set:
+     initial and normal assignment rules ! */
+  for ( i=0; i<(om->nass + om->ninitAss); i++ ) 
+  {
+    nonzeroElem_t *ordered = om->initAssignmentOrder[i];
+    int idx = ordered->i;
+    if ( idx == -1 )
+      idx = ordered->j;
+    data->value[idx] = evaluateAST(ordered->ij, data);
+  }
+  data->allRulesUpdated = 1;   
+
+  /* ADJOINT */      
   /* Zeroing initial adjoint values */
   if ( data->adjvalue != NULL )
     for ( i=0; i<data->neq; i++ )
       data->adjvalue[i] = 0.0;
 
 }
+
 
 /** Frees cvodeData
  */
@@ -358,16 +313,16 @@ SBML_ODESOLVER_API void CvodeResults_free(cvodeResults_t *results)
 /*! @} */
 
 /* initialize cvodeData from cvodeSettings and odeModel (could be
-   separated in to functions to further support modularity and
+   separated into two functions to further support modularity and
    independence of data structures */
+/*!!! TODO : clarify if this function can be called when the solver time
+  is other then 0, and how it relates to CvodeData_initializeValues
+  -> handling of initialAssignments !!!*/
 int
 CvodeData_initialize(cvodeData_t *data, cvodeSettings_t *opt, odeModel_t *om)
 {
 
   int i;
-  Event_t *e;
-  ASTNode_t *trigger;
-
 
   /* data now also depends on cvodeSettings */
   data->opt = opt;
@@ -378,29 +333,22 @@ CvodeData_initialize(cvodeData_t *data, cvodeSettings_t *opt, odeModel_t *om)
   else
     om->discrete_observation_data=0;
 
-  /* free and re-create/initialize memory for optimized ODEs,
-     only if compilation is off */
-  if ( data->ode )
-  {
-    /* free ODEs */
-    for ( i=0; i<data->neq; i++ )
-      if ( data->ode[i] )
-	ASTNode_free(data->ode[i]);
-    free(data->ode);
-    data->ode = NULL;
-  }
-  if ( !data->opt->compileFunctions )
-    ASSIGN_NEW_MEMORY_BLOCK(data->ode, data->neq, ASTNode_t *, 0);
   
-  /* initialize values */
+  /* initialize values from odeModel */
   CvodeData_initializeValues(data);
      
-  /* set current time */
+  /* set current time : WHEN NOT 0 ?? */
   data->currenttime = opt->TimePoints[0];
 
   /* update assigned parameters, in case they depend on new time */
-  for ( i=0; i<om->nass; i++ ) 
-    data->value[om->neq+i] = evaluateAST(om->assignment[i], data);
+  if ( data->currenttime != 0.0 )
+    for ( i=0; i< (om->nass); i++ )
+    {
+      nonzeroElem_t *ordered = om->assignmentOrder[i];
+      data->value[ordered->i] = evaluateAST(ordered->ij, data);
+    }
+  
+  data->allRulesUpdated = 1;
 
   /*
     Then, check if formulas can be evaluated, and cvodeData_t *
@@ -412,11 +360,7 @@ CvodeData_initialize(cvodeData_t *data, cvodeSettings_t *opt, odeModel_t *om)
 
   /* evaluate event triggers and set flags with their initial state */
   for ( i=0; i<data->nevents; i++ )
-  {
-    e = Model_getEvent(om->simple, i);
-    trigger = (ASTNode_t *) Trigger_getMath(Event_getTrigger(e));
-    data->trigger[i] = evaluateAST(trigger, data);
-  }
+    data->trigger[i] = evaluateAST(om->event[i], data);
     
   /* RESULTS: Now we should have all variables, and can allocate the
      results structure, where the time series will be stored ...  */
@@ -469,7 +413,7 @@ int CvodeData_initializeSensitivities(cvodeData_t *data,
   /* 3: write initial values */
   /* (re)set to initial values 0.0 or 1.0 for parameter and
      variable sensitivities, respectively */
-  for ( i=0; i<data->neq; i++ )
+  for ( i=0; i<om->neq; i++ )
     for ( j=0; j<data->nsens; j++ )
       if ( os->index_sensP[j] == -1 && os->index_sens[j] == i )
 	data->sensitivity[i][j] = 1.0; /* variable A: dA(0)/dA(0) */
@@ -478,7 +422,7 @@ int CvodeData_initializeSensitivities(cvodeData_t *data,
 
   /* map initial sensitivities to optional result structure */
   if  ( data->results != NULL )
- {
+  {
     /* results from former runs have already been freed before
       result structure was re-allocated */
     CvodeResults_allocateSens(data->results, om->neq, data->nsens,
@@ -532,10 +476,9 @@ static void CvodeData_freeSensitivities(cvodeData_t * data)
 /* frees all internal stuff of cvodeData */
 static void CvodeData_freeStructures(cvodeData_t * data)
 {
-  int i;
-
+  
   if ( data == NULL ) return;
-
+  
   /* free sensitivity structure */  
   CvodeData_freeSensitivities(data);
 
@@ -551,14 +494,6 @@ static void CvodeData_freeStructures(cvodeData_t * data)
   /* free event trigger flags */
   free(data->trigger);
 
-  if ( data->ode != NULL )
-  {
-      for ( i=0; i<data->neq; i++ )
-	if ( data->ode[i] != NULL )
-	  ASTNode_free(data->ode[i]);
-      free(data->ode);
-      data->ode = NULL;
-  }
 }
 
 /********* cvodeResults will be created by integration runs *********/

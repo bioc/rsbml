@@ -1,8 +1,8 @@
 /*
-  Last changed Time-stamp: <2007-10-02 01:03:12 raim>
-  $Id: solverError.c,v 1.18 2007/10/01 23:05:25 raimc Exp $
+  Last changed Time-stamp: <2008-10-03 14:26:24 raim>
+  $Id: solverError.c,v 1.22 2008/10/08 17:07:16 raimc Exp $ 
 */
-/*
+/* 
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -62,7 +62,7 @@ typedef struct solverErrorMessage
 } solverErrorMessage_t ;
 
 static int SolverError_dumpHelper(char *);
-static List_t *solverErrors[NUMBER_OF_ERROR_TYPES] = { NULL, NULL, NULL };
+static List_t *solverErrors[NUMBER_OF_ERROR_TYPES] = { NULL, NULL, NULL, NULL };
 
 static int memoryExhaustion = 0;
 static solverErrorMessage_t memoryExhaustionFixedMessage =
@@ -103,7 +103,7 @@ SBML_ODESOLVER_API char *SolverError_getMessage(errorType_t type, int errorNum)
 /** get error code */
 SBML_ODESOLVER_API errorCode_t SolverError_getCode(errorType_t type, int errorNum)
 {
-  return SolverError_getError(type, errorNum)->errorCode ;
+  return SolverError_getError(type, errorNum)->errorCode ; 
 }
 
 /** get error code of last error stored of given type */
@@ -133,8 +133,9 @@ SBML_ODESOLVER_API void SolverError_clear()
 	free(m->message);
 	free(m);
 	List_remove(l, 0);
-      }
+      }      
     }
+    /* List_free(l); */ /* RM: removed again, causes seg.fault should be done elsewwhere ?*/
   }
 
   memoryExhaustion = 0;
@@ -196,6 +197,13 @@ SBML_ODESOLVER_API char *SolverError_dumpToString()
 {
   char *result;
 
+  /*AIX: deactivate memoryExhaustion, this is a hack required
+    under AIX because 'static int memoryExhaustion=0' does not
+    actually initialize it to 0 */
+#if defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__)
+  memoryExhaustion = 0;
+#endif
+    
   if ( !memoryExhaustion )
   {
     int bufferSize = SolverError_dumpHelper(NULL);
@@ -242,11 +250,18 @@ SBML_ODESOLVER_API void *SolverError_calloc(size_t num, size_t size)
   if (noOfCalls > 1)
   result = NULL ;
   else */
-
+    
   result = calloc(num, size);
 
   memoryExhaustion = memoryExhaustion || !result ;
 
+  /*AIX: deactivate memoryExhaustion, this is a hack required
+    under AIX because 'static int memoryExhaustion=0' does not
+    actually initialize it to 0 */
+#if defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__)
+  memoryExhaustion = 0;
+#endif
+    
   return result ;
 }
 
@@ -274,7 +289,8 @@ void SolverError_storeLastWin32Error(const char *context)
 
   SolverError_error(ERROR_ERROR_TYPE, SOLVER_ERROR_WIN32_ERROR,
 		    "%s - %s", context, (const char *)lpMsgBuf);
-  /* Free the buffer. */
+    
+  // Free the buffer.
   LocalFree( lpMsgBuf );
 }
 #endif
@@ -325,7 +341,8 @@ static int SolverError_dumpHelper(char *s)
   static char *solverErrorTypeString[] =
     { "Fatal Error",
       "      Error",
-      "    Warning" } ;
+      "    Warning",
+      "    Message" } ;
 
   int i, j;
 
@@ -341,7 +358,7 @@ static int SolverError_dumpHelper(char *s)
 	solverErrorMessage_t *error = List_get(errors, j);
 
 	SolverError_itoa(error->errorCode, errorCodeString, 10);
-
+                    
 	if ( s )
 	{
 	  result = sprintf(s, "%s\t%s\t%s\n",

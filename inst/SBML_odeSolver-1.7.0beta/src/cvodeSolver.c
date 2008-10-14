@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <15-May-2008 13:49:35 raim>
-  $Id: cvodeSolver.c,v 1.71 2008/05/15 12:01:40 raimc Exp $
+  Last changed Time-stamp: <2008-10-08 18:49:17 raim>
+  $Id: cvodeSolver.c,v 1.80 2008/10/08 17:07:16 raimc Exp $
 */
 /* 
  *
@@ -107,7 +107,7 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
   /*!!! this is probably required for all RHS expressions which
    can lead to discontinuities, AND !!! maybe this is only required
    for those discontinuities which depend explicitly on time ??? 
-   and alternative to using the TSTOP mode might be to just update the
+   an alternative to using the TSTOP mode might be to just update the
    respective equations within this function!!! */
   if ( opt->SetTStop || om->npiecewise )
   {
@@ -126,19 +126,19 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
   { 
     if( opt->DoAdjoint )
     {  
-        /* CvodeF is needed in the forward phase if the adjoint soln is
+      /* CvodeF is needed in the forward phase if the adjoint soln is
 	 desired  */  
-        flag = CVodeF(solver->cvadj_mem, solver->tout,
-		      solver->y, &(solver->t), CV_NORMAL, &(opt->ncheck));     
+      flag = CVodeF(solver->cvadj_mem, solver->tout,
+		    solver->y, &(solver->t), CV_NORMAL, &(opt->ncheck));     
     }
     else
     {
-	  /* calling CVODE */
-       flag = CVode(solver->cvode_mem, solver->tout,
-		    solver->y, &(solver->t), CV_MODE);
+      /* calling CVODE */
+      flag = CVode(solver->cvode_mem, solver->tout,
+		   solver->y, &(solver->t), CV_MODE);
     }
-   
-
+    
+    
     /*  if ( flag != CV_SUCCESS ) */
     if ( flag < CV_SUCCESS )
     {
@@ -153,7 +153,7 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 	  /*   "CVode succeeded and returned at tstop" */
 	  /**/
 	  /* -1 CV_MEM_NULL -1 (old CVODE_NO_MEM) */
-	  "The cvode_mem argument was NULL",
+	  "The cvode_mem argument was NULL at time %g",
 	  /* -2 CV_ILL_INPUT */
 	  "One of the inputs to CVode is illegal. This "
 	  "includes the situation when a component of the "
@@ -169,8 +169,8 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 	  /* -3 CV_NO_MALLOC */
 	  "cvode_mem was not allocated",
 	  /* -4 CV_TOO_MUCH_WORK */
-	  "The solver took %d internal steps but could not "
-	  "compute variable values for time %g",
+	  "At time %g: The solver took %d internal steps but could not "
+	  "compute variable values.",
 	  /* -5 CV_TOO_MUCH_ACC */
 	  "The solver could not satisfy the accuracy " 
 	  "requested for some internal step.",
@@ -211,7 +211,7 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 	    
 
       SolverError_error(ERROR_ERROR_TYPE,
-			flag, message[flag * -1], opt->Mxstep, solver->tout);
+			flag, message[flag * -1], solver->tout, opt->Mxstep);
       SolverError_error(WARNING_ERROR_TYPE,
 			SOLVER_ERROR_INTEGRATION_NOT_SUCCESSFUL,
 			"Integration not successful. Results are not "
@@ -273,8 +273,8 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 	  /* -3 CV_NO_MALLOC */
 	  "cvode_mem was not allocated",
 	  /* -4 CV_TOO_MUCH_WORK */
-	  "The solver took %d internal steps but could not "
-	  "compute variable values for time %g",
+	  "At time %g: The solver took %d internal steps but could not "
+	  "compute variable values.",
 	  /* -5 CV_TOO_MUCH_ACC */
 	  "The solver could not satisfy the accuracy " 
 	  "requested for some internal step.",
@@ -336,19 +336,19 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 	SolverError_error(ERROR_ERROR_TYPE,
 			  flag, message[flag * -1], opt->Mxstep, solver->tout);
         SolverError_error(WARNING_ERROR_TYPE,
-			SOLVER_ERROR_INTEGRATION_NOT_SUCCESSFUL,
-			"Adjoint integration not successful. Results are not "
-			"complete.");
+			  SOLVER_ERROR_INTEGRATION_NOT_SUCCESSFUL,
+			  "Adjoint integration not successful. Results are not "
+			  "complete.");
       }
       else
       {
 	flag = flag + 100;
         SolverError_error(ERROR_ERROR_TYPE,
-			  flag, message2[flag* -1], opt->Mxstep, solver->tout);
+			  flag, message2[flag* -1], solver->tout, opt->Mxstep);
         SolverError_error(WARNING_ERROR_TYPE,
-			SOLVER_ERROR_INTEGRATION_NOT_SUCCESSFUL,
-			"Adjoint integration not successful. Results are not "
-			"complete.");
+			  SOLVER_ERROR_INTEGRATION_NOT_SUCCESSFUL,
+			  "Adjoint integration not successful. Results are not "
+			  "complete.");
       }
 
       return 0 ; /* Error - stop integration*/
@@ -362,7 +362,8 @@ SBML_ODESOLVER_API int IntegratorInstance_cvodeOneStep(integratorInstance_t *eng
 
     /* update rest of adjoint data with internal default function */
     flag = IntegratorInstance_updateAdjData(engine);
-    if ( flag != 1 ){
+    if ( flag != 1 )
+    {
       fprintf(stderr, "update AdjData error!!\n");
       return 0;
     }
@@ -466,13 +467,14 @@ IntegratorInstance_createCVODESolverStructures(integratorInstance_t *engine)
     {
       rhsFunction = f ;
 #ifdef ARITHMETIC_TEST
-      printf("\nWARNING: USING EXPERIMENTAL ONLINE COMPILER\n\n");
+      fprintf(stderr, "\nWARNING: USING EXPERIMENTAL ONLINE COMPILER\n\n");
 #endif
     }      
     if ( engine->UseJacobian )
     {
       if ( opt->compileFunctions )
-      {
+      { 
+
 	jacODE = ODEModel_getCompiledCVODEJacobianFunction(om); 
 	if ( !jacODE ) return 0; /* error */
       }
@@ -680,12 +682,6 @@ IntegratorInstance_createCVODESolverStructures(integratorInstance_t *engine)
 	  CVODE_HANDLE_ERROR((void *)solver->cvadj_mem, "CVadjMalloc", 0);
       }
     }
-
-    /* optimize ODEs for evaluation, only required if no compilation
-       was requested */
-    if ( !opt->compileFunctions )
-      IntegratorInstance_optimizeOdes(engine);   
-
   } 
 
   /* ERROR HANDLING CODE if SensSolver construction failed */
@@ -956,15 +952,7 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *f_data)
   /* update time  */
   data->currenttime = t;
 
-  /** update parameters: p is modified by CVODES,
-      if jacobi or sensitivity could not be generated  */
-  /*!!? would it be enough to ask for existence of data->p? */
-  if ( (data->opt->Sensitivity && data->os ) )
-    if ( !data->os->sensitivity || !data->model->jacobian )
-      for ( i=0; i<data->nsens; i++ )
-	data->value[data->os->index_sens[i]] = data->p[i];
-
-  /** update ODE variables from CVODE */
+  /** UPDATE ODE VARIABLES from CVODE */
   for ( i=0; i<data->model->neq; i++ ) 
     data->value[i] = ydata[i];
 
@@ -973,34 +961,65 @@ static int f(realtype t, N_Vector y, N_Vector ydot, void *f_data)
   if ( data->opt->DetectNegState  )  
     for ( i=0; i<data->model->neq; i++ )
       if (data->value[i] < 0)
-	       return (1);
+	return (1);
 
-  /** update assignment rules */
-  for ( i=0; i<data->model->nass; i++ ) 
-    if ( data->model->assignmentsBeforeODEs[i] )
+  
+  /** UPDATE ASSIGNMENT RULES */ /* DONT USE ORDERING FOR SENS W/O MATRIX */
+  /** update parameters: p is modified by CVODES,
+      if jacobi or sensitivity could not be generated  */
+  if ( data->use_p )
+  {
+    for ( i=0; i<data->nsens; i++ )
+      data->value[data->os->index_sens[i]] = data->p[i];
+
+    for ( i=0; i<data->model->nass; i++ )
+    {
+      nonzeroElem_t *ordered = data->model->assignmentOrder[i];
 #ifdef ARITHMETIC_TEST
-      data->value[data->model->neq+i] =
-	data->model->assignmentcode[i]->evaluate(data);    
+      data->value[ordered->i] = ordered->ijcode->evaluate(data);    
 #else
-      data->value[data->model->neq+i] =
-	evaluateAST(data->model->assignment[i],data);
-#endif
-
+      data->value[ordered->i] = evaluateAST(ordered->ij, data);
+#endif    
+    }
+  }
+  else
+  {
+    for ( i=0; i<data->model->nassbeforeodes; i++ )
+    {
+      nonzeroElem_t *ordered = data->model->assignmentsBeforeODEs[i];
+#ifdef ARITHMETIC_TEST
+      data->value[ordered->i] =	ordered->ijcode->evaluate(data);    
+#else
+      data->value[ordered->i] =	evaluateAST(ordered->ij, data);
+#endif    
+    }
+  }
+  
   /** evaluate ODEs f(x,p,t) = dx/dt */
   for ( i=0; i<data->model->neq; i++ )
 #ifdef ARITHMETIC_TEST
     dydata[i] = data->model->odecode[i]->evaluate(data);    
 #else
-    dydata[i] = evaluateAST(data->ode[i],data);
+    dydata[i] = evaluateAST(data->model->ode[i],data);
 #endif
 
   /** reset parameters */
   /*!!! necessary? here AND/OR in Jacobian? */
-  if ( (data->opt->Sensitivity && data->os ) )
-    if ( !data->os->sensitivity || !data->model->jacobian )
-      for ( i=0; i<data->nsens; i++ )
-	data->value[data->os->index_sens[i]] = data->p_orig[i];
-  
+  if ( data->use_p )
+  {
+    for ( i=0; i<data->nsens; i++ )
+      data->value[data->os->index_sens[i]] = data->p_orig[i];
+    
+    for ( i=0; i<data->model->nass; i++ )
+    {
+      nonzeroElem_t *ordered = data->model->assignmentOrder[i];
+#ifdef ARITHMETIC_TEST
+      data->value[ordered->i] =	ordered->ijcode->evaluate(data);    
+#else
+      data->value[ordered->i] =	evaluateAST(ordered->ij, data);
+#endif    
+    }
+  }
   return (0);
 }
 
@@ -1019,20 +1038,17 @@ static int JacODE(long int N, DenseMat J, realtype t,
 		  N_Vector vtemp1, N_Vector vtemp2, N_Vector vtemp3)
 {
   
-  int i, j;
+  int i;
   realtype *ydata;
   cvodeData_t *data;
-
   data  = (cvodeData_t *) jac_data;
   ydata = NV_DATA_S(y);
   
   /** update parameters: p is modified by CVODES,
       if fS could not be generated  */
-  /* if ( data->p != NULL && data->opt->Sensitivity ) */
-  if ( (data->opt->Sensitivity && data->os ) )
-    if ( !data->os->sensitivity || !data->model->jacobian )
-      for ( i=0; i<data->nsens; i++ )
-	data->value[data->os->index_sens[i]] = data->p[i];
+  if ( data->use_p )
+    for ( i=0; i<data->nsens; i++ )
+      data->value[data->os->index_sens[i]] = data->p[i];
 
   /** update ODE variables from CVODE */
   for ( i=0; i<data->model->neq; i++ ) data->value[i] = ydata[i];
@@ -1041,20 +1057,22 @@ static int JacODE(long int N, DenseMat J, realtype t,
   data->currenttime = t;
 
   /** evaluate Jacobian J = df/dx */
-  for ( i=0; i<data->model->neq; i++ ) 
-    for ( j=0; j<data->model->neq; j++ )
-    { 
+  for ( i=0; i<data->model->sparsesize; i++ )
+  {
+    nonzeroElem_t *nonzero = data->model->jacobSparse[i];    
+    
 #ifdef ARITHMETIC_TEST
-      DENSE_ELEM(J,i,j) = data->model->jacobcode[i][j]->evaluate(data);    
+    DENSE_ELEM(J, nonzero->i,nonzero->j) = nonzero->ijcode->evaluate(data);
 #else
-      DENSE_ELEM(J,i,j) = evaluateAST(data->model->jacob[i][j], data);
+    DENSE_ELEM(J, nonzero->i,nonzero->j) = evaluateAST(nonzero->ij, data);
 #endif
-    }
+  }
+  
+  
   /** reset parameters */
-  if ( (data->opt->Sensitivity && data->os ) )
-    if ( !data->os->sensitivity || !data->model->jacobian )
-      for ( i=0; i<data->nsens; i++ )
-	data->value[data->os->index_sens[i]] = data->p_orig[i];
+  if ( data->use_p )
+    for ( i=0; i<data->nsens; i++ )
+      data->value[data->os->index_sens[i]] = data->p_orig[i];
   
   return (0);
 }

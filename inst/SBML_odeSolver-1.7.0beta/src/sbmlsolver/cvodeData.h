@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <2007-09-19 15:00:30 raim>
-  $Id: cvodeData.h,v 1.9 2008/01/28 19:25:27 stefan_tbi Exp $
+  Last changed Time-stamp: <2008-10-06 12:39:48 raim>
+  $Id: cvodeData.h,v 1.12 2008/10/08 17:07:16 raimc Exp $
 */
 /* 
  *
@@ -73,20 +73,19 @@ struct cvodeData {
   /** objective function and experimental data for adjoint solver */
   objFunc_t *of;
   
-  /* ODEs f(x,p,t) = dx/dt and values x. The ODEs are usually
-     optimized versions of the same array in odeModel */
 
   /** number of ODEs */
   int neq;
-  /** optimized ODEs, used for integration */
-  ASTNode_t **ode; 
 
+  /* current values: variables x(t), assigned and constant parameters */
   /** total number of values (variables x(t) + parameters p) */
   int nvalues; 
   /** value array is used to write and read the current values of
       all variables x(t) and parameters p of the system (of which
       there are `nvalues') */  
   double *value; 
+  int allRulesUpdated; /* flag if all rules are up-to-date with current
+			  variables and event assignments */
 
   /** the current time of the integration */
   float currenttime;
@@ -96,8 +95,10 @@ struct cvodeData {
   int nsens;
   /** current values of sensitivities dx(t)/dp */
   double **sensitivity; 
-  /** current and original values of parameters in sensitivity analysis,
-      required and filled only if no r.h.s function fS is available */
+  /** current and original values of parameters in sensitivity
+      analysis, required only if no r.h.s function fS is available
+      (missing Jacobi or missing parametrix matrix) */
+  unsigned int use_p;
   realtype *p;
   realtype *p_orig;
   

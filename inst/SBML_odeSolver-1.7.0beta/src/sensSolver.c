@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <2007-09-21 15:47:38 raim>
-  $Id: sensSolver.c,v 1.65 2007/09/21 13:52:10 raimc Exp $
+  Last changed Time-stamp: <2008-10-08 19:49:21 raim>
+  $Id: sensSolver.c,v 1.76 2008/10/08 19:06:52 raimc Exp $
 */
 /* 
  *
@@ -308,12 +308,13 @@ IntegratorInstance_createCVODESSolverStructures(integratorInstance_t *engine)
     {
       flag = CVodeSetSensRhs1Fn(solver->cvode_mem, sensRhsFunction, data);
       CVODE_HANDLE_ERROR(&flag, "CVodeSetSensRhs1Fn Matrix", 1);
-
+      data->use_p = 0; /* don't use data->p */
     }
     else
     {
       flag = CVodeSetSensRhs1Fn(solver->cvode_mem, NULL, NULL);
       CVODE_HANDLE_ERROR(&flag, "CVodeSetSensRhs1Fn NULL", 1);
+      data->use_p = 1; /* use data->p, as fS is not available */
 
       /* difference quotient method: CV_FORWARD or CV_CENTERED
        see, cvs_guide.pdf CVODES doc */
@@ -488,7 +489,7 @@ IntegratorInstance_createCVODESSolverStructures(integratorInstance_t *engine)
     for ( i=0; i<om->neq; i++ )
     {
       /* Set initial value vector components of yA */
-          NV_Ith_S(solver->yA,i) = data->adjvalue[i]; 
+          NV_Ith_S(solver->yA, i) = data->adjvalue[i]; 
 
       /* Set absolute tolerance vector components,
 	 currently the same absolute error is used for all y */ 
@@ -516,7 +517,7 @@ IntegratorInstance_createCVODESSolverStructures(integratorInstance_t *engine)
     else iteration = CV_NEWTON;
 
     /* Error if neither ObjectiveFunction nor vector_v has been set  */
-    if( (om->ObjectiveFunction == NULL) && (om->vector_v == NULL)   )
+    if( (om->ObjectiveFunction == NULL) && (om->vector_v == NULL) )
       return 0;
    
      if ( engine->adjrun == 1 )
@@ -625,7 +626,8 @@ SBML_ODESOLVER_API int IntegratorInstance_printCVODESStatistics(integratorInstan
   cvodeSolver_t *solver = engine->solver;
   void *cvode_memB;
 
-  if (engine->opt->Sensitivity){ 
+  if ( engine->opt->Sensitivity )
+  { 
      /* print additional CVODES forward sensitivity statistics */
     fprintf(f, "##\n## CVodes Forward Sensitivity Statistics:\n");
 
@@ -647,7 +649,8 @@ SBML_ODESOLVER_API int IntegratorInstance_printCVODESStatistics(integratorInstan
     fprintf(f, "## nniS    = %5ld    ncfnS    = %5ld\n", nniS, ncfnS);
   }
   
-  if ((engine->opt->DoAdjoint) && (solver->cvadj_mem != NULL)){ 
+  if ( (engine->opt->DoAdjoint) && (solver->cvadj_mem != NULL) )
+  { 
       /* print additional CVODES adjoint sensitivity statistics */
      fprintf(f, "##\n## CVode Adjoint Sensitivity Statistics:\n");
      cvode_memB = CVadjGetCVodeBmem(solver->cvadj_mem);
@@ -664,9 +667,9 @@ SBML_ODESOLVER_API int IntegratorInstance_printCVODESStatistics(integratorInstan
      flag = CVodeGetNumErrTestFails(cvode_memB, &netfA);
      CVODE_HANDLE_ERROR(&flag, "CVodeGetNumErrTestFails", 1);
      fprintf(f, "## nstA = %-6ld nfeA  = %-6ld nsetupsA = %-6ld njeA = %ld\n",
-	  nstA, nfeA, nsetupsA, njeA); 
+	     nstA, nfeA, nsetupsA, njeA); 
      fprintf(f, "## nniA = %-6ld ncfnA = %-6ld netfA = %ld\n",
-	  nniA, ncfnA, netfA);
+	     nniA, ncfnA, netfA);
      fprintf(f, "## ncheck = %-6d\n", engine->opt->ncheck);
   }
 
@@ -695,8 +698,12 @@ SBML_ODESOLVER_API int IntegratorInstance_setLinearObjectiveFunction(integratorI
   ASSIGN_NEW_MEMORY_BLOCK(vector_v, om->neq, ASTNode_t *, 0);
 
   if ( (fp = fopen(v_file, "r")) == NULL )
+  {
     SolverError_error(FATAL_ERROR_TYPE, SOLVER_ERROR_VECTOR_V_FAILED,
-		      "File %s not found in reading vector_v", v_file);  
+		      "File %s not found in reading vector_v", v_file);
+    return 0;
+  }
+
 
   /* loop over lines */
   for ( i=0; (line = get_line(fp)) != NULL; i++ )
@@ -730,9 +737,15 @@ SBML_ODESOLVER_API int IntegratorInstance_setLinearObjectiveFunction(integratorI
     free(line);
   }
 
-  if (i < om->neq)
-    fatal(stderr, "read_v_file(): inconsistent number of variables (<)");
+  fclose(fp);
 
+  if ( i < om->neq )
+  {
+    SolverError_error(FATAL_ERROR_TYPE, SOLVER_ERROR_VECTOR_V_FAILED,
+		      "read_v_file(): inconsistent number of variables "
+		      "required NEQ: %d, provided from file: %d "
+		      "in file %s", om->neq, i, v_file); 
+  }
   om->vector_v = vector_v;
   
   return 1;
@@ -751,12 +764,18 @@ SBML_ODESOLVER_API int IntegratorInstance_setObjectiveFunction(integratorInstanc
 
   /* If objective function exists, free it */
   if ( om->ObjectiveFunction != NULL  )
+  {
     ASTNode_free(om->ObjectiveFunction);
+    om->ObjectiveFunction = NULL;
+  }
 
   if ( (fp = fopen(ObjFunc_file, "r")) == NULL )
+  {
     SolverError_error(FATAL_ERROR_TYPE, SOLVER_ERROR_OBJECTIVE_FUNCTION_FAILED,
 		      "File %s not found in reading objective function",
-		      ObjFunc_file); 
+		      ObjFunc_file);
+    return 0;
+  }
 
   /* a very obfuscated way to skip comment lines and read exactly one
      line of objective function */
@@ -778,6 +797,8 @@ SBML_ODESOLVER_API int IntegratorInstance_setObjectiveFunction(integratorInstanc
         free(line); 
     }
   }
+  
+  fclose(fp);
 
 
   if( i > 1)
@@ -814,8 +835,12 @@ SBML_ODESOLVER_API int IntegratorInstance_setObjectiveFunctionFromString(integra
   odeModel_t *om = engine->om;
   
   if ( om->ObjectiveFunction != NULL  )
+  {
     ASTNode_free(om->ObjectiveFunction);
-  
+    om->ObjectiveFunction = NULL;
+  }
+
+ 
   temp_ast = SBML_parseFormula(str);
   ast = indexAST(temp_ast, om->neq, om->names);
   om->ObjectiveFunction = ast;
@@ -842,10 +867,9 @@ static int ODEModel_construct_vector_v_FromObjectiveFunction(odeModel_t *om)
   if ( om->vector_v != NULL )
   {
     for (  i=0; i<om->neq; i++  )
-       if ( om->vector_v[i] != NULL )
-       ASTNode_free(om->vector_v[i]);  
-
-   free(om->vector_v);   
+      if ( om->vector_v[i] != NULL )
+	ASTNode_free(om->vector_v[i]);      
+    free(om->vector_v);   
   }
 
   /******************** Calculate dJ/dx ************************/
@@ -863,12 +887,12 @@ static int ODEModel_construct_vector_v_FromObjectiveFunction(odeModel_t *om)
     names = ASTNode_getListOfNodes(fprime,
 				   (ASTNodePredicate) ASTNode_isName);
 
-      for ( j=0; j<List_size(names); j++ ) 
-	if ( strcmp(ASTNode_getName(List_get(names,j)),
-		    "differentiation_failed") == 0 ) 
-	  failed++;
+    for ( j=0; j<List_size(names); j++ ) 
+      if ( strcmp(ASTNode_getName(List_get(names,j)),
+		  "differentiation_failed") == 0 ) 
+	failed++;
 
-      List_free(names); 
+    List_free(names); 
   }
 
   ASTNode_free(ObjFun);
@@ -1083,7 +1107,10 @@ SBML_ODESOLVER_API int IntegratorInstance_printQuad(integratorInstance_t *engine
     }
     
     for ( j=0; j<os->nsens; j++ )
-      fprintf(f, "dJ/dp_%d=%0.15g ", j, NV_Ith_S(engine->solver->qA, j));   
+      {
+	value = NV_Ith_S(engine->solver->qA, j);
+	fprintf(f, "dJ/dp_%d=%0.15g ", j, value);
+      }
     fprintf(f, "\n");
   }
   else
@@ -1111,9 +1138,16 @@ SBML_ODESOLVER_API int IntegratorInstance_printQuad(integratorInstance_t *engine
 	free(formula);
         ASTNode_free(tempAST);
       }      
-      
+
+      /*!!! TODO : clarify why valgrind reports
+	"==16330== Conditional jump or move depends on
+	           uninitialised value(s)" for the following print command!
+		   see file sundials-2.3.0/include/nvector/nvector_serial.h */
       for ( j=0; j<os->nsens; j++ )
-	fprintf(f, "dJ/dp_%d=%0.15g ", j, NV_Ith_S(engine->solver->qS, j));
+      {
+	value = NV_Ith_S(engine->solver->qS, j);
+	fprintf(f, "dJ/dp_%d=%0.15g ", j, value);
+      }
       fprintf(f, "\n");
     }
     else fprintf(f, "\nNo quadrature was performed \n");
@@ -1227,7 +1261,7 @@ static int fS(int Ns, realtype t, N_Vector y, N_Vector ydot,
 	      int iS, N_Vector yS, N_Vector ySdot, 
 	      void *fS_data, N_Vector tmp1, N_Vector tmp2)
 {
-  int i, j;
+  int i;
   realtype *ydata, *ySdata, *dySdata;
   cvodeData_t *data;
   data  = (cvodeData_t *) fS_data;
@@ -1243,17 +1277,36 @@ static int fS(int Ns, realtype t, N_Vector y, N_Vector ydot,
   data->currenttime = t;
 
   /** evaluate sensitivity RHS: df/dx * s + df/dp for one p */
-  for(i=0; i<data->model->neq; i++)
+  for ( i=0; i<data->model->neq; i++ ) 
   {
     dySdata[i] = 0;
-    for (j=0; j<data->model->neq; j++) 
-      dySdata[i] += evaluateAST(data->model->jacob[i][j], data) * ySdata[j];
-    if ( data->os->index_sensP[iS] != -1 )
+    /* add parameter sensitivity */
+    /*!!! TODO: evaluation of nonzero-elements in the parameter matrix dY/dP */
+    if ( data->os->index_sensP[iS] != -1 &&
+	 data->os->sensLogic[i][data->os->index_sensP[iS]] )
+    {
+#ifdef ARITHMETIC_TEST
+      dySdata[i] +=
+	data->os->senscode[i][data->os->index_sensP[iS]]->evaluate(data);
+#else
       dySdata[i] +=
 	evaluateAST(data->os->sens[i][data->os->index_sensP[iS]], data);
+#endif
+    }
   }
-  /* printf("s"); */
 
+  /* add variable sensitivities */
+  for ( i=0; i<data->model->sparsesize; i++ )
+  {
+    nonzeroElem_t *nonzero = data->model->jacobSparse[i];
+    
+#ifdef ARITHMETIC_TEST
+    dySdata[nonzero->i] += nonzero->ijcode->evaluate(data) * ySdata[nonzero->j];
+#else
+    dySdata[nonzero->i] += evaluateAST(nonzero->ij, data)  * ySdata[nonzero->j];
+#endif
+    
+  }
   return (0);
 }
 
@@ -1272,7 +1325,7 @@ static int fS(int Ns, realtype t, N_Vector y, N_Vector ydot,
 static int fA(realtype t, N_Vector y, N_Vector yA, N_Vector yAdot,
 	      void *fA_data)
 {
-  int i, j;
+  int i;
   realtype *ydata, *yAdata, *dyAdata;
   cvodeData_t *data;
   data  = (cvodeData_t *) fA_data;
@@ -1290,17 +1343,22 @@ static int fA(realtype t, N_Vector y, N_Vector yA, N_Vector yAdot,
   /* evaluate adjoint sensitivity RHS: -[df/dx]^T * yA + v */
   for(i=0; i<data->model->neq; i++)
   {
-    dyAdata[i] = 0;
-    for (j=0; j<data->model->neq; j++)
-      dyAdata[i] -= evaluateAST(data->model->jacob[j][i], data) * yAdata[j];
-
-        
+    dyAdata[i] = 0;  
     /*  Vector v contribution, if continuous data is used */
     if(data->model->discrete_observation_data==0)
-      dyAdata[i] +=   evaluateAST( data->model->vector_v[i], data);
-
+      dyAdata[i] += evaluateAST(data->model->vector_v[i], data);
   }
-  
+     
+  for ( i=0; i<data->model->sparsesize; i++ )
+  {
+    nonzeroElem_t *nonzero = data->model->jacobSparse[i];
+
+#ifdef ARITHMETIC_TEST
+    dyAdata[nonzero->j] -= nonzero->ijcode->evaluate(data) * yAdata[nonzero->i];
+#else
+    dyAdata[nonzero->j] -= evaluateAST(nonzero->ij, data)  * yAdata[nonzero->i];
+#endif    
+  }  
   return (0);
 }
 
@@ -1320,7 +1378,7 @@ static int JacA(long int NB, DenseMat JB, realtype t,
 		N_Vector tmp1B, N_Vector tmp2B, N_Vector tmp3B)
 {
 
-  int i, j;
+  int i;
   realtype *ydata;
   cvodeData_t *data;
   data  = (cvodeData_t *) jac_dataB;
@@ -1333,10 +1391,15 @@ static int JacA(long int NB, DenseMat JB, realtype t,
   data->currenttime = t;
 
   /** evaluate Jacobian JB = -[df/dx]^T */
-  for ( i=0; i<data->model->neq; i++ ) 
-    for ( j=0; j<data->model->neq; j++ ) 
-      DENSE_ELEM(JB,i,j) = - evaluateAST(data->model->jacob[j][i], data);
-
+  for ( i=0; i<data->model->sparsesize; i++ )
+  {
+    nonzeroElem_t *nonzero = data->model->jacobSparse[i];    
+#ifdef ARITHMETIC_TEST
+    DENSE_ELEM(JB, nonzero->j,nonzero->i) = - nonzero->ijcode->evaluate(data);
+#else
+    DENSE_ELEM(JB, nonzero->j,nonzero->i) = - evaluateAST(nonzero->ij, data);
+#endif 
+  }
   return (0);
 }
 
@@ -1361,16 +1424,18 @@ static int fQA(realtype t, N_Vector y, N_Vector yA,
   data->currenttime = t;
 
   /* evaluate quadrature integrand: yA^T * df/dp */
-  for ( i=0; i<data->os->nsens; i++ )
+  for ( j=0; j<data->os->nsens; j++ )
+    dqAdata[j] = 0.0;
+  
+  for ( i=0; i<data->os->sparsesize; i++ )
   {
-    dqAdata[i] = 0.0;
-
-    if ( data->os->index_sensP[i] != -1 )
-      for ( j=0; j<data->model->neq; j++ )
-	dqAdata[i] += yAdata[j] *
-	  evaluateAST(data->os->sens[j][data->os->index_sensP[i]], data);
+    nonzeroElem_t *nonzero = data->os->sensSparse[i];        
+#ifdef ARITHMETIC_TEST
+    dqAdata[nonzero->j] += yAdata[nonzero->i] * nonzero->ijcode->evaluate(data);
+#else
+    dqAdata[nonzero->j] += yAdata[nonzero->i] * evaluateAST(nonzero->ij, data);
+#endif 
   }
-
   return (0);
 }
 
@@ -1435,13 +1500,4 @@ static int fQS(realtype t, N_Vector y, N_Vector qdot, void *fQ_data)
 
 /** @} */
 /* End of file */
-
-
-
-
-
-
-
-
-
 

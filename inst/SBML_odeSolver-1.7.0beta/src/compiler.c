@@ -1,6 +1,6 @@
 /*
-  Last changed Time-stamp: <2007-10-26 17:38:01 raim>
-  $Id: compiler.c,v 1.26 2008/03/11 18:21:26 funa Exp $
+  Last changed Time-stamp: <2008-09-09 14:16:59 raim>
+  $Id: compiler.c,v 1.28 2008/09/09 12:51:00 raimc Exp $
 */
 /* 
  *
@@ -172,6 +172,118 @@ compiled_code_t *Compiler_compile_win32_tcc(const char *sourceCode)
   return (code);
 }
 
+#elif defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__) /* AIX use xlc_r */
+
+/**
+   Returns a pointer to code that is compiled from the given source code
+*/
+compiled_code_t *Compiler_compile_with_xlc(const char *sourceCode)
+{
+  compiled_code_t *code = NULL;
+  char gccFileName[MAX_PATH+1] = "xlc_r"; 
+  int result;
+  char *tmpFileName = NULL;
+  char *cFileName   = NULL;
+  char *dllFileName = NULL;
+  char *oFileName   = NULL;
+  FILE *cFile;
+  char command[4*MAX_PATH];
+  void *dllHandle;
+  
+  /* generate a unique temprorary filename template */
+  ASSIGN_NEW_MEMORY_BLOCK(tmpFileName, (MAX_PATH+1), char, NULL);
+  tmpFileName = tmpnam(tmpFileName);
+  
+#ifdef _DEBUG
+  Warn(NULL,"Temporary File Name is %s\n", tmpFileName);
+#endif
+  
+  /* generate needed file names from the template*/
+  ASSIGN_NEW_MEMORY_BLOCK(cFileName, (strlen(tmpFileName)+3), char, NULL);
+  strcpy(cFileName, tmpFileName);
+  strcat(cFileName, ".c");
+  ASSIGN_NEW_MEMORY_BLOCK(oFileName, (strlen(tmpFileName)+3), char, NULL);
+  strcpy(oFileName, tmpFileName);
+  strcat(oFileName, ".o");  
+  ASSIGN_NEW_MEMORY_BLOCK(dllFileName,
+			  (strlen(tmpFileName)+strlen(SHAREDLIBEXT)+1),
+			  char, NULL);
+  strcpy(dllFileName, tmpFileName);
+  strcat(dllFileName, SHAREDLIBEXT);
+  
+  /* open file and dump source code to it */
+  cFile = fopen(cFileName, "w");
+  
+  if (!cFile)
+    {
+      SolverError_error(WARNING_ERROR_TYPE, SOLVER_ERROR_OPEN_FILE,
+			"Could not open file %s - %s!",
+			cFileName, strerror(errno));  
+      return NULL;
+    }
+  
+  fprintf(cFile, sourceCode);
+  fclose(cFile);
+  
+  /* construct command for compiling */
+  sprintf(command, "%s -I%s -I%s -I%s -I../src -G -o %s %s -L../src -L%s -L%s -L%s -lODES -lsbml -lm",
+	  gccFileName,
+	  SUNDIALS_CFLAGS,
+	  SBML_CFLAGS,
+	  SOSLIB_CFLAGS,
+	  dllFileName,
+	  cFileName,
+	  SUNDIALS_LDFLAGS,
+	  SBML_LDFLAGS,
+	  SOSLIB_LDFLAGS);
+  
+#ifdef _DEBUG
+  Warn(NULL, "Command: %s\n", command);
+#endif
+  
+  /* compile source to shared library */
+  result = system(command);
+  
+  /* handle possible errors */
+  if (result == -1)
+    {
+      SolverError_error(WARNING_ERROR_TYPE, SOLVER_ERROR_GCC_FORK_FAILED,
+			"forking xlc compiler subprocess failed!");
+      return (NULL);
+    }
+  else if (result != 0)
+    {
+      SolverError_error(WARNING_ERROR_TYPE, SOLVER_ERROR_COMPILATION_FAILED,
+			"compiling failed with errno %d - %s!",
+			result, strerror(result));    
+      return (NULL);
+    }
+  
+  /* clean up compilation intermediates */
+  free(tmpFileName);
+  remove(cFileName);
+  free(cFileName);
+  remove(oFileName);
+  free(oFileName);
+  
+  /* load shared library */
+  dllHandle = dlopen(dllFileName, RTLD_LAZY);
+  if (dllHandle == NULL)
+    {
+      SolverError_error(WARNING_ERROR_TYPE, SOLVER_ERROR_DL_LOAD_FAILED,
+			"loading shared library %s failed %d - %s!",
+			dllFileName, errno, strerror(errno));
+      SolverError_dumpAndClearErrors();
+      return (NULL);
+    }
+  
+  ASSIGN_NEW_MEMORY(code, compiled_code_t, NULL);
+  code->dllHandle   = dllHandle;
+  code->dllFileName = dllFileName;
+  
+  return (code);
+}
+
 #else /* default case is compile with gcc */
 
 /**
@@ -227,48 +339,33 @@ compiled_code_t *Compiler_compile_with_gcc(const char *sourceCode)
 
   /* construct command for compiling */
 #if defined (__APPLE__) && defined (__MACH__)
-  sprintf(command, "%s -I%s -I%s -I%s -I../src -pipe -O -dynamiclib -fPIC -o %s %s -L../src -L%s -L%s -lODES -lsbml -lm -lstdc++",
+  sprintf(command,
+	  "%s -I%s -I%s -I%s -I../src -pipe -O -dynamiclib -fPIC -o %s %s -L../src -L%s -L%s -L%s -lODES -lsbml -lm -lstdc++",
  	  gccFileName,
 	  SUNDIALS_CFLAGS,
-      SBML_CFLAGS,
+	  SBML_CFLAGS,
 	  SOSLIB_CFLAGS,
 	  dllFileName,
 	  cFileName,
-      SBML_LDFLAGS,
+	  SUNDIALS_LDFLAGS,
+	  SBML_LDFLAGS,
 	  SOSLIB_LDFLAGS);
 #else
-  sprintf(command, "%s -I%s -I%s -I../src -pipe -O -shared -fPIC -o %s %s -L../src -L%s -lODES -lm",
+  sprintf(command,
+	  "%s -I%s -I%s -I%s -I../src -pipe -O -shared -fPIC -o %s %s -L../src -L%s -L%s -L%s -lODES -lsbml -lm -lstdc++",
  	  gccFileName,
 	  SUNDIALS_CFLAGS,
+	  SBML_CFLAGS,
 	  SOSLIB_CFLAGS,
 	  dllFileName,
 	  cFileName,
+	  SUNDIALS_LDFLAGS,
+	  SBML_LDFLAGS,
 	  SOSLIB_LDFLAGS);
 #endif
  
 #ifdef _DEBUG
   Warn(NULL, "Command: %s\n", command);
-#if defined (__APPLE__) && defined (__MACH__)
-  Warn(NULL,
-       "%s -I%s -I%s -I%s -I../src -pipe -O -dynamiclib -fPIC -o %s %s -L../src -L%s -L%s -lODES -lsbml -lm -lstdc++",
-       gccFileName,
-       SUNDIALS_CFLAGS,
-       SBML_CFLAGS,
-       SOSLIB_CFLAGS,
-       dllFileName,
-       cFileName,
-       SBML_LDFLAGS,
-       SOSLIB_LDFLAGS);
-#else
-  Warn(NULL,
-       "%s -I%s -I%s -I../src -pipe -O -shared -fPIC -o %s %s -L../src -L%s -lODES -lm",
-       gccFileName,
-       SUNDIALS_CFLAGS,
-       SOSLIB_CFLAGS,
-       dllFileName,
-       cFileName,
-       SOSLIB_LDFLAGS);
-#endif
 #endif
   
   /* compile source to shared library */
@@ -325,7 +422,11 @@ compiled_code_t *Compiler_compile(const char *sourceCode)
 
 #ifdef WIN32
 
-  code = Compiler_compile_win32_tcc(sourceCode);
+  code = Compiler_compile_with_tcc(sourceCode);
+
+#elif defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__) /* AIX use xlc_r */
+
+  code = Compiler_compile_with_xlc(sourceCode);
   
 #else
 
