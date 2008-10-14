@@ -23,7 +23,7 @@ rsbml_build_graph(SBMLDocument_t *doc)
   SET_VECTOR_ELT(r_graph_data, 0, mkString("directed"));
   SET_NAMES(r_graph_data, mkString("edgemode"));
   
-  SET_SLOT(r_graph, install("edgemode"), ScalarString(mkChar("directed")));
+  /*SET_SLOT(r_graph, install("edgemode"), ScalarString(mkChar("directed")));*/
   
   num_species = Model_getNumSpecies(model);
   num_reactions = Model_getNumReactions(model);
