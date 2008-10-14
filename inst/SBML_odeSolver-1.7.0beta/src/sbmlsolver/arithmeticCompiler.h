@@ -37,10 +37,9 @@
 #ifndef _ARITHMETICCOMPILER_H_
 #define _ARITHMETICCOMPILER_H_
 
-#ifndef DARWIN
-#ifndef WIN32
+#if defined (__APPLE__) && defined (__MACH__)
+#else
 #define ARITHMETIC_TEST /*!!! comment in test arithmeticCompiler.c */
-#endif
 #endif
 
 typedef struct directCode directCode_t;
