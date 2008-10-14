@@ -57,7 +57,7 @@ if test "${enable_soslib}" != "no"; then
     AC_MSG_NOTICE([=== Begin local SOSLib build ===])
     SOURCE_DIR=`pwd`/local
     cd inst/SBML_odeSolver-1.7.0beta
-    SOSLIB_CONFIGURE_ARGS="${SOSLIB_CONFIGURE_ARGS} --prefix=${SOURCE_DIR}"
+    SOSLIB_CONFIGURE_ARGS="${SOSLIB_CONFIGURE_ARGS} --prefix=${SOURCE_DIR} --without-graphviz --without-grace"
     SOSLIB="no"
     if ./configure ${SOSLIB_CONFIGURE_ARGS} && make && make install; then
         SOSLIB_CFLAGS="-I${SOURCE_DIR}/include"
