@@ -196,7 +196,7 @@ SEXP rmathml_SEXP(const ASTNode_t *node) {
     break;
   case AST_LOGICAL_AND:
 #if (LIBSBML_VERSION >= 30200)
-    ASTNode_reduceToBinary(node);
+    ASTNode_reduceToBinary((ASTNode_t *)node);
 #endif
     sym = install("&");
     break;
@@ -205,13 +205,13 @@ SEXP rmathml_SEXP(const ASTNode_t *node) {
     break;
   case AST_LOGICAL_OR:
 #if (LIBSBML_VERSION >= 30200)
-    ASTNode_reduceToBinary(node);
+    ASTNode_reduceToBinary((ASTNode_t *)node);
 #endif
     sym = install("|");
     break;
   case AST_LOGICAL_XOR:
 #if (LIBSBML_VERSION >= 30200)
-    ASTNode_reduceToBinary(node);
+    ASTNode_reduceToBinary((ASTNode_t *)node);
 #endif
     sym = install("xor");
     break;
@@ -258,7 +258,7 @@ SEXP rmathml_SEXP(const ASTNode_t *node) {
 
 ASTNode_t *rmathml_ASTNode(SEXP sym) {
   ASTNode_t *node = NULL;
-  ASTNodeType_t type;
+  ASTNodeType_t type = AST_UNKNOWN;
   /* Rprintf("%d\n", TYPEOF(sym)); */
   /* if (isSymbol(sym)) */
   /*   Rprintf("\t%s\n", CHAR(PRINTNAME(sym))); */
