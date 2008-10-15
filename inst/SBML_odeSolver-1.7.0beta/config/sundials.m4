@@ -33,6 +33,12 @@ AC_DEFUN([AC_SUNDIALS_PATH],
       AC_MSG_RESULT([yes])
       break
     fi
+    if test -r $ac_dir/lib64/libsundials_cvodes.$ac_extension; then
+      SUNDIALS_LDFLAGS="-L$ac_dir/lib64"
+      SUNDIALS_LIBS="-lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
+      AC_MSG_RESULT([yes])
+      break
+    fi
   done
 ])
 

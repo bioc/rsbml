@@ -5293,6 +5293,13 @@ $as_echo_n "checking for SUNDIALS Library... " >&6; }
 $as_echo "yes" >&6; }
       break
     fi
+    if test -r $ac_dir/lib64/libsundials_cvodes.$ac_extension; then
+      SUNDIALS_LDFLAGS="-L$ac_dir/lib64"
+      SUNDIALS_LIBS="-lsundials_kinsol -lsundials_cvodes -lsundials_nvecserial"
+      { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+      break
+    fi
   done
 
   else
