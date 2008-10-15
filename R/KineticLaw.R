@@ -5,8 +5,9 @@ setClass("KineticLaw", representation(math = "expression", parameters = "list",
 setMethod("describe", "KineticLaw",
           function(object) {
             desc <- as.character(math(object))
-            paramDescs <- paste(sapply(parameters, describe), collapse = ", ")
-            if (length(paramDescs))
+            paramDescs <- paste(sapply(parameters(object), describe),
+                                collapse = ", ")
+            if (nchar(paramDescs))
               desc <- paste(desc, "where", paramDescs)
             desc
           })

@@ -8,8 +8,8 @@ setClass("Reaction",
 
 setMethod("describe", "Reaction",
           function(object) {
-            r <- paste(describe(reactants(object)), collapse = "+")
-            p <- paste(describe(products(object)), collapse = "+")
+            r <- paste(describe(reactants(object)), collapse = " + ")
+            p <- paste(describe(products(object)), collapse = " + ")
             rev <- reversible(object)
             if (!length(rev))
               rev <- FALSE
@@ -17,7 +17,10 @@ setMethod("describe", "Reaction",
             if (!length(fast))
               fast <- FALSE
             op <- ifelse(rev, "<->", ifelse(fast, "->>", "->"))
-            paste(r, op, p)
+            desc <- paste(r, op, p)
+            if (!is.null(kineticLaw(object)))
+              desc <- paste(desc, "by", describe(kineticLaw(object)))
+            desc
           })
 
 setMethod("id", "Reaction", function(object) object@id)

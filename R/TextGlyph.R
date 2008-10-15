@@ -4,7 +4,7 @@ setClass("TextGlyph", representation(graphicalObject = "character", text = "char
 setMethod("describe", "TextGlyph",
           function(object) {
             if (length(originOfText(object)))
-              desc <- paste("label(", originOfText(object), ")", sep = "")
+              desc <- paste("name(", originOfText(object), ")", sep = "")
             else desc <- paste("\"", text(object), "\"", sep = "")
             if (length(graphicalObject(object)))
               desc <- paste(desc, "on", graphicalObject(object))

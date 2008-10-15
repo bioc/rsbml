@@ -5,9 +5,14 @@ setClass("SpeciesReference",
          prototype(stoichiometry = 1), "SimpleSpeciesReference")
 
 setMethod("describe", "SpeciesReference", function(object) {
-  stoich <- ifelse(is.null(stoichiometryMath(object)), stoichiometry(object),
-                   paste("(", describe(stoichiometryMath(object)), ")",
-                         sep = ""))
+  stoich <- stoichiometryMath(object)
+  if (is.null(stoich)) {
+    stoich <- stoichiometry(object)
+    if (stoich == 1)
+      stoich <- ""
+  } else stoich <- describe(stoich)
+  if (nchar(stoich))
+    stoich <- paste("(", stoich, ")", sep = "")
   paste(stoich, callNextMethod(object), sep = "")
 })
 

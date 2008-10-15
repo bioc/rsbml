@@ -12,10 +12,10 @@ setMethod("describe", "list", function(object, max = NA) {
   if (is.na(max))
     cutoff <- n
   else cutoff <- floor(max/2)
-  descs <- sapply(l[seq_len(min(n, cutoff))], describe)
+  descs <- sapply(object[seq_len(min(n, cutoff))], describe)
   if (n > cutoff) {
     descs <- c(descs, "...")
-    descs <- c(descs, sapply(l[seq(cutoff + 1, min(n, max))], describe))
+    descs <- c(descs, sapply(object[seq(cutoff + 1, min(n, max))], describe))
   }
   descs
 })

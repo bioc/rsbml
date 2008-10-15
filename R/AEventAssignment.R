@@ -2,7 +2,7 @@ setClass("EventAssignment", representation(variable = "character", math = "expre
   contains = "SBase")
 
 setMethod("describe", "EventAssignment",
-          function(object) paste(variable, "=", math))
+          function(object) paste(variable(object), "=", math(object)))
 
  setGeneric("variable", function(object) standardGeneric("variable"))
 setMethod("variable", "EventAssignment", function(object) object@variable)

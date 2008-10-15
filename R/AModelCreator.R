@@ -5,7 +5,7 @@ setClass("ModelCreator",
 
 setMethod("describe", "ModelCreator",
           function(object) paste(givenName(object), " ", familyName(object),
-                                 "(", email(object), ") at",
+                                 "(", email(object), ") at ",
                                  organization(object), sep = ""))
 
  setGeneric("familyName", function(object) standardGeneric("familyName"))

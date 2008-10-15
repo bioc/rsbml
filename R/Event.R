@@ -10,7 +10,7 @@ setMethod("describe", "Event",
             assignments <- sapply(eventAssignments(object), describe)
             assignments <- paste(assignments, collapse = ", ")
             desc <- paste("When", describe(trigger(object)), ":", assignments)
-            if (!is.null(delay))
+            if (!is.null(eventDelay(object)))
               desc <- paste(desc, "after", describe(eventDelay(object)),
                             timeUnits(object))
             desc

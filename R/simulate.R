@@ -43,7 +43,7 @@
                as.integer(sensitivity), as.integer(useJacobian),
                as.integer(haltOnEvent), as.integer(haltOnSteadyState),
                as.integer(storeResults), as.character(ids), as.character(rids),
-               as.matrix(t(design)))
+               as.matrix(t(design)), PACKAGE="rsbml")
   ## simplify the result a bit up front
   if (!ncol(design)) {
     res <- list(res)
@@ -156,7 +156,7 @@ setClass("SOSDesign",
          contains = c("matrix", "ExperimentDesign"))
 
 setMethod("reactions", "SOSDesign", function(object) object@reactions)
-setReplaceMethod("reactions", "Experiment", function(object, value) {
+setReplaceMethod("reactions", "SOSDesign", function(object, value) {
   object@reactions <- value
   object
 })

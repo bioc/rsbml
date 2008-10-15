@@ -4,23 +4,24 @@ setClass("Layout", representation(id = "character", dimensions = "Dimensions",
 
 setMethod("describe", "Layout",
           function(object) {
-            descs <- paste("Layout", id(object), "on",
+            max <- 4
+            descs <- paste("Layout", id(object), "in",
                            describe(dimensions(object)))
             if (length(compartmentGlyphs(object)))
               descs <- c(descs, "", "Compartment glyphs:",
-                         describe(compartmentGlyphs(object)))
+                         describe(compartmentGlyphs(object), max))
             if (length(speciesGlyphs(object)))
               descs <- c(descs, "", "Species glyphs:",
-                         describe(speciesGlyphs(object)))
+                         describe(speciesGlyphs(object), max))
             if (length(reactionGlyphs(object)))
               descs <- c(descs, "", "Reaction glyphs:",
-                         describe(reactionGlyphs(object)))
+                         describe(reactionGlyphs(object), max))
             if (length(textGlyphs(object)))
               descs <- c(descs, "", "Text glyphs:",
-                         describe(textGlyphs(object)))
+                         describe(textGlyphs(object), max))
             if (length(additionalGraphicalObjects(object)))
               descs <- c(descs, "", "Other:",
-                         describe(additionalGraphicalObjects(object)))
+                         describe(additionalGraphicalObjects(object), max))
             descs
           })
 

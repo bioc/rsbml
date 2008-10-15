@@ -11,7 +11,9 @@ setClass("Model",
          contains = "SBase")
 
 setMethod("describe", "Model", function(object) {
-  descs <- paste("Model ", id(object) , " (", name(object), "):", sep = "")
+  descs <- paste("Model of ", id(object), sep = "")
+  if (length(name(object)))
+    descs <- paste(descs, " (", name(object), ")", sep = "")
   if (!is.null(modelHistory(object)))
     descs <- c(descs, describe(modelHistory(object)))
   descList <- function(name, max = 4) {

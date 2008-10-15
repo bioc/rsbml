@@ -3,7 +3,7 @@ setClass("GraphicalObject", representation(id = "character", boundingBox = "Boun
 
 setMethod("describe", "GraphicalObject",
           function(object) {
-            paste("in ", describe(boundingBox(object)), ": ", sep = "")
+            paste("in ", describe(boundingBox(object)), sep = "")
           })
 
 setMethod("id", "GraphicalObject", function(object) object@id)

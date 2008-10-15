@@ -5,8 +5,8 @@ setClass("SBML", representation(level = "integer", ver = "integer", model = "Mod
 setMethod("describe", "SBML",
           function(object) {
             desc <- paste("SBML Document (level = ", level(object),
-                          ", version = ", version(object), ")", sep = "")
-            c(desc, "", describe(model(object)))
+                          ", version = ", ver(object), ")", sep = "")
+            c(desc, describe(model(object)))
           })
 
 setGeneric("level", function(object) standardGeneric("level"))

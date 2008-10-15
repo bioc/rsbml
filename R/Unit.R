@@ -4,12 +4,13 @@ setClass("Unit", representation(kind = "character", exponent = "integer",
 
 setMethod("describe", "Unit",
           function(object) {
-            if (length(multiplier(object)))
-              desc <- paste(multiplier(object), "*", sep = "")
-            if (length(unitScale(object)))
+            desc <- ""
+            if (length(multiplier(object)) && multiplier(object) != 1)
+              desc <- paste(desc, multiplier(object), "*", sep = "")
+            if (length(unitScale(object)) && unitScale(object) != 0)
               desc <- paste(desc, "10^", unitScale(object), "*", sep = "")
             desc <- paste(desc, kind(object), sep = "")
-            if (length(exponent(object)))
+            if (length(exponent(object)) && exponent(object) != 1)
               desc <- paste("(", desc, ")^", exponent(object), sep = "")
             desc
           })

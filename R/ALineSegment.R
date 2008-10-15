@@ -1,6 +1,6 @@
 setClass("LineSegment", representation(start = "Point", end = "Point"), contains = "SBase")
 
-setMethod("show", "LineSegment",
+setMethod("describe", "LineSegment",
           function(object) paste(describe(start), "to", describe(end)))
 
  setGeneric("start", function(x, ...) standardGeneric("start"))
