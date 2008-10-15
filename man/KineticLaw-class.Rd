@@ -15,6 +15,7 @@
 \alias{timeUnits<-}
 \alias{parameters,KineticLaw-method}
 \alias{parameters<-,KineticLaw-method}
+\alias{OptionalKineticLaw-class}
 
 \title{SBML type "KineticLaw"}
 \description{Describes the rate of a \code{\linkS4class{Reaction}}.}

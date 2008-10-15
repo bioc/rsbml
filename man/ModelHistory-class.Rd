@@ -17,6 +17,8 @@
 \alias{modifiedDate<-,ModelHistory-method}
 \alias{modifiedDate<-,ModelHistory,character-method}
 \alias{modifiedDate<-,ModelHistory,POSIXt-method}
+\alias{OptionalModelHistory-class}
+
 \title{SBML Type "ModelHistory"}
 \description{Stores the history of an SBML model, including the
   created/modified dates and the creators.}

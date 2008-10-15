@@ -5,6 +5,7 @@
 \alias{curveSegments}
 \alias{curveSegments<-,Curve-method}
 \alias{curveSegments<-}
+\alias{OptionalCurve-class}
 
 \title{SBML type "Curve"}
 \description{A curve (list of line segments) in an SBML layout.}

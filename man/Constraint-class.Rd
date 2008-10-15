@@ -3,9 +3,10 @@
 \alias{Constraint-class}
 \alias{math,Constraint-method}
 \alias{math<-,Constraint-method}
-\alias{message,Constraint-method}
-\alias{message<-,Constraint-method}
-\alias{message<-}
+\alias{msg,Constraint-method}
+\alias{msg<-,Constraint-method}
+\alias{msg<-}
+\alias{msg}
 
 \title{SBML Type "Constraint"}
 \description{	A constraint that must be continuously satisfied throughout the
@@ -42,8 +43,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
   \describe{
     \item{math}{\code{signature(domain = "Constraint")}: gets the \code{math} slot. }
     \item{math<-}{\code{signature(object = "Constraint")}: sets the \code{math} slot. }
-    \item{message}{\code{signature(domain = "Constraint")}: gets the \code{message} slot. }
-    \item{message<-}{\code{signature(object = "Constraint")}: sets the \code{message} slot. }
+    \item{msg}{\code{signature(domain = "Constraint")}: gets the \code{msg} slot. }
+    \item{msg<-}{\code{signature(object = "Constraint")}: sets the \code{msg} slot. }
 	 }
 }
 \references{\url{http://sbml.org/documents/}}

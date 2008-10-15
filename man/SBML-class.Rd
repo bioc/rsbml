@@ -2,6 +2,7 @@
 \docType{class}
 \alias{SBML-class}
 \alias{coerce,SBML,SBMLDocument-method}
+\alias{coerce,SBML,graph-method}
 \alias{coerce}
 \alias{level,SBML-method}
 \alias{level}
@@ -17,11 +18,13 @@
 \alias{rsbml_write}
 \alias{rsbml_xml,SBML-method}
 \alias{rsbml_xml}
+\alias{rsbml_graph,SBML-method}
 \alias{ver,SBML-method}
 \alias{ver}
 \alias{ver<-,SBML-method}
 \alias{ver<-}
 \alias{as.character.SBML}
+\alias{simulate,SBML-method}
 
 \title{SBML type "SBML"}
 \description{The root element of an SBML document. An actual SBML 
@@ -30,7 +33,7 @@
 Objects can be created by calls of the form \code{new("SBML", ...)}.
 }
 \section{Slots}{
-	 \describe{
+  \describe{
     \item{\code{level}:}{Object of class \code{"integer"} indicating the
       level of the SBML standard (currently at 2). }
     \item{\code{ver}:}{Object of class \code{"integer"} indicating the
@@ -61,6 +64,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
       constructs the S4 object model from a low-level libsbml document.}
     \item{coerce}{\code{signature(from = "SBML", to = "SBMLDocument")}: 
       converts the S4 object model to a low-level libsbml document. }
+    \item{coerce}{\code{signature(from = "SBML", to = "graph")}: 
+      converts the S4 object model to a graph. }
     \item{level}{\code{signature(object = "SBML")}: gets the \code{level} slot }
     \item{level<-}{\code{signature(object = "SBML")}: sets the \code{level} slot }
     \item{model}{\code{signature(object = "SBML")}: gets the \code{model} slot }
@@ -71,9 +76,15 @@ Class \code{"\linkS4class{SBase}"}, directly.
       to a file as SBML.}
     \item{rsbml\_xml}{\code{signature(object = "SBML")}: converts this document
       to a string as SBML.}
+    \item{rsbml\_graph}{\code{signature(object = "SBML")}: converts this
+      document to a graph object. }
+    \item{simulate}{\code{signature(object = "SBML")}: converts this
+      document to an internal \code{\linkS4class{SBMLDocument}} and
+      calls \code{simulate} on it.}
     \item{ver}{\code{signature(object = "SBML")}: gets the \code{ver} slot }
-    \item{ver<-}{\code{signature(object = "SBML")}: sets the \code{ver} slot }
-	 }
+    \item{ver<-}{\code{signature(object = "SBML")}: sets the \code{ver}
+slot }
+  }
 }
 \examples{
   # Get a DOM

@@ -14,6 +14,7 @@
 \alias{rsbml_write,SBMLDocument-method}
 \alias{rsbml_xml,SBMLDocument-method}
 \alias{as.character.SBMLDocument}
+\alias{simulate,SBMLDocument-method}
 
 \title{"SBMLDocument" from libsbml}
 \description{Low-level libsbml document structure.}
@@ -40,7 +41,13 @@ Class \code{"\linkS4class{oldClass}"}, directly.
       document to a file as SBML. }
     \item{rsbml\_xml}{\code{signature(object = "SBMLDocument")}: converts this 
       document to a string as SBML. }
-	 }
+    \item{simulate}{\code{signature(object = "SBMLDocument")}:
+      \code{simulate(object, nsim = 10, seed, ...)}: a shortcut for
+      simulating the model in this document using the SBML ODE Solver
+      library. Arguments in \code{...} should match slots of
+      \code{\linkS4class{SOSProtocol}}. See \code{\link{simulate}} for
+      more details.}
+  }
 }
 \examples{
   # Read a document into an R DOM

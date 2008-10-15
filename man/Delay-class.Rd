@@ -3,6 +3,7 @@
 \alias{Delay-class}
 \alias{math,Delay-method}
 \alias{math<-,Delay-method}
+\alias{OptionalDelay-class}
 
 \title{SBML Type "Delay"}
 \description{	The length of time between the \code{\linkS4class{Trigger}}ing of an 

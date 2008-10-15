@@ -3,6 +3,7 @@
 \alias{StoichiometryMath-class}
 \alias{math,StoichiometryMath-method}
 \alias{math<-,StoichiometryMath-method}
+\alias{OptionalStoichiometryMath-class}
 
 \title{SBML type "StoichiometryMath"}
 \description{Dynamically defines the stoichiometry of a \code{\linkS4class{SpeciesReference}}.}
