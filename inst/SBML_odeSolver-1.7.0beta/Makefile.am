@@ -32,7 +32,7 @@
 ##   SUBDIRS = src odeSolver bindings
 ##else
 
-   SUBDIRS = src odeSolver
+   SUBDIRS = src
 
 ##endif
 EXTRA_DIST = Win32/* \
