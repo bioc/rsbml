@@ -48,7 +48,7 @@
   if (!ncol(design)) {
     res <- list(res)
   }
-  res <- lapply(res, function(r) do.call("rbind", r))
+  res <- lapply(res, function(r) do.call(rbind, r))
   ## our result will be a data.frame with columns:
   ## entity types and entity names
   model <- model(rsbml_dom(object))
@@ -81,7 +81,7 @@
   ## bundle everyhing in an SOSExperiment
   mc <- match.call()
   slots <- as.list(mc)[names(mc) %in% slotNames("SOSProtocol")]
-  protocol <- do.call("new", c(list("SOSProtocol"), slots))
+  protocol <- do.call(new, c(list("SOSProtocol"), slots))
   result <- new("SOSResult", data = result)
   new("SOSExperiment", subject = new("SOSSubject", model), design = design,
       protocol = protocol, result = result)
@@ -190,7 +190,7 @@ setMethod("as.ts", "SOSResult",
           function(x)
           {
             data <- x@data
-            tdata <- do.call("cbind", split(data$value, data$id))
+            tdata <- do.call(cbind, split(data$value, data$id))
             ts(tdata, 0, max(data$time))
           })
 
@@ -215,7 +215,7 @@ setMethod("simulate", "SOSExperiment",
             doc <- rsbml_doc(subject(object))
             args <- c(list(doc, nsim, design = design(object)),
                       protoParms)
-            exp <- do.call("simulate", args)
+            exp <- do.call(simulate, args)
             ## store result in our experiment (preserves rest of object)
             result(object) <- result(exp)
             object

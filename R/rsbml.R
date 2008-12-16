@@ -65,8 +65,8 @@ setMethod("rsbml_problems", "SBMLDocument",
             classes <- c("SBMLInfo", "SBMLWarning", "SBMLError", "SBMLFatal")
             makeProblems <- function(ind)
               lapply(probs[[ind]],
-                     function(prob) do.call("new", c(classes[ind], prob)))
+                     function(prob) do.call(new, c(classes[ind], prob)))
             formalProbs <- lapply(seq_along(probs), makeProblems)
             names(formalProbs) <- names(probs)
-            do.call("new", c("SBMLProblems", formalProbs))
+            do.call(new, c("SBMLProblems", formalProbs))
           })
