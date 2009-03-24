@@ -57,6 +57,10 @@ setMethod("rsbml_check", "SBMLDocument",
   valid
 })
 
+setMethod("rsbml_check", "SBML", function(object, strict) {
+  rsbml_check(rsbml_doc(object), strict)
+})
+
 setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
 setMethod("rsbml_problems", "SBMLDocument",
           function(object) {

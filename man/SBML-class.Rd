@@ -19,6 +19,7 @@
 \alias{rsbml_xml,SBML-method}
 \alias{rsbml_xml}
 \alias{rsbml_graph,SBML-method}
+\alias{rsbml_check,SBML-method}
 \alias{ver,SBML-method}
 \alias{ver}
 \alias{ver<-,SBML-method}
@@ -78,6 +79,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
       to a string as SBML.}
     \item{rsbml\_graph}{\code{signature(object = "SBML")}: converts this
       document to a graph object. }
+    \item{rsbml\_check}{\code{signature(object = "SBML")}: perform
+      consistency checks, see \code{\link{rsbml_check}}.}
     \item{simulate}{\code{signature(object = "SBML")}: converts this
       document to an internal \code{\linkS4class{SBMLDocument}} and
       calls \code{simulate} on it.}
