@@ -175,11 +175,11 @@ rsbml_build_dom_species(Species_t *species)
     SET_SLOT(r_species, install("spatialSizeUnits"), mkString(Species_getSpatialSizeUnits(species)));
   if (Species_isSetUnits(species))
     SET_SLOT(r_species, install("units"), mkString(Species_getUnits(species)));
-  SET_SLOT(r_species, install("hasOnlySubstanceUnits"), ScalarInteger(Species_getHasOnlySubstanceUnits(species)));
-  SET_SLOT(r_species, install("boundaryCondition"), ScalarInteger(Species_getBoundaryCondition(species)));
+  SET_SLOT(r_species, install("hasOnlySubstanceUnits"), ScalarLogical(Species_getHasOnlySubstanceUnits(species)));
+  SET_SLOT(r_species, install("boundaryCondition"), ScalarLogical(Species_getBoundaryCondition(species)));
   if (Species_isSetCharge(species))
     SET_SLOT(r_species, install("charge"), ScalarInteger(Species_getCharge(species)));
-  SET_SLOT(r_species, install("constant"), ScalarInteger(Species_getConstant(species)));
+  SET_SLOT(r_species, install("constant"), ScalarLogical(Species_getConstant(species)));
   
   UNPROTECT(1);
   return r_species;
@@ -202,7 +202,7 @@ rsbml_build_dom_parameter(Parameter_t *parameter)
     SET_SLOT(r_parameter, install("value"), ScalarReal(Parameter_getValue(parameter)));
   if (Parameter_isSetUnits(parameter))
     SET_SLOT(r_parameter, install("units"), mkString(Parameter_getUnits(parameter)));
-  SET_SLOT(r_parameter, install("constant"), ScalarInteger(Parameter_getConstant(parameter)));
+  SET_SLOT(r_parameter, install("constant"), ScalarLogical(Parameter_getConstant(parameter)));
   
   UNPROTECT(1);
   
@@ -368,9 +368,9 @@ rsbml_build_dom_reaction(Reaction_t *reaction)
     SET_SLOT(r_reaction, install("name"), mkString(Reaction_getName(reaction)));
   if (Reaction_isSetKineticLaw(reaction))
     SET_SLOT(r_reaction, install("kineticLaw"), rsbml_build_dom_kinetic_law(Reaction_getKineticLaw(reaction)));
-  SET_SLOT(r_reaction, install("reversible"), ScalarInteger(Reaction_getReversible(reaction)));
+  SET_SLOT(r_reaction, install("reversible"), ScalarLogical(Reaction_getReversible(reaction)));
   if (Reaction_isSetFast(reaction))
-    SET_SLOT(r_reaction, install("fast"), ScalarInteger(Reaction_getFast(reaction)));
+    SET_SLOT(r_reaction, install("fast"), ScalarLogical(Reaction_getFast(reaction)));
   
   SET_SLOT(r_reaction, install("reactants"), LIST_OF(reaction, Reaction, species_reference, Reactant, "species"));
   SET_SLOT(r_reaction, install("products"), LIST_OF(reaction, Reaction, species_reference, Product, "species"));
@@ -403,7 +403,7 @@ rsbml_build_dom_compartment(Compartment_t *compartment)
     SET_SLOT(r_compartment, install("units"), mkString(Compartment_getUnits(compartment)));
   if (Compartment_isSetOutside(compartment))
     SET_SLOT(r_compartment, install("outside"), mkString(Compartment_getOutside(compartment)));
-  SET_SLOT(r_compartment, install("constant"), ScalarInteger(Compartment_getConstant(compartment)));
+  SET_SLOT(r_compartment, install("constant"), ScalarLogical(Compartment_getConstant(compartment)));
   
   UNPROTECT(1);
   
