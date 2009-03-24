@@ -391,7 +391,7 @@ ASTNode_t *rmathml_ASTNode(SEXP sym) {
     else if (sym != install("if")) /* ignore 'else if' */
       type = AST_NAME;
     node = ASTNode_createWithType(type);
-    if (type == AST_NAME)
+    if (type == AST_NAME || type == AST_NAME_TIME)
       ASTNode_setName(node, CHAR(PRINTNAME(sym)));
     break;
   case REALSXP:
