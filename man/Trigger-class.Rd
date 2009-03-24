@@ -10,7 +10,7 @@
 Objects can be created by calls of the form \code{new("Trigger", ...)}.
 }
 \section{Slots}{
-	 \describe{
+  \describe{
     \item{\code{math}:}{Object of class \code{"expression"} that evaluates to
     \code{TRUE} when the event should be fired.}
     \item{\code{metaId}:}{Object of class \code{"character"} that is an XML ID
@@ -33,8 +33,11 @@ Objects can be created by calls of the form \code{new("Trigger", ...)}.
 Class \code{"\linkS4class{SBase}"}, directly.
 }
 \section{Methods}{
-  \item{math}{\code{signature(domain = "Trigger")}: gets the \code{math} slot. }
-  \item{math<-}{\code{signature(object = "Trigger")}: sets the \code{math} slot. }
+  \describe{
+    \item{math}{\code{signature(domain = "Trigger")}: gets the \code{math} slot. }
+    \item{math<-}{\code{signature(object = "Trigger")}: sets the
+      \code{math} slot. }
+  }
 }
 \references{\url{http://sbml.org/documents/}}
 \author{Michael Lawrence}
