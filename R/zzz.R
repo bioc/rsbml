@@ -1,4 +1,4 @@
-.First.lib <- function(libname, pkgname)
+.onLoad <- function(libname, pkgname)
 {
   if(.Platform$OS.type == "windows"){
      temp <- Sys.getenv("PATH")

@@ -64,7 +64,7 @@ a Bioconductor graph object, type the following:
 
 <<graph>>=
 g <- rsbml_graph(doc)
-nodes(g)
+graph::nodes(g)
 @
 
 Note that the list of node ID's contains all of the species ID's retrieved from

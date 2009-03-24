@@ -1,10 +1,11 @@
 Package: rsbml
-Version: 2.1.0
+Version: 2.1.1
 Title: R support for SBML, using libsbml
-Author:  Michael Lawrence <lawremi@iastate.edu>
-Depends: R (>= 2.6.0), graph, methods, utils
+Author:  Michael Lawrence <mflawren@fhcrc.org>
+Depends: R (>= 2.6.0), methods
+Imports: graph, utils
 SystemRequirements: libsbml (=2.3.4, >=3.0.3)
-Maintainer: Michael Lawrence <lawremi@fhcrc.edu>
+Maintainer: Michael Lawrence <mflawren@fhcrc.org>
 Description: Links R to libsbml for SBML parsing, validating output, 
   provides an S4 SBML DOM, converts SBML to R graph objects. Optionally 
   links to the SBML ODE Solver Library (SOSLib) for simulating models.
