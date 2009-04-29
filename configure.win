@@ -1,4 +1,4 @@
 #!/bin/sh
 
-mkdir $DPKG/libs
-cp $LIBSBML_PATH/bin/*.dll $DPKG/libs
+mkdir ${R_PACKAGE_DIR}/libs
+cp ${LIBSBML_PATH}/bin/*.dll ${R_PACKAGE_DIR}/libs
