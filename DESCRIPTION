@@ -2,7 +2,7 @@ Package: rsbml
 Version: 2.3.0
 Title: R support for SBML, using libsbml
 Author:  Michael Lawrence <mflawren@fhcrc.org>
-Depends: R (>= 2.6.0), methods
+Depends: R (>= 2.6.0), methods, utils
 Imports: graph, utils
 SystemRequirements: libsbml (=2.3.4, >=3.0.3)
 Maintainer: Michael Lawrence <mflawren@fhcrc.org>
