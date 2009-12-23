@@ -51,7 +51,8 @@
   res <- lapply(res, function(r) do.call(rbind, r))
   ## our result will be a data.frame with columns:
   ## entity types and entity names
-  model <- model(rsbml_dom(object))
+  dom <- rsbml_dom(object)
+  model <- model(dom)
   comp <- compartments(model)
   comp <- names(comp)[!sapply(comp, constant)]
   parm <- parameters(model)
@@ -83,7 +84,7 @@
   slots <- as.list(mc)[names(mc) %in% slotNames("SOSProtocol")]
   protocol <- do.call(new, c(list("SOSProtocol"), slots))
   result <- new("SOSResult", data = result)
-  new("SOSExperiment", subject = new("SOSSubject", model), design = design,
+  new("SOSExperiment", subject = new("SOSSubject", dom), design = design,
       protocol = protocol, result = result)
 }
 
@@ -161,7 +162,7 @@ setReplaceMethod("reactions", "SOSDesign", function(object, value) {
   object
 })
 
-setClass("SOSSubject", contains = c("ExperimentSubject", "Model"))
+setClass("SOSSubject", contains = c("ExperimentSubject", "SBML"))
 
 setClass("SOSResult", representation(data = "data.frame", sens = "matrix"),
          contains = "ExperimentResult")

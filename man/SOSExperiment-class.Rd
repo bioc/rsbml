@@ -32,7 +32,7 @@ Class \code{\linkS4class{Experiment}}, directly.
   \describe{
     \item{simulate}{\code{signature(object = "SOSExperiment")}:
       \code{simulate(object, nsim = 10, seed, ...)}: Simulates
-      the model in the \code{subject} slot according to the
+      the SBML document in the \code{subject} slot according to the
       design points in \code{design} and parameters in \code{protocol}
       for \code{nsim} iterations, using \code{seed} as the random
       seed. Returns an instance of \code{SOSExperiment}, which now
@@ -42,11 +42,11 @@ Class \code{\linkS4class{Experiment}}, directly.
 \details{
   The general workflow for running a simulation:
   \enumerate{
-    \item Create or import an SBML \code{\linkS4class{Model}}.
+    \item Create or import an \linkS4class{SBML} DOM.
     \item Customize the model, for example by adding perturbation
       \code{\linkS4class{Event}}s.
-    \item Wrap the model in a \code{\linkS4class{SOSSubject}},
-      e.g. \code{new("SOSSubject", model)}.
+    \item Wrap the SBML DOM in a \code{\linkS4class{SOSSubject}},
+      e.g. \code{new("SOSSubject", dom)}.
     \item Optionally construct a \code{\linkS4class{SOSDesign}} for
       running the experiment in batch over several sets of model parameter
       settings.

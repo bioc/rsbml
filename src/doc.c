@@ -802,9 +802,12 @@ rsbml_build_doc_model_history(SEXP r_model_history)
   
   model_history = ModelHistory_create();
   
-  SET_XML_ATTR_OBJ(ModelHistory, model_history, CreatedDate, createdDate, Date, date);
-  SET_XML_ATTR_OBJ(ModelHistory, model_history, ModifiedDate, modifiedDate, Date, date);
-  ADD_LIST(ModelHistory, model_history, Creator, creators, ModelCreator, model_creator);
+  SET_XML_ATTR_OBJ(ModelHistory, model_history, CreatedDate, createdDate, Date,
+                   date);
+  SET_XML_ATTR_OBJ(ModelHistory, model_history, ModifiedDate, modifiedDate,
+                   Date, date);
+  ADD_LIST(ModelHistory, model_history, Creator, creators, ModelCreator,
+           model_creator);
   
   return model_history;
 }
@@ -821,9 +824,10 @@ rsbml_build_doc_model(SEXP r_model)
   SET_XML_ATTR(Model, model, Name, name, STRING);
 
   ADD_LIST(Model, model, Species, species, Species, species);
-  ADD_LIST(Model, model, FunctionDefinition, functionDefinitions, FunctionDefinition, 
-    function_definition);
-  ADD_LIST(Model, model, UnitDefinition, unitDefinitions, UnitDefinition, unit_definition);
+  ADD_LIST(Model, model, FunctionDefinition, functionDefinitions,
+           FunctionDefinition, function_definition);
+  ADD_LIST(Model, model, UnitDefinition, unitDefinitions, UnitDefinition,
+           unit_definition);
   ADD_LIST(Model, model, Compartment, compartments, Compartment, compartment);
   ADD_LIST(Model, model, Parameter, parameters, Parameter, parameter);
   ADD_LIST(Model, model, Rule, rules, Rule, rule);
@@ -831,8 +835,10 @@ rsbml_build_doc_model(SEXP r_model)
   ADD_LIST(Model, model, Event, events, Event, event);
   #ifdef LIBSBML3
   ADD_LIST(Model, model, SpeciesType, speciesTypes, SpeciesType, species_type);
-  ADD_LIST(Model, model, CompartmentType, compartmentTypes, CompartmentType, compartment_type);
-  ADD_LIST(Model, model, InitialAssignment, initialAssignments, InitialAssignment, initial_assignment);
+  ADD_LIST(Model, model, CompartmentType, compartmentTypes, CompartmentType,
+           compartment_type);
+  ADD_LIST(Model, model, InitialAssignment, initialAssignments,
+           InitialAssignment, initial_assignment);
   ADD_LIST(Model, model, Constraint, constraints, Constraint, constraint);
   #endif
   #ifdef USE_LAYOUT
@@ -840,7 +846,8 @@ rsbml_build_doc_model(SEXP r_model)
   #endif
   
   #ifdef LIBSBML3
-  SET_XML_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory, model_history);
+  SET_XML_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory,
+                   model_history);
   #endif
   
   return model;
