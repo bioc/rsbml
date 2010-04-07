@@ -59,6 +59,9 @@
 \alias{modelHistory,Model-method}
 \alias{modelHistory<-}
 \alias{modelHistory<-,Model-method}
+\alias{stoichiometryMatrix}
+\alias{stoichiometryMatrix,Model-method}
+
 
 \title{SBML type "Model"}
 \description{The central SBML element. Contains the \code{\linkS4class{Species}},
@@ -155,7 +158,8 @@ Class \code{"\linkS4class{SBase}"}, directly.
       \code{speciesTypes}slot }
     \item{modelHistory}{\code{signature(object = "Model")}: gets the \code{modelHistory} slot }
     \item{modelHistory<-}{\code{signature(object = "Model")}: sets the \code{modelHistory} slot }
-    
+    \item{stoichiometryMatrix}{\code{signature(object = "Model")}:
+    calculates the stoichiometry matrix of the model }
   }
   
 }
