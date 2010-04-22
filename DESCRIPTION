@@ -1,5 +1,5 @@
 Package: rsbml
-Version: 2.6.0
+Version: 2.7.0
 Title: R support for SBML, using libsbml
 Author:  Michael Lawrence <mflawren@fhcrc.org>
 Depends: R (>= 2.6.0), methods, utils
