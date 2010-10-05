@@ -61,6 +61,9 @@
 #include "sbmlsolver/processAST.h"
 #include "sbmlsolver/solverError.h"
 
+#define SBML_VERSION 2
+#define SBML_LEVEL 2
+
 static void ODE_replaceFunctionDefinitions(Model_t *m);
 static Model_t *Model_copyInits(Model_t *old);
 static int Model_createOdes(Model_t *m, Model_t*ode);
@@ -149,8 +152,12 @@ static Model_t *Model_copyInits(Model_t *old)
   Compartment_t *c;
   Species_t *s, *s_new;
 
+#if LIBSBML_VERSION >= 40000
+  new = Model_create(SBML_VERSION, SBML_LEVEL);
+#else
   new = Model_create();
-
+#endif
+  
   if ( Model_isSetId(old) )
     Model_setId(new, Model_getId(old));
   else if ( Model_isSetName(old) ) /* problematic? necessary ?*/
@@ -219,7 +226,11 @@ static void Model_copyOdes(Model_t *m, Model_t*ode )
       if ( Rule_isSetMath(rl) && Rule_isSetVariable(rr) )
       {
 	math = copyAST(Rule_getMath(rl));
-	rl_new = Rule_createRate();
+#if LIBSBML_VERSION >= 40000
+	rl_new = Rule_createRate(SBML_VERSION, SBML_LEVEL);
+#else
+        rl_new = Rule_createRate();
+#endif
 	Rule_setVariable(rl_new, Rule_getVariable(rr));
 	Rule_setMath((Rule_t *)rl_new, math);
 	Model_addRule(ode, (Rule_t *)rl_new);
@@ -311,7 +322,11 @@ static int Model_createOdes(Model_t *m, Model_t *ode)
 	  ASTNode_free(math);
 	else
 	{
+#if LIBSBML_VERSION >= 40000
+          rule_new = Rule_createRate(SBML_VERSION, SBML_LEVEL);
+#else
 	  rule_new = Rule_createRate();
+#endif
 	  Rule_setVariable(rule_new, Species_getId(s));
 	  Rule_setMath((Rule_t *)rule_new, math);
 	  Model_addRule(ode, (Rule_t *)rule_new);
@@ -327,7 +342,11 @@ static int Model_createOdes(Model_t *m, Model_t *ode)
     Reaction_t *reaction =
       (Reaction_t *)ListOf_get(Model_getListOfReactions(m), i);
     KineticLaw_t *kineticLaw = Reaction_getKineticLaw(reaction);
+#if LIBSBML_VERSION >= 40000
+    Parameter_t *parameter = Parameter_create(SBML_VERSION, SBML_LEVEL);
+#else
     Parameter_t *parameter = Parameter_create();
+#endif
 
     Parameter_setId(parameter, Reaction_getId(reaction));
     Parameter_setConstant(parameter, 0);
@@ -336,7 +355,11 @@ static int Model_createOdes(Model_t *m, Model_t *ode)
 
     if ( kineticLaw )
     {
+#if LIBSBML_VERSION >= 40000
+      rule = Rule_createAssignment(SBML_VERSION, SBML_LEVEL);
+#else
       rule = Rule_createAssignment();
+#endif 
       Rule_setVariable(rule, Reaction_getId(reaction));
       math = copyAST(KineticLaw_getMath(kineticLaw));
       AST_replaceNameByParameters(math,
@@ -601,7 +624,11 @@ static int Model_copyAlgebraicRules(Model_t *m, Model_t*ode)
       if ( Rule_isSetMath(rl) )
       {
 	math = copyAST(Rule_getMath(rl));
+#if LIBSBML_VERSION >= 40000
+        alr_new = Rule_createAlgebraic(SBML_VERSION, SBML_LEVEL);
+#else
 	alr_new = Rule_createAlgebraic();
+#endif
 	Rule_setMath(alr_new, math);
 	Model_addRule(ode, alr_new);
 	ASTNode_free(math);
@@ -650,7 +677,11 @@ static void Model_copyAssignmentRules(Model_t *m, Model_t*ode)
       if ( Rule_isSetMath(rl) && Rule_isSetVariable(rl) )
       {
 	math = copyAST(Rule_getMath(rl));
+#if LIBSBML_VERSION >= 40000
+        ar_new = Rule_createAssignment(SBML_VERSION, SBML_LEVEL);
+#else
 	ar_new = Rule_createAssignment();
+#endif
 	Rule_setVariable(ar_new, Rule_getVariable(rl));
 	Rule_setMath((Rule_t *)ar_new, math);
 	Model_addRule(ode, (Rule_t *)ar_new);
