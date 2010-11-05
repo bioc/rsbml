@@ -76,29 +76,40 @@ Objects can be created by calls of the form \code{new("Model", ...)}.
     \item{\code{id}:}{Object of class \code{"character"} uniquely identifying this component. }
     \item{\code{name}:}{Object of class \code{"character"} naming this component. }
     \item{\code{functionDefinitions}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{FunctionDefinition}}s.}
+      \code{\linkS4class{FunctionDefinition}}s. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{unitDefinitions}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{UnitDefinition}}s. }
+      \code{\linkS4class{UnitDefinition}}s. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{compartments}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Compartment}}s. }
+      \code{\linkS4class{Compartment}}s.  The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{species}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Species}}s. }
+      \code{\linkS4class{Species}}s. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{parameters}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Parameter}}s. }
+      \code{\linkS4class{Parameter}}s. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{rules}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Rule}}s. }
+      \code{\linkS4class{Rule}}s.  }
     \item{\code{reactions}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Reaction}}s. }
+      \code{\linkS4class{Reaction}}s. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{events}:}{Object of class \code{"list"} containing
-    \code{\linkS4class{Event}}s. }
+    \code{\linkS4class{Event}}s. The names of the list
+      correspond to the IDs of the elements.}
     \item{\code{layouts}:}{Object of class \code{"list"} containing
-    \code{\linkS4class{Layout}}s. }
+    \code{\linkS4class{Layout}}s. The names of the list
+      correspond to the IDs of the elements.}
     \item{\code{speciesTypes}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{SpeciesType}}s.}
+      \code{\linkS4class{SpeciesType}}s. The names of the list
+      correspond to the IDs of the elements.}
     \item{\code{compartmentTypes}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{CompartmentType}}s.}
+      \code{\linkS4class{CompartmentType}}s. The names of the list
+      correspond to the IDs of the elements.}
     \item{\code{constraints}:}{Object of class \code{"list"} containing
-      \code{\linkS4class{Constraint}}s.}
+      \code{\linkS4class{Constraint}}s. The names of the list
+      correspond to the IDs of the elements.}
     \item{\code{initialAssignments}:}{Object of class \code{"list"} containing
       \code{\linkS4class{InitialAssignment}}s.}
     \item{\code{modelHistory}:}{Object of class

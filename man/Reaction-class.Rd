@@ -42,13 +42,19 @@ Objects can be created by calls of the form \code{new("Reaction", ...)}.
     \item{\code{name}:}{Object of class \code{"character"} naming this component. }
     \item{\code{reactants}:}{Object of class \code{"list"} containing 
       \code{\linkS4class{SpeciesReference}}s specifying the 
-      \code{\linkS4class{Species}} that are reactants for this reaction.}
+      \code{\linkS4class{Species}} that are reactants for this
+      reaction. The names of the list correspond to the IDs of the
+      species. }
     \item{\code{products}:}{Object of class \code{"list"} containing 
       \code{\linkS4class{SpeciesReference}}s specifying the 
-      \code{\linkS4class{Species}} that are products for this reaction. }
+      \code{\linkS4class{Species}} that are products for this
+      reaction. The names of the list correspond to the IDs of the
+      species. }
     \item{\code{modifiers}:}{Object of class \code{"list"} containing 
       \code{\linkS4class{ModifierSpeciesReference}}s specifying the 
-      \code{\linkS4class{Species}} that are modifiers for this reaction. }
+      \code{\linkS4class{Species}} that are modifiers for this
+      reaction. The names of the list correspond to the IDs of the
+      species. }
     \item{\code{kineticLaw}:}{Object of class \code{"KineticLaw"} that dynamically 
       defines the rate of the reaction.}
     \item{\code{reversible}:}{Object of class \code{"logical"} indicating whether

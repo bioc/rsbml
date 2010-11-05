@@ -37,23 +37,30 @@ Objects can be created by calls of the form \code{new("Layout", ...)}.
 }
 \section{Slots}{
 	 \describe{
-    \item{\code{id}:}{Object of class \code{"character"} uniquely identifying this component. }
-    \item{\code{dimensions}:}{Object of class \code{"Dimensions"} specifing the
-    size of the layout.}
-    \item{\code{compartmentGlyphs}:}{Object of class \code{"list"} containing the
-    \code{\linkS4class{CompartmentGlyph}}s.}
-    \item{\code{speciesGlyphs}:}{Object of class \code{"list"} containing the
-    \code{\linkS4class{SpeciesGlyph}}s. }
-    \item{\code{reactionGlyphs}:}{Object of class \code{"list"} containing the
-    \code{\linkS4class{ReactionGlyph}}s. }
-    \item{\code{textGlyphs}:}{Object of class \code{"list"} containing the
-    \code{\linkS4class{TextGlyph}}s. }
-    \item{\code{additionalGraphicalObjects}:}{Object of class \code{"list"} containing the
-    additional \code{\linkS4class{GraphicalObject}}s that are not bound to any model component.  }
-    \item{\code{metaId}:}{Object of class \code{"character"} that is an XML ID
-      "described" by an RDF resource. This links an SBML element to an RDF
-      resource. RDF may appear anywhere in an SBML element,
-      but is usually placed inside the \code{annotation} element.}
+    \item{\code{id}:}{Object of class \code{"character"} uniquely
+    identifying this component. } \item{\code{dimensions}:}{Object of
+    class \code{"Dimensions"} specifing the size of the layout.}
+    \item{\code{compartmentGlyphs}:}{Object of class \code{"list"}
+    containing the \code{\linkS4class{CompartmentGlyph}}s. The names of
+    the list correspond to the IDs of the elements. }
+    \item{\code{speciesGlyphs}:}{Object of class \code{"list"}
+    containing the \code{\linkS4class{SpeciesGlyph}}s. The names of the
+    list correspond to the IDs of the elements. }
+    \item{\code{reactionGlyphs}:}{Object of class \code{"list"}
+    containing the \code{\linkS4class{ReactionGlyph}}s. The names of the
+    list correspond to the IDs of the
+    elements. } \item{\code{textGlyphs}:}{Object of class \code{"list"}
+    containing the \code{\linkS4class{TextGlyph}}s. The names of the
+    list correspond to the IDs of the
+    elements.}  \item{\code{additionalGraphicalObjects}:}{Object of
+    class \code{"list"} containing the
+    additional \code{\linkS4class{GraphicalObject}}s that are not bound
+    to any model component.  The names of the list correspond to the IDs
+    of the elements. } \item{\code{metaId}:}{Object of
+    class \code{"character"} that is an XML ID "described" by an RDF
+    resource. This links an SBML element to an RDF resource. RDF may
+    appear anywhere in an SBML element, but is usually placed inside
+    the \code{annotation} element.}
     \item{\code{notes}:}{Object of class \code{"character"} 
       containing user-readable XHTML notes about an element. }
     \item{\code{annotation}:}{Object of class \code{"character"} containing

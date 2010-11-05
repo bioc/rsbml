@@ -27,7 +27,9 @@ Objects can be created by calls of the form \code{new("KineticLaw", ...)}.
     \item{\code{math}:}{Object of class \code{"expression"} defining the
     rate of the reaction.}
     \item{\code{parameters}:}{Object of class \code{"list"} containing
-    \code{\linkS4class{Parameter}}s that may be used in \code{math}.}
+    \code{\linkS4class{Parameter}}s that may be used
+    in \code{math}. The names of the list correspond to the IDs of the
+    elements.}
     \item{\code{timeUnits}:}{Object of class \code{"character"} indicating the
     units for time.}
     \item{\code{substanceUnits}:}{Object of class \code{"character"} indicating

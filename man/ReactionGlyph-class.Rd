@@ -27,7 +27,9 @@ Objects can be created by calls of the form \code{new("ReactionGlyph", ...)}.
       this glyph as a curve (optional). }
     \item{\code{speciesReferenceGlyphs}:}{Object of class \code{"list"} containing
     \code{\linkS4class{SpeciesReferenceGlyph}}s that represent the 
-    \code{\linkS4class{SpeciesReference}}s of the underlying \code{\linkS4class{Reaction}}.}
+    \code{\linkS4class{SpeciesReference}}s of the
+    underlying \code{\linkS4class{Reaction}}. The names of the list
+      correspond to the IDs of the elements. }
     \item{\code{id}:}{Object of class \code{"character"} uniquely identifying this component. }
     \item{\code{boundingBox}:}{Object of class \code{"BoundingBox"} describing
     the position and size of the graphical object.}
