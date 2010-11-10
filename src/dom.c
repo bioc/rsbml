@@ -109,6 +109,17 @@ rsbml_build_dom_cvterm(CVTerm_t *cvterm)
     case BQB_IS_DESCRIBED_BY:
       qualifier_type = "isDescribedBy";
     break;
+#if LIBSBML_VERSION >= 30300
+  case BQB_IS_ENCODED_BY:
+    qualifier_type = "isEncodedBy";
+    break;
+  case BQB_ENCODES:
+    qualifier_type = "encodes";
+    break;
+  case BQB_OCCURS_IN:
+    qualifier_type = "occursIn";
+    break;
+#endif
     default:
       qualifier_type = "unknown";
   }
@@ -635,6 +646,9 @@ rsbml_build_dom_event(Event_t *event)
     SET_SLOT(r_event, install("eventDelay"), rsbml_build_dom_delay(Event_getDelay(event)));
   if (Event_isSetTrigger(event))
     SET_SLOT(r_event, install("trigger"), rsbml_build_dom_trigger(Event_getTrigger(event)));
+#if LIBSBML_VERSION >= 30300
+  // TODO: handle the useValueFromTrigger field
+#endif
   #else
   if (Event_isSetTrigger(event))
     SET_MATH(Event, event, Trigger, trigger);

@@ -2,7 +2,9 @@ setClassUnion("OptionalDelay", c("Delay", "NULL"))
 setClass("Event",
          representation(id = "character", name = "character",
                         trigger = "Trigger", eventDelay = "OptionalDelay",
-                        timeUnits = "character", eventAssignments = "list"),
+                        timeUnits = "character", eventAssignments = "list",
+                        useValuesFromTriggerTime = "logical"),
+         prototype(useValuesFromTriggerTime = TRUE),
          contains = "SBase")
 
 setMethod("describe", "Event",

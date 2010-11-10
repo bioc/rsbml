@@ -50,6 +50,14 @@ rsbml_build_doc_biological_qualifier_type(SEXP r_type)
     type = BQB_IS_HOMOLOG_TO;
   else if (!strcmp(name, "isDescribedBy"))
     type = BQB_IS_DESCRIBED_BY;
+#if LIBSBML_VERSION >= 30300
+  else if (!strcmp(name, "isEncodedBy"))
+    type = BQB_IS_ENCODED_BY;
+  else if (!strcmp(name, "encodes"))
+    type = BQB_ENCODES;
+  else if (!strcmp(name, "occursIn"))
+    type = BQB_OCCURS_IN;
+#endif
   else type = BQB_UNKNOWN;
   return type;
 }
