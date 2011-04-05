@@ -26,17 +26,26 @@
 Objects can be created by calls of the form \code{new("Event", ...)}.
 }
 \section{Slots}{
-	 \describe{
-    \item{\code{id}:}{Object of class \code{"character"} uniquely identifying this component. }
-    \item{\code{name}:}{Object of class \code{"character"} naming this component. }
-    \item{\code{trigger}:}{Object of class \code{"expression"} that evaluates to
-    \code{TRUE} when the event is to be fired.}
-    \item{\code{eventDelay}:}{Object of class \code{"expression"} that evaluates to the
-    time until execution of this event after it has been fired.}
-    \item{\code{timeUnits}:}{Object of class \code{"character"} identifying the
-    units of the delay.}
-    \item{\code{eventAssignments}:}{Object of class \code{"list"} containing
-    \code{\linkS4class{EventAssignment}}s that are performed at execution.}
+  \describe{
+    \item{\code{id}:}{Object of class \code{"character"} uniquely
+      identifying this component. }
+    \item{\code{name}:}{Object of class
+      \code{"character"} naming this component. }
+    \item{\code{trigger}:}{Object of class \code{"expression"} that
+      evaluates to \code{TRUE} when the event is to be fired.}
+    \item{\code{eventDelay}:}{Object of class \code{"expression"} that
+      evaluates to the time until execution of this event after it has
+      been fired.}
+    \item{\code{timeUnits}:}{Object of class
+      \code{"character"} identifying the units of the delay.}
+    \item{\code{eventAssignments}:}{Object of class \code{"list"}
+      containing
+      \code{\linkS4class{EventAssignment}}s that are performed at
+      execution.}
+    \item{\code{useValuesFromTriggerTime}:}{Object of
+      class \code{"logical"}. If \code{FALSE}, the event is evaluated
+      after the delay, rather than when the event is executed.
+    }
     \item{\code{metaId}:}{Object of class \code{"character"} that is an XML ID
       "described" by an RDF resource. This links an SBML element to an RDF
       resource. RDF may appear anywhere in an SBML element,
