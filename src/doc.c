@@ -11,10 +11,53 @@
 
 #ifdef LIBSBML3
 
+#if LIBSBML_VERSION >= 50000
 /* Global variables because we're lazy. Otherwise, we would have to
    pass the version/level from the R document (SBML) to every function. */
 unsigned int SBML_VERSION;
 unsigned int SBML_LEVEL;
+
+static void rsbml_report_operation_status(OperationReturnValues_t status) {
+  const char *msg;
+  if (status == LIBSBML_OPERATION_SUCCESS)
+    return;
+  switch(status) {
+  case LIBSBML_INDEX_EXCEEDS_SIZE:
+    msg = "Index out of bounds";
+    break;
+  case LIBSBML_UNEXPECTED_ATTRIBUTE:
+    msg = "Unexpected attribute for the level/version of this element";
+    break;
+  case LIBSBML_OPERATION_FAILED:
+    msg = "Operation failed";
+    break;
+  case LIBSBML_INVALID_ATTRIBUTE_VALUE:
+    msg = "Invalid attribute value";
+    break;
+  case LIBSBML_INVALID_OBJECT:
+    msg = "Invalid object";
+    break;
+  case LIBSBML_DUPLICATE_OBJECT_ID:
+    msg = "An object already exists with this identifier";
+    break;
+  case LIBSBML_LEVEL_MISMATCH:
+    msg = "SBML level of child does not match that of parent";
+    break;
+  case LIBSBML_VERSION_MISMATCH:
+    msg = "SBML version of child does not match that of parent";
+    break;
+  case LIBSBML_INVALID_XML_OPERATION:
+    msg = "Invalid XML operation";
+    break;
+  case LIBSBML_NAMESPACES_MISMATCH:
+    msg = "Namespaces do not match";
+    break;
+  default:
+    msg = "Unhandled failure type";
+  }
+  error("libsbml operation failed: %s (code: %d)", msg, status);
+}
+#endif
 
 #define rsbml_build_doc_date(x) Date_createFromString(STRING(x))
 
@@ -90,22 +133,38 @@ static void Rule_free(Rule_t *rule) { }
     } \
 })
 
-#define SET_XML_ATTR_OBJ(Class, var, Name, name, ParamType, converter) \
-({ \
-    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name)); \
-    if (GET_LENGTH(r_ ## name)) { \
+#define SET_XML_ATTR_OBJ(Class, var, Name, name, ParamType, converter)  \
+  ({                                                                    \
+    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
+    if (GET_LENGTH(r_ ## name)) {                                       \
       ParamType ## _t *conv = rsbml_build_doc_ ## converter(r_ ## name); \
-      Class ## _set ## Name((Class ## _t *)var, conv); \
-      if (CLEANUP_MEMORY) \
-        ParamType ## _free(conv); \
-    } \
-})
-#define SET_XML_ATTR(Class, var, Name, name, converter) \
-({ \
-    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name)); \
-    if (GET_LENGTH(r_ ## name)) \
-      Class ## _set ## Name((Class ## _t *)var, converter(r_ ## name)); \
-})
+      Class ## _set ## Name((Class ## _t *)var, conv);     \
+      if (CLEANUP_MEMORY)                                               \
+        ParamType ## _free(conv);                                       \
+    }                                                                   \
+  })
+
+/* Useful for debugging; probably requires libsbml 5.x */
+#define SET_XML_ATTR_OBJ_CHECK(Class, var, Name, name, ParamType, converter) \
+  ({                                                                    \
+    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
+    if (GET_LENGTH(r_ ## name)) {                                       \
+      ParamType ## _t *conv = rsbml_build_doc_ ## converter(r_ ## name); \
+      int status = Class ## _set ## Name((Class ## _t *)var, conv);     \
+      if (CLEANUP_MEMORY)                                               \
+        ParamType ## _free(conv);                                       \
+      rsbml_report_operation_status(status);                            \
+    }                                                                   \
+  })
+
+#define SET_XML_ATTR(Class, var, Name, name, converter)                 \
+  ({                                                                    \
+    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
+    if (GET_LENGTH(r_ ## name)) {                                       \
+      Class ## _set ## Name((Class ## _t *)var,            \
+                            converter(r_ ## name));                     \
+    }                                                                   \
+  })
 
 #ifdef LIBSBML3
 static CVTerm_t *
@@ -157,7 +216,7 @@ rsbml_build_doc_species_type(SEXP r_species_type)
   SpeciesType_t * species_type;
   
 #if LIBSBML_VERSION >= 40000
-  species_type = SpeciesType_create(SBML_VERSION, SBML_LEVEL);
+  species_type = SpeciesType_create(SBML_LEVEL, SBML_VERSION);
 #else
   species_type = SpeciesType_create();
 #endif
@@ -176,8 +235,8 @@ rsbml_build_doc_species(SEXP r_species)
 {
   Species_t * species;
   
-  #if LIBSBML_VERSION >= 40000
-  species = Species_create(SBML_VERSION, SBML_LEVEL);
+#if LIBSBML_VERSION >= 40000
+  species = Species_create(SBML_LEVEL, SBML_VERSION);
 #else
   species = Species_create();
 #endif
@@ -206,7 +265,7 @@ rsbml_build_doc_function_definition(SEXP r_function_definition)
   FunctionDefinition_t * function_definition;
   
   #if LIBSBML_VERSION >= 40000
-  function_definition = FunctionDefinition_create(SBML_VERSION, SBML_LEVEL);
+  function_definition = FunctionDefinition_create(SBML_LEVEL, SBML_VERSION);
 #else
   function_definition = FunctionDefinition_create();
 #endif
@@ -226,7 +285,7 @@ rsbml_build_doc_unit(SEXP r_unit)
   Unit_t * unit;
   
 #if LIBSBML_VERSION >= 40000
-  unit = Unit_create(SBML_VERSION, SBML_LEVEL);
+  unit = Unit_create(SBML_LEVEL, SBML_VERSION);
 #else
   unit = Unit_create();
 #endif
@@ -248,7 +307,7 @@ rsbml_build_doc_unit_definition(SEXP r_unit_definition)
   UnitDefinition_t * unit_definition;
   
 #if LIBSBML_VERSION >= 40000
-  unit_definition = UnitDefinition_create(SBML_VERSION, SBML_LEVEL);
+  unit_definition = UnitDefinition_create(SBML_LEVEL, SBML_VERSION);
 #else
   unit_definition = UnitDefinition_create();
 #endif
@@ -269,7 +328,7 @@ rsbml_build_doc_compartment_type(SEXP r_compartment_type)
   CompartmentType_t * compartment_type;
   
 #if LIBSBML_VERSION >= 40000
-  compartment_type = CompartmentType_create(SBML_VERSION, SBML_LEVEL);
+  compartment_type = CompartmentType_create(SBML_LEVEL, SBML_VERSION);
 #else
   compartment_type = CompartmentType_create();
 #endif
@@ -289,7 +348,7 @@ rsbml_build_doc_compartment(SEXP r_compartment)
   Compartment_t * compartment;
   
 #if LIBSBML_VERSION >= 40000
-  compartment = Compartment_create(SBML_VERSION, SBML_LEVEL);
+  compartment = Compartment_create(SBML_LEVEL, SBML_VERSION);
 #else
   compartment = Compartment_create();
 #endif
@@ -313,7 +372,7 @@ rsbml_build_doc_parameter(SEXP r_parameter)
   Parameter_t * parameter;
   
 #if LIBSBML_VERSION >= 40000
-  parameter = Parameter_create(SBML_VERSION, SBML_LEVEL);
+  parameter = Parameter_create(SBML_LEVEL, SBML_VERSION);
 #else
   parameter = Parameter_create();
 #endif
@@ -335,7 +394,7 @@ rsbml_build_doc_kinetic_law(SEXP r_kinetic_law)
   KineticLaw_t * kinetic_law;
   
 #if LIBSBML_VERSION >= 40000
-  kinetic_law = KineticLaw_create(SBML_VERSION, SBML_LEVEL);
+  kinetic_law = KineticLaw_create(SBML_LEVEL, SBML_VERSION);
 #else
   kinetic_law = KineticLaw_create();
 #endif
@@ -359,6 +418,7 @@ rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_refe
   #ifdef USE_LAYOUT
   SET_XML_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
   #endif
+  SEXP tmp = GET_SLOT(r_simple_species_reference, install("species"));
   SET_XML_ATTR(SpeciesReference, simple_species_reference, Species, species, STRING);
 }
 #else
@@ -379,7 +439,7 @@ static StoichiometryMath_t *
 rsbml_build_doc_stoichiometry_math(SEXP r_stoichiometry_math)
 {
 #if LIBSBML_VERSION >= 40000
-  StoichiometryMath_t *stoichiometry_math = StoichiometryMath_create(SBML_VERSION, SBML_LEVEL);
+  StoichiometryMath_t *stoichiometry_math = StoichiometryMath_create(SBML_LEVEL, SBML_VERSION);
 #else
   StoichiometryMath_t *stoichiometry_math = StoichiometryMath_create();
 #endif
@@ -395,7 +455,7 @@ rsbml_build_doc_species_reference(SEXP r_species_reference)
   
   
 #if LIBSBML_VERSION >= 40000
-  species_reference = SpeciesReference_create(SBML_VERSION, SBML_LEVEL);
+  species_reference = SpeciesReference_create(SBML_LEVEL, SBML_VERSION);
 #else
   species_reference = SpeciesReference_create();
 #endif
@@ -432,7 +492,7 @@ rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
   SpeciesReference_t * modifier_species_reference;
   
   #if LIBSBML_VERSION >= 40000
-  modifier_species_reference = SpeciesReference_createModifier(SBML_VERSION, SBML_LEVEL);
+  modifier_species_reference = SpeciesReference_createModifier(SBML_LEVEL, SBML_VERSION);
 #else
   modifier_species_reference = SpeciesReference_createModifier();
 #endif
@@ -449,7 +509,7 @@ rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
   ModifierSpeciesReference_t * modifier_species_reference;
   
 #if LIBSBML_VERSION >= 40000
-  modifier_species_reference = ModifierSpeciesReference_create(SBML_VERSION, SBML_LEVEL);
+  modifier_species_reference = ModifierSpeciesReference_create(SBML_LEVEL, SBML_VERSION);
 #else
   modifier_species_reference = ModifierSpeciesReference_create();
 #endif
@@ -467,7 +527,7 @@ rsbml_build_doc_reaction(SEXP r_reaction)
   Reaction_t * reaction;
   
 #if LIBSBML_VERSION >= 40000
-  reaction = Reaction_create(SBML_VERSION, SBML_LEVEL);
+  reaction = Reaction_create(SBML_LEVEL, SBML_VERSION);
 #else
   reaction = Reaction_create();
 #endif
@@ -498,20 +558,20 @@ rsbml_build_doc_rule(SEXP r_rule)
   #ifdef LIBSBML3
   if (inherits(r_rule, "AlgebraicRule"))
 #if LIBSBML_VERSION >= 40000
-    rule = Rule_createAlgebraic(SBML_VERSION, SBML_LEVEL);
+    rule = Rule_createAlgebraic(SBML_LEVEL, SBML_VERSION);
 #else
     rule = Rule_createAlgebraic();
 #endif
   else if (inherits(r_rule, "RateRule")) {
 #if LIBSBML_VERSION >= 40000
-    rule = Rule_createRate(SBML_VERSION, SBML_LEVEL);
+    rule = Rule_createRate(SBML_LEVEL, SBML_VERSION);
 #else
     rule = Rule_createRate();
 #endif
     SET_XML_ATTR(Rule, rule, Variable, variable, STRING);
   } else if (inherits(r_rule, "AssignmentRule")) {
 #if LIBSBML_VERSION >= 40000
-    rule = Rule_createAssignment(SBML_VERSION, SBML_LEVEL);
+    rule = Rule_createAssignment(SBML_LEVEL, SBML_VERSION);
 #else
     rule = Rule_createAssignment();
 #endif
@@ -563,7 +623,7 @@ rsbml_build_doc_event_assignment(SEXP r_event_assignment)
   EventAssignment_t * event_assignment;
   
 #if LIBSBML_VERSION >= 40000
-  event_assignment = EventAssignment_create(SBML_VERSION, SBML_LEVEL);
+  event_assignment = EventAssignment_create(SBML_LEVEL, SBML_VERSION);
 #else
   event_assignment = EventAssignment_create();
 #endif
@@ -583,7 +643,7 @@ rsbml_build_doc_trigger(SEXP r_trigger)
   Trigger_t * trigger;
   
 #if LIBSBML_VERSION >= 40000
-  trigger = Trigger_create(SBML_VERSION, SBML_LEVEL);
+  trigger = Trigger_create(SBML_LEVEL, SBML_VERSION);
 #else
   trigger = Trigger_create();
 #endif
@@ -600,7 +660,7 @@ rsbml_build_doc_delay(SEXP r_delay)
   Delay_t * delay;
   
 #if LIBSBML_VERSION >= 40000
-  delay = Delay_create(SBML_VERSION, SBML_LEVEL);
+  delay = Delay_create(SBML_LEVEL, SBML_VERSION);
 #else
   delay = Delay_create();
 #endif
@@ -619,7 +679,7 @@ rsbml_build_doc_event(SEXP r_event)
   Event_t * event;
   
 #if LIBSBML_VERSION >= 40000
-  event = Event_create(SBML_VERSION, SBML_LEVEL);
+  event = Event_create(SBML_LEVEL, SBML_VERSION);
 #else
   event = Event_create();
 #endif
@@ -825,12 +885,19 @@ rsbml_build_doc_text_glyph(SEXP r_text_glyph)
 }
 
 static Layout_t *
-rsbml_build_doc_layout(SEXP r_layout)
+rsbml_build_doc_layout(SEXP r_layout, Model_t *model)
 {
   Layout_t * layout;
-  
+
+#if LIBSBML_VERSION >= 50000
+  LayoutModelPlugin_t *mplugin =
+    (LayoutModelPlugin_t *)(SBase_getPlugin((SBase_t *)model, "layout"));
+  layout = LayoutModelPlugin_createLayout(mplugin);
+#else
   layout = Layout_create();
-  
+  Model_addLayout(model, layout);
+#endif
+
   rsbml_build_doc_s_base((SBase_t *)layout, r_layout);
   
   SET_XML_ATTR(Layout, layout, Id, id, STRING);
@@ -842,7 +909,7 @@ rsbml_build_doc_layout(SEXP r_layout)
   ADD_LIST(Layout, layout, TextGlyph, textGlyphs, TextGlyph, text_glyph);
   ADD_LIST(Layout, layout, AdditionalGraphicalObject, additionalGraphicalObjects, 
     GraphicalObject, graphical_object);
-  
+
   return layout;
 }
 #endif
@@ -854,7 +921,7 @@ rsbml_build_doc_initial_assignment(SEXP r_initial_assignment)
   InitialAssignment_t * initial_assignment;
   
 #if LIBSBML_VERSION >= 40000
-  initial_assignment = InitialAssignment_create(SBML_VERSION, SBML_LEVEL);
+  initial_assignment = InitialAssignment_create(SBML_LEVEL, SBML_VERSION);
 #else
   initial_assignment = InitialAssignment_create();
 #endif
@@ -872,7 +939,7 @@ rsbml_build_doc_constraint(SEXP r_constraint)
   Constraint_t * constraint;
   
 #if LIBSBML_VERSION >= 40000
-  constraint = Constraint_create(SBML_VERSION, SBML_LEVEL);
+  constraint = Constraint_create(SBML_LEVEL, SBML_VERSION);
 #else
   constraint = Constraint_create();
 #endif
@@ -893,7 +960,7 @@ rsbml_build_doc_model_creator(SEXP r_model_creator)
   ModelCreator_t * model_creator;
   
 #if LIBSBML_VERSION >= 40000
-  model_creator = ModelCreator_create(SBML_VERSION, SBML_LEVEL);
+  model_creator = ModelCreator_create(SBML_LEVEL, SBML_VERSION);
 #else
   model_creator = ModelCreator_create();
 #endif
@@ -912,7 +979,7 @@ rsbml_build_doc_model_history(SEXP r_model_history)
   ModelHistory_t * model_history;
   
 #if LIBSBML_VERSION >= 40000
-  model_history = ModelHistory_create(SBML_VERSION, SBML_LEVEL);
+  model_history = ModelHistory_create(SBML_LEVEL, SBML_VERSION);
 #else
   model_history = ModelHistory_create();
 #endif
@@ -932,7 +999,7 @@ static Model_t *
 rsbml_build_doc_model(SEXP r_model)
 {
 #if LIBSBML_VERSION >= 40000
-  Model_t*model = Model_create(SBML_VERSION, SBML_LEVEL);
+  Model_t*model = Model_create(SBML_LEVEL, SBML_VERSION);
 #else
   Model_t *model = Model_create();
 #endif
@@ -961,14 +1028,19 @@ rsbml_build_doc_model(SEXP r_model)
   ADD_LIST(Model, model, Constraint, constraints, Constraint, constraint);
   #endif
   #ifdef USE_LAYOUT
-  ADD_LIST(Model, model, Layout, layouts, Layout, layout);
+  SEXP list = GET_SLOT(r_model, install("layouts"));
+  for (int i = 0; i < GET_LENGTH(list); i++) {
+    Layout_t *obj = rsbml_build_doc_layout(VECTOR_ELT(list, i), model);
+    if (CLEANUP_MEMORY)
+      Layout_free(obj);
+  }
   #endif
   
   #ifdef LIBSBML3
   SET_XML_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory,
                    model_history);
   #endif
-  
+
   return model;
 }
 
@@ -992,14 +1064,21 @@ rsbml_build_doc(SEXP r_doc)
   SBML_LEVEL = level;
 #endif
 
-  doc = SBMLDocument_create();
-  SBMLDocument_setLevelAndVersion(doc, level, version);
+  doc = SBMLDocument_createWithLevelAndVersion(level, version);
 
+#if LIBSBML_VERSION >= 50000
+#ifdef USE_LAYOUT
+  SBase_enablePackage((SBase_t *)doc,
+                      "http://projects.eml.org/bcb/sbml/level2", "layout",
+                      TRUE);
+#endif
+#endif
+  
 #else
   SET_XML_ATTR(SBMLDocument, doc, Level, level, INTEGER_SCALAR);
   SET_XML_ATTR(SBMLDocument, doc, Version, ver, INTEGER_SCALAR);
 #endif
-  
+
   SET_XML_ATTR_OBJ(SBMLDocument, doc, Model, model, Model, model);
   
   return doc;

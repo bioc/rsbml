@@ -43,6 +43,18 @@
   UNPROTECT(1);                                                    \
 })
 
+#if LIBSBML_VERSION >= 50000
+#define Model_getNumLayouts(m) ({                                       \
+      LayoutModelPlugin_t *mplugin =                                    \
+        (LayoutModelPlugin_t *)(SBase_getPlugin((SBase_t *)m, "layout")); \
+      LayoutModelPlugin_getNumLayouts(mplugin);                         \
+})
+#define Model_getLayout(m, i) ({                                        \
+      LayoutModelPlugin_t *mplugin =                                    \
+        (LayoutModelPlugin_t *)(SBase_getPlugin((SBase_t *)m, "layout")); \
+      LayoutModelPlugin_getLayout(mplugin, i);                          \
+})
+#else
 #ifdef LIBSBML3
 #define Model_getNumLayouts(m) \
   ListOf_size(Model_getListOfLayouts(m));
@@ -50,6 +62,8 @@
 #define Model_getNumLayouts(m) \
   ListOf_getNumItems(Model_getListOfLayouts(m));
 #endif
+#endif
+
 
 #ifdef LIBSBML3
 static SEXP
@@ -1085,6 +1099,7 @@ rsbml_build_dom_model(Model_t *model)
   SET_SLOT(r_model, install("constraints"), LIST_OF(model, Model, constraint, Constraint, "id"));
   #endif
   #ifdef USE_LAYOUT
+  
   SET_SLOT(r_model, install("layouts"), LIST_OF(model, Model, layout, Layout, "id"));
   #endif
 
@@ -1103,6 +1118,14 @@ rsbml_build_dom(SBMLDocument_t *doc)
   SET_SLOT(r_dom, install("level"), ScalarInteger(SBMLDocument_getLevel(doc)));
   SET_SLOT(r_dom, install("ver"), ScalarInteger(SBMLDocument_getVersion(doc)));
   SET_SLOT(r_dom, install("model"), rsbml_build_dom_model(SBMLDocument_getModel(doc)));
+
+#if LIBSBML_VERSION >= 50000
+#ifdef USE_LAYOUT
+  SBase_enablePackage((SBase_t *)doc,
+                      "http://projects.eml.org/bcb/sbml/level2", "layout",
+                      TRUE);
+#endif
+#endif
   
   UNPROTECT(1);
   
