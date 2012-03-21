@@ -2,6 +2,10 @@ setClass("SBMLProblems",
          representation(fatals = "list", errors = "list", warnings = "list",
                         infos = "list"))
 
+setAs("SBMLProblems", "character", function(from) {
+  sapply(c(fatals(from), errors(from)), as, "character")
+})
+
 setGeneric("fatals", function(object, ...) standardGeneric("fatals"))
 setMethod("fatals", "SBMLProblems", function(object) object@fatals)
 
@@ -40,10 +44,14 @@ setMethod(".condition", "SBMLProblem", function(object, type) {
             class = class)
 })
 
+setAs("SBMLProblem", "character", function(from) {
+  paste("[", class(from), "] (", from@line, ", ", from@column,
+        ") ", from@msg, sep="")
+})
+
 setMethod("show", "SBMLProblem",
           function(object) {
-            cat("[", class(object), "] (", object@line, ", ", object@column,
-                ") ", object@msg, sep="")
+            cat(as(object, "character"), "\n")
           })
 
 

@@ -1,6 +1,12 @@
 setClass("SBML", representation(level = "integer", ver = "integer", model = "Model"), 
   contains = "SBase", prototype = list(level = as.integer(2), ver = as.integer(1)),
-  validity = function(object) rsbml_check(rsbml_doc(object)))
+  validity = function(object) {
+    doc <- rsbml_doc(object)
+    valid <- rsbml_perform_check(doc)
+    if (!valid)
+      as(rsbml_problems(doc), "character")
+    else NULL
+  })
 
 setMethod("describe", "SBML",
           function(object) {

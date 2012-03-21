@@ -44,17 +44,22 @@ setMethod("rsbml_write", "SBML", function(object, filename) {
   rsbml_write(doc, filename)
 })
 
+### FIXME: this is total amateur hour. We should just have an S4
+### wrapper around SBMLDocument and define a validity function on it,
+### like we have for 'SBML'. But whatever.
 setGeneric("rsbml_check",
            function(object, strict = FALSE)
            standardGeneric("rsbml_check"))
 setMethod("rsbml_check", "SBMLDocument",
           function(object, strict)
 {
-  valid <- .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
-  if (!valid) {
-    .throw(rsbml_problems(object), strict)
-  }
-  valid
+  problems <- rsbml_problems(object)
+  if (length(fatals(problems)) || length(errors(problems)) ||
+      (strict && length(warns(problems))))
+    {
+      .throw(problems, strict)
+      FALSE
+    } else TRUE
 })
 
 setMethod("rsbml_check", "SBML", function(object, strict) {
@@ -64,6 +69,7 @@ setMethod("rsbml_check", "SBML", function(object, strict) {
 setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
 setMethod("rsbml_problems", "SBMLDocument",
           function(object) {
+            .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
             probs <- .Call("rsbml_R_problems", object, PACKAGE="rsbml")
 ### FIXME: these objects should be constructed C side
             classes <- c("SBMLInfo", "SBMLWarning", "SBMLError", "SBMLFatal")
