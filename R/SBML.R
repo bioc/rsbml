@@ -2,9 +2,9 @@ setClass("SBML", representation(level = "integer", ver = "integer", model = "Mod
   contains = "SBase", prototype = list(level = as.integer(2), ver = as.integer(1)),
   validity = function(object) {
     doc <- rsbml_doc(object)
-    valid <- rsbml_perform_check(doc)
-    if (!valid)
-      as(rsbml_problems(doc), "character")
+    problems <- rsbml_problems(doc)
+    if (length(fatals(problems)) || length(errors(problems)))
+      as(problems, "character")
     else NULL
   })
 
