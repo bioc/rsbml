@@ -1054,7 +1054,7 @@ static SEXP
 rsbml_build_dom_model(Model_t *model)
 {
   SEXP r_model;
-  
+
   PROTECT(r_model = NEW_OBJECT(MAKE_CLASS("Model")));
 
   rsbml_build_dom_s_base(r_model, (SBase_t *)model);
@@ -1069,7 +1069,7 @@ rsbml_build_dom_model(Model_t *model)
     SET_SLOT(r_model, install("modelHistory"), 
       rsbml_build_dom_model_history(Model_getModelHistory(model)));
 #endif
-  
+
   { /* species don't fit into the macro */
     int i, num_species = Model_getNumSpecies(model);
     SEXP r_species, r_names;
@@ -1099,12 +1099,11 @@ rsbml_build_dom_model(Model_t *model)
   SET_SLOT(r_model, install("constraints"), LIST_OF(model, Model, constraint, Constraint, "id"));
   #endif
   #ifdef USE_LAYOUT
-  
   SET_SLOT(r_model, install("layouts"), LIST_OF(model, Model, layout, Layout, "id"));
   #endif
 
   UNPROTECT(1);
-  
+
   return r_model;
 }
 
