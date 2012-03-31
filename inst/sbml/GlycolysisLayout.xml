@@ -839,8 +839,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_01" text="+">
-          <boundingBox id="bb+_01">
+        <textGlyph id="TextGlyph_p_01" text="+">
+          <boundingBox id="bb_p_01">
             <position x="350" y="140">
             </position>
             <dimensions width="20" height="20">
@@ -887,8 +887,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_02" text="+">
-          <boundingBox id="bb+_02">
+        <textGlyph id="TextGlyph_p_02" text="+">
+          <boundingBox id="bb_p_02">
             <position x="350" y="480">
             </position>
             <dimensions width="20" height="20">
@@ -935,8 +935,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_06" text="+">
-          <boundingBox id="bb+_06">
+        <textGlyph id="TextGlyph_p_06" text="+">
+          <boundingBox id="bb_p_06">
             <position x="350" y="750">
             </position>
             <dimensions width="20" height="20">
@@ -959,8 +959,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_06" text="+">
-          <boundingBox id="bb+_06">
+        <textGlyph id="TextGlyph_p_06" text="+">
+          <boundingBox id="bb_p_06">
             <position x="365" y="820">
             </position>
             <dimensions width="20" height="20">
@@ -991,8 +991,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_03" text="+">
-          <boundingBox id="bb+_03">
+        <textGlyph id="TextGlyph_p_03" text="+">
+          <boundingBox id="bb_p_03">
             <position x="350" y="920">
             </position>
             <dimensions width="20" height="20">
@@ -1055,8 +1055,8 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph+_04" text="+">
-          <boundingBox id="bb+_04">
+        <textGlyph id="TextGlyph_p_04" text="+">
+          <boundingBox id="bb_p_04">
             <position x="345" y="1430">
             </position>
             <dimensions width="20" height="20">
