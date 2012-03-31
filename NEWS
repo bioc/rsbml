@@ -1,0 +1,8 @@
+CHANGES IN VERSION 1.13
+-----------------------
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Added support for libsbml 5.x series.
+    
+(start date: 29 March, 2012)

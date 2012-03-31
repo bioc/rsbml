@@ -17,7 +17,9 @@
 unsigned int SBML_VERSION;
 unsigned int SBML_LEVEL;
 
-static void rsbml_report_operation_status(OperationReturnValues_t status) {
+static void rsbml_report_operation_status(OperationReturnValues_t status,
+                                          const char *attr)
+{
   const char *msg;
   if (status == LIBSBML_OPERATION_SUCCESS)
     return;
@@ -55,7 +57,7 @@ static void rsbml_report_operation_status(OperationReturnValues_t status) {
   default:
     msg = "Unhandled failure type";
   }
-  error("libsbml operation failed: %s (code: %d)", msg, status);
+  error("libsbml operation failed: %s (code: %d) for %s", msg, status, attr);
 }
 #endif
 
@@ -121,19 +123,19 @@ static XMLNode_t *rsbml_build_doc_xml_node(SEXP r_node)
 static void Rule_free(Rule_t *rule) { }
 #endif
 
-#define ADD_LIST(class, var, Child, child, ParamType, func) \
-({ \
-    int i; \
-    SEXP list = GET_SLOT(r_ ## var, install(#child)); \
-    for (i = 0; i < GET_LENGTH(list); i++) { \
+#define ADD_LIST_NOCHECK(class, var, Child, child, ParamType, func)     \
+  ({                                                                    \
+    int i;                                                              \
+    SEXP list = GET_SLOT(r_ ## var, install(#child));                   \
+    for (i = 0; i < GET_LENGTH(list); i++) {                            \
       ParamType ## _t *obj = rsbml_build_doc_ ## func(VECTOR_ELT(list, i)); \
-      class ## _add ## Child(var, obj); \
-      if (CLEANUP_MEMORY) \
-        ParamType ## _free(obj); \
-    } \
-})
+      class ## _add ## Child(var, obj);                                 \
+      if (CLEANUP_MEMORY)                                               \
+        ParamType ## _free(obj);                                        \
+    }                                                                   \
+  })
 
-#define SET_XML_ATTR_OBJ(Class, var, Name, name, ParamType, converter)  \
+#define SET_XML_ATTR_OBJ_NOCHECK(Class, var, Name, name, ParamType, converter) \
   ({                                                                    \
     SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
     if (GET_LENGTH(r_ ## name)) {                                       \
@@ -144,8 +146,30 @@ static void Rule_free(Rule_t *rule) { }
     }                                                                   \
   })
 
-/* Useful for debugging; probably requires libsbml 5.x */
-#define SET_XML_ATTR_OBJ_CHECK(Class, var, Name, name, ParamType, converter) \
+#define SET_XML_ATTR_NOCHECK(Class, var, Name, name, converter)         \
+  ({                                                                    \
+    SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
+    if (GET_LENGTH(r_ ## name)) {                                       \
+      Class ## _set ## Name((Class ## _t *)var,                         \
+                            converter(r_ ## name));                     \
+    }                                                                   \
+  })
+
+/* Hopefully, libsbml eventually will always emit a status on set */
+#if LIBSBML_VERSION >= 50000
+#define ADD_LIST(class, var, Child, child, ParamType, func)             \
+  ({                                                                    \
+    int i;                                                              \
+    SEXP list = GET_SLOT(r_ ## var, install(#child));                   \
+    for (i = 0; i < GET_LENGTH(list); i++) {                            \
+      ParamType ## _t *obj = rsbml_build_doc_ ## func(VECTOR_ELT(list, i)); \
+      int status = class ## _add ## Child(var, obj);                    \
+      if (CLEANUP_MEMORY)                                               \
+        ParamType ## _free(obj);                                        \
+      rsbml_report_operation_status(status, #class "::add" #Child);     \
+    }                                                                   \
+  })
+#define SET_XML_ATTR_OBJ(Class, var, Name, name, ParamType, converter)  \
   ({                                                                    \
     SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
     if (GET_LENGTH(r_ ## name)) {                                       \
@@ -153,18 +177,23 @@ static void Rule_free(Rule_t *rule) { }
       int status = Class ## _set ## Name((Class ## _t *)var, conv);     \
       if (CLEANUP_MEMORY)                                               \
         ParamType ## _free(conv);                                       \
-      rsbml_report_operation_status(status);                            \
+      rsbml_report_operation_status(status, #Class "::set" #Name);      \
     }                                                                   \
   })
-
 #define SET_XML_ATTR(Class, var, Name, name, converter)                 \
   ({                                                                    \
     SEXP r_ ## name = GET_SLOT(r_ ## var, install(#name));              \
     if (GET_LENGTH(r_ ## name)) {                                       \
-      Class ## _set ## Name((Class ## _t *)var,            \
-                            converter(r_ ## name));                     \
+      int status = Class ## _set ## Name((Class ## _t *)var,            \
+                                         converter(r_ ## name));        \
+      rsbml_report_operation_status(status, #Class "::set" #Name);      \
     }                                                                   \
   })
+#else
+#define SET_XML_ATTR_OBJ SET_XML_ATTR_OBJ_NOCHECK
+#define SET_XML_ATTR SET_XML_ATTR_NOCHECK
+#define ADD_LIST ADD_LIST_NOCHECK
+#endif
 
 #ifdef LIBSBML3
 static CVTerm_t *
@@ -415,9 +444,10 @@ rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_refe
   SEXP r_simple_species_reference)
 {
   rsbml_build_doc_s_base((SBase_t *)simple_species_reference, r_simple_species_reference);
-  #ifdef USE_LAYOUT
-  SET_XML_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
-  #endif
+  /* Somehow, an ID gets automatically added to the document (and thus
+     to the R DOM), even when the level/version is insufficient. */
+  if ((SBML_LEVEL == 2 && SBML_VERSION >= 2) || SBML_LEVEL > 2)
+    SET_XML_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
   SEXP tmp = GET_SLOT(r_simple_species_reference, install("species"));
   SET_XML_ATTR(SpeciesReference, simple_species_reference, Species, species, STRING);
 }
@@ -711,9 +741,9 @@ rsbml_build_doc_dimensions(SEXP r_dimensions)
   
   rsbml_build_doc_s_base((SBase_t *)dimensions, r_dimensions);
   
-  SET_XML_ATTR(Dimensions, dimensions, Width, width, REAL_SCALAR);
-  SET_XML_ATTR(Dimensions, dimensions, Height, height, REAL_SCALAR);
-  SET_XML_ATTR(Dimensions, dimensions, Depth, depth, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Dimensions, dimensions, Width, width, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Dimensions, dimensions, Height, height, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Dimensions, dimensions, Depth, depth, REAL_SCALAR);
   
   return dimensions;
 }
@@ -727,9 +757,9 @@ rsbml_build_doc_point(SEXP r_point)
   
   rsbml_build_doc_s_base((SBase_t *)point, r_point);
   
-  SET_XML_ATTR(Point, point, XOffset, x, REAL_SCALAR);
-  SET_XML_ATTR(Point, point, YOffset, y, REAL_SCALAR);
-  SET_XML_ATTR(Point, point, ZOffset, z, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Point, point, XOffset, x, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Point, point, YOffset, y, REAL_SCALAR);
+  SET_XML_ATTR_NOCHECK(Point, point, ZOffset, z, REAL_SCALAR);
   
   return point;
 }
@@ -744,8 +774,10 @@ rsbml_build_doc_bounding_box(SEXP r_bounding_box)
   rsbml_build_doc_s_base((SBase_t *)bounding_box, r_bounding_box);
   
   SET_XML_ATTR(BoundingBox, bounding_box, Id, id, STRING);
-  SET_XML_ATTR_OBJ(BoundingBox, bounding_box, Position, position, Point, point);
-  SET_XML_ATTR_OBJ(BoundingBox, bounding_box, Dimensions, dimensions, Dimensions, dimensions);
+  SET_XML_ATTR_OBJ_NOCHECK(BoundingBox, bounding_box, Position, position, Point,
+                           point);
+  SET_XML_ATTR_OBJ_NOCHECK(BoundingBox, bounding_box, Dimensions, dimensions,
+                           Dimensions, dimensions);
   
   return bounding_box;
 }
@@ -754,8 +786,8 @@ static void
 rsbml_build_doc_base_graphical_object(GraphicalObject_t * graphical_object, SEXP r_graphical_object)
 {
   SET_XML_ATTR(GraphicalObject, graphical_object, Id, id, STRING);
-  SET_XML_ATTR_OBJ(GraphicalObject, graphical_object, BoundingBox, boundingBox, 
-    BoundingBox, bounding_box);
+  SET_XML_ATTR_OBJ_NOCHECK(GraphicalObject, graphical_object, BoundingBox,
+                           boundingBox, BoundingBox, bounding_box);
 }
 
 static GraphicalObject_t *
@@ -779,7 +811,8 @@ rsbml_build_doc_compartment_glyph(SEXP r_compartment_glyph)
   
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)compartment_glyph, r_compartment_glyph);
   
-  SET_XML_ATTR(CompartmentGlyph, compartment_glyph, CompartmentId, compartment, STRING);
+  SET_XML_ATTR_NOCHECK(CompartmentGlyph, compartment_glyph, CompartmentId,
+                       compartment, STRING);
   
   return compartment_glyph;
 }
@@ -793,7 +826,7 @@ rsbml_build_doc_species_glyph(SEXP r_species_glyph)
   
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)species_glyph, r_species_glyph);
   
-  SET_XML_ATTR(SpeciesGlyph, species_glyph, SpeciesId, species, STRING);
+  SET_XML_ATTR_NOCHECK(SpeciesGlyph, species_glyph, SpeciesId, species, STRING);
   
   return species_glyph;
 }
@@ -805,16 +838,16 @@ rsbml_build_doc_line_segment(SEXP r_line_segment)
   
   if (inherits(r_line_segment, "CubicBezier")) {
     line_segment = (LineSegment_t *)CubicBezier_create();
-    SET_XML_ATTR_OBJ(CubicBezier, line_segment, BasePoint1, basePoint1, Point, point);
-    SET_XML_ATTR_OBJ(CubicBezier, line_segment, BasePoint2, basePoint2, Point, point);
+    SET_XML_ATTR_OBJ_NOCHECK(CubicBezier, line_segment, BasePoint1, basePoint1, Point, point);
+    SET_XML_ATTR_OBJ_NOCHECK(CubicBezier, line_segment, BasePoint2, basePoint2, Point, point);
   } else {
     line_segment = LineSegment_create();
   }
   
   rsbml_build_doc_s_base((SBase_t *)line_segment, r_line_segment);
   
-  SET_XML_ATTR_OBJ(LineSegment, line_segment, Start, start, Point, point);
-  SET_XML_ATTR_OBJ(LineSegment, line_segment, End, end, Point, point);
+  SET_XML_ATTR_OBJ_NOCHECK(LineSegment, line_segment, Start, start, Point, point);
+  SET_XML_ATTR_OBJ_NOCHECK(LineSegment, line_segment, End, end, Point, point);
   
   return line_segment;
 }
@@ -828,7 +861,7 @@ rsbml_build_doc_curve(SEXP r_curve)
   
   rsbml_build_doc_s_base((SBase_t *)curve, r_curve);
   
-  ADD_LIST(Curve, curve, CurveSegment, curveSegments, LineSegment, line_segment);
+  ADD_LIST_NOCHECK(Curve, curve, CurveSegment, curveSegments, LineSegment, line_segment);
   
   return curve;
 }
@@ -843,10 +876,10 @@ rsbml_build_doc_species_reference_glyph(SEXP r_species_reference_glyph)
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)species_reference_glyph, 
     r_species_reference_glyph);
   
-  SET_XML_ATTR(SpeciesReferenceGlyph, species_reference_glyph, SpeciesGlyphId, speciesGlyph, STRING);
-  SET_XML_ATTR(SpeciesReferenceGlyph, species_reference_glyph, SpeciesReferenceId, speciesReference, STRING);
-  SET_XML_ATTR(SpeciesReferenceGlyph, species_reference_glyph, Role, role, STRING);
-  SET_XML_ATTR_OBJ(SpeciesReferenceGlyph, species_reference_glyph, Curve, glyphCurve, Curve, curve);
+  SET_XML_ATTR_NOCHECK(SpeciesReferenceGlyph, species_reference_glyph, SpeciesGlyphId, speciesGlyph, STRING);
+  SET_XML_ATTR_NOCHECK(SpeciesReferenceGlyph, species_reference_glyph, SpeciesReferenceId, speciesReference, STRING);
+  SET_XML_ATTR_NOCHECK(SpeciesReferenceGlyph, species_reference_glyph, Role, role, STRING);
+  SET_XML_ATTR_OBJ_NOCHECK(SpeciesReferenceGlyph, species_reference_glyph, Curve, glyphCurve, Curve, curve);
   
   return species_reference_glyph;
 }
@@ -860,9 +893,9 @@ rsbml_build_doc_reaction_glyph(SEXP r_reaction_glyph)
   
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)reaction_glyph, r_reaction_glyph);
   
-  SET_XML_ATTR(ReactionGlyph, reaction_glyph, ReactionId, reaction, STRING);
-  SET_XML_ATTR_OBJ(ReactionGlyph, reaction_glyph, Curve, glyphCurve, Curve, curve);
-  ADD_LIST(ReactionGlyph, reaction_glyph, SpeciesReferenceGlyph, 
+  SET_XML_ATTR_NOCHECK(ReactionGlyph, reaction_glyph, ReactionId, reaction, STRING);
+  SET_XML_ATTR_OBJ_NOCHECK(ReactionGlyph, reaction_glyph, Curve, glyphCurve, Curve, curve);
+  ADD_LIST_NOCHECK(ReactionGlyph, reaction_glyph, SpeciesReferenceGlyph, 
     speciesReferenceGlyphs, SpeciesReferenceGlyph, species_reference_glyph);
   
   return reaction_glyph;
@@ -877,14 +910,16 @@ rsbml_build_doc_text_glyph(SEXP r_text_glyph)
   
   rsbml_build_doc_base_graphical_object((GraphicalObject_t *)text_glyph, r_text_glyph);
   
-  SET_XML_ATTR(TextGlyph, text_glyph, GraphicalObjectId, graphicalObject, STRING);
-  SET_XML_ATTR(TextGlyph, text_glyph, Text, text, STRING);
-  SET_XML_ATTR(TextGlyph, text_glyph, OriginOfTextId, originOfText, STRING);
+  SET_XML_ATTR_NOCHECK(TextGlyph, text_glyph, GraphicalObjectId,
+                       graphicalObject, STRING);
+  SET_XML_ATTR_NOCHECK(TextGlyph, text_glyph, Text, text, STRING);
+  SET_XML_ATTR_NOCHECK(TextGlyph, text_glyph, OriginOfTextId, originOfText,
+                       STRING);
   
   return text_glyph;
 }
 
-static Layout_t *
+static void
 rsbml_build_doc_layout(SEXP r_layout, Model_t *model)
 {
   Layout_t * layout;
@@ -896,21 +931,24 @@ rsbml_build_doc_layout(SEXP r_layout, Model_t *model)
 #else
   layout = Layout_create();
   Model_addLayout(model, layout);
+  if (CLEANUP_MEMORY)
+    Layout_free(layout);
+  layout = Model_getLayout(model, Model_getNumLayouts(model) - 1);
 #endif
 
   rsbml_build_doc_s_base((SBase_t *)layout, r_layout);
   
   SET_XML_ATTR(Layout, layout, Id, id, STRING);
-  // FIXME: libsml is missing Layout_setDimensions()
-  /* SET_XML_ATTR_OBJ(Layout, layout, Dimensions, dimensions, Dimensions, dimensions); */
-  ADD_LIST(Layout, layout, CompartmentGlyph, compartmentGlyphs, CompartmentGlyph, compartment_glyph);
-  ADD_LIST(Layout, layout, SpeciesGlyph, speciesGlyphs, SpeciesGlyph, species_glyph);
-  ADD_LIST(Layout, layout, ReactionGlyph, reactionGlyphs, ReactionGlyph, reaction_glyph);
-  ADD_LIST(Layout, layout, TextGlyph, textGlyphs, TextGlyph, text_glyph);
-  ADD_LIST(Layout, layout, AdditionalGraphicalObject, additionalGraphicalObjects, 
+#if LIBSBML_VERSION >= 50000
+  SET_XML_ATTR_OBJ_NOCHECK(Layout, layout, Dimensions, dimensions, Dimensions,
+                           dimensions);
+#endif
+  ADD_LIST_NOCHECK(Layout, layout, CompartmentGlyph, compartmentGlyphs, CompartmentGlyph, compartment_glyph);
+  ADD_LIST_NOCHECK(Layout, layout, SpeciesGlyph, speciesGlyphs, SpeciesGlyph, species_glyph);
+  ADD_LIST_NOCHECK(Layout, layout, ReactionGlyph, reactionGlyphs, ReactionGlyph, reaction_glyph);
+  ADD_LIST_NOCHECK(Layout, layout, TextGlyph, textGlyphs, TextGlyph, text_glyph);
+  ADD_LIST_NOCHECK(Layout, layout, AdditionalGraphicalObject, additionalGraphicalObjects, 
     GraphicalObject, graphical_object);
-
-  return layout;
 }
 #endif
 
@@ -996,12 +1034,17 @@ rsbml_build_doc_model_history(SEXP r_model_history)
 #endif
 
 static Model_t *
-rsbml_build_doc_model(SEXP r_model)
+rsbml_build_doc_model(SEXP r_model, SBMLDocument_t *doc)
 {
+  
 #if LIBSBML_VERSION >= 40000
-  Model_t*model = Model_create(SBML_LEVEL, SBML_VERSION);
+  Model_t *model = SBMLDocument_createModel(doc);
 #else
   Model_t *model = Model_create();
+  SBMLDocument_setModel(doc, model);
+  if (CLEANUP_MEMORY)
+    Model_free(model);
+  model = SBMLDocument_getModel(doc);
 #endif
 
   rsbml_build_doc_s_base((SBase_t *)model, r_model);
@@ -1027,20 +1070,24 @@ rsbml_build_doc_model(SEXP r_model)
            InitialAssignment, initial_assignment);
   ADD_LIST(Model, model, Constraint, constraints, Constraint, constraint);
   #endif
-  #ifdef USE_LAYOUT
-  SEXP list = GET_SLOT(r_model, install("layouts"));
-  for (int i = 0; i < GET_LENGTH(list); i++) {
-    Layout_t *obj = rsbml_build_doc_layout(VECTOR_ELT(list, i), model);
-    if (CLEANUP_MEMORY)
-      Layout_free(obj);
-  }
-  #endif
-  
-  #ifdef LIBSBML3
+
+#ifdef LIBSBML3
   SET_XML_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory,
                    model_history);
-  #endif
+#endif
 
+#ifdef USE_LAYOUT
+#if LIBSBML_VERSION >= 50000
+  SBase_enablePackage((SBase_t *)doc,
+                      "http://projects.eml.org/bcb/sbml/level2", "layout",
+                      TRUE);
+#endif
+  SEXP list = GET_SLOT(r_model, install("layouts"));
+  for (int i = 0; i < GET_LENGTH(list); i++) {
+    rsbml_build_doc_layout(VECTOR_ELT(list, i), model);
+  }
+#endif
+    
   return model;
 }
 
@@ -1066,20 +1113,19 @@ rsbml_build_doc(SEXP r_doc)
 
   doc = SBMLDocument_createWithLevelAndVersion(level, version);
 
-#if LIBSBML_VERSION >= 50000
-#ifdef USE_LAYOUT
-  SBase_enablePackage((SBase_t *)doc,
-                      "http://projects.eml.org/bcb/sbml/level2", "layout",
-                      TRUE);
-#endif
-#endif
-  
 #else
   SET_XML_ATTR(SBMLDocument, doc, Level, level, INTEGER_SCALAR);
   SET_XML_ATTR(SBMLDocument, doc, Version, ver, INTEGER_SCALAR);
 #endif
 
-  SET_XML_ATTR_OBJ(SBMLDocument, doc, Model, model, Model, model);
+  /* FIXME: if we had copious spare time and wanted to refactor, we
+     could use this design for every element: pass the parent object
+     down to the rsbml_build_doc_* function, and have it call the
+     appropriate create() method on the parent. We would no longer
+     need the SBML_LEVEL/VERSION global variables. This would also
+     likely simplify memory management. */
+  
+  rsbml_build_doc_model(GET_SLOT(r_doc, install("model")), doc);
   
   return doc;
 }
