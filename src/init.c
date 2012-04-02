@@ -13,7 +13,8 @@ static R_CallMethodDef callMethods[] =
    CENTRY(read_doc, 2),
    CENTRY(read_doc_from_string, 2),
    CENTRY(write_doc, 2),
-   CENTRY(write_doc_to_string, 1)
+   CENTRY(write_doc_to_string, 1),
+   {NULL, NULL, 0}
 };
 
 void
