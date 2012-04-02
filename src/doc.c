@@ -446,7 +446,9 @@ rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_refe
   rsbml_build_doc_s_base((SBase_t *)simple_species_reference, r_simple_species_reference);
   /* Somehow, an ID gets automatically added to the document (and thus
      to the R DOM), even when the level/version is insufficient. */
+#if LIBSBML_VERSION >= 40000
   if ((SBML_LEVEL == 2 && SBML_VERSION >= 2) || SBML_LEVEL > 2)
+#endif
     SET_XML_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
   SEXP tmp = GET_SLOT(r_simple_species_reference, install("species"));
   SET_XML_ATTR(SpeciesReference, simple_species_reference, Species, species, STRING);
