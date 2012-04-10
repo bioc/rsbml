@@ -28,8 +28,16 @@ setMethod("rsbml_doc", "SBML", function(model)
 setAs("SBML", "SBMLDocument", function(from) rsbml_doc(from))
 
 setGeneric("rsbml_xml", function(x) standardGeneric("rsbml_xml"))
-setMethod("rsbml_xml", "SBMLDocument", function(x) 
-  .Call("rsbml_R_write_doc_to_string", x, PACKAGE="rsbml"))
+setMethod("rsbml_xml", "SBMLDocument", function(x)
+{
+ if (.Platform$OS.type == "windows")
+ {
+   warning("This function is not supported on Windows.")
+   return(invisible(NULL))
+ }
+ .Call("rsbml_R_write_doc_to_string", x, PACKAGE="rsbml")
+})
+
 setMethod("rsbml_xml", "SBML", function(x) {
   doc <- rsbml_doc(x)
   rsbml_xml(doc)
