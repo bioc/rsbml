@@ -260,14 +260,15 @@ ASTNode_t *rmathml_ASTNode(SEXP sym) {
   ASTNode_t *node = NULL;
   ASTNodeType_t type = AST_UNKNOWN;
   /* Rprintf("%d\n", TYPEOF(sym)); */
-  /* if (isSymbol(sym)) */
-  /*   Rprintf("\t%s\n", CHAR(PRINTNAME(sym))); */
+  /* PrintValue(sym); */
   /* could optimize by caching symbol codes */
   switch(TYPEOF(sym)) {
   case LANGSXP:
     {
       SEXP args = CDR(sym);
       sym = CAR(sym);
+      if (sym == install("(")) // safely skip this crutch of infix
+        return(rmathml_ASTNode(CAR(args)));
       if (sym == install("+"))
         type = AST_PLUS;
       else if (sym == install("*"))
