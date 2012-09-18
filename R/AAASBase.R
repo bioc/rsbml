@@ -7,7 +7,6 @@ setMethod("metaId", "SBase", function(object) object@metaId)
 setGeneric("notes", function(object) standardGeneric("notes"))
 setMethod("notes", "SBase", function(object) object@notes)
 
-setGeneric("annotation", function(object) standardGeneric("annotation"))
 setMethod("annotation", "SBase", function(object) object@annotation)
 
 setGeneric("cvTerms", function(object) standardGeneric("cvTerms"))
@@ -30,8 +29,6 @@ setReplaceMethod("notes", "SBase", function(object, value) {
     object
 })
 
-setGeneric("annotation<-",
-           function(object, value) standardGeneric("annotation<-"))
 setReplaceMethod("annotation", "SBase", function(object, value) {
     object@annotation <- value
     object
