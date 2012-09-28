@@ -8,6 +8,7 @@
 \alias{rsbml_dom,SBMLDocument-method}
 \alias{rsbml_dom}
 \alias{rsbml_graph,SBMLDocument-method}
+\alias{rsbml_graph,Model-method}
 \alias{rsbml_graph}
 \alias{rsbml_problems,SBMLDocument-method}
 \alias{rsbml_problems}
