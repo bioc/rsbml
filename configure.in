@@ -39,9 +39,12 @@ if test "${LIBSBML3}" != "no"; then
   RSBML_CPPFLAGS="-DLIBSBML3"
 else
   AC_CHECK_HEADER([sbml/xml/ParseMessage.h],, 
-    AC_MSG_ERROR([Could not find sbml/xml/ParseMessage.h: 
-      rsbml requires libsbml from http://www.sbml.org/software/libsbml/
-      use --with-libsbml-include or LIBSBML_INCLUDE to specify the include path.]))
+    AC_MSG_ERROR([Could not detect libsbml (>= 3.0) via pkg-config.
+      rsbml requires libsbml from http://www.sbml.org/software/libsbml/.
+      Please ensure that libsbml.pc is in PKG_CONFIG_PATH.
+      Also failed to find ParseMessage.h indicating that libsbml 2.x is
+      not installed. To specify the include path manually use
+      --with-libsbml-include or LIBSBML_INCLUDE.]))
   AC_CHECK_LIB([sbml], [SBMLDocument_create],,
     AC_MSG_ERROR([Could not link to libsbml: 
       use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
