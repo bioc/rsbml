@@ -14,14 +14,16 @@ setMethod("rsbml_graph", "Model", function(doc) {
   species <- species(doc)
   reactions <- reactions(doc)
   productEdges <- lapply(reactions, function(r) {
-    list(edges = unname(sapply(products(r), species)),
-         weights = unname(sapply(products(r), stoichiometry)))
+    list(edges = as.character(lapply(products(r), species)),
+         weights = as.integer(lapply(products(r), stoichiometry)))
   })
   makeReactantEdges <- function(accessor) {
     reactantNames <- lapply(reactions,
-                            function(r) sapply(reactants(r), species))
+                            function(r)
+                            as.character(lapply(reactants(r), species)))
     reactantWeights <- lapply(reactions,
-                              function(r) sapply(reactants(r), stoichiometry))
+                              function(r)
+                              as.integer(lapply(reactants(r), stoichiometry)))
     reactionNames <- split(rep(names(reactions),
                                graph:::listLen(reactantNames)),
                            unlist(reactantNames, use.names = FALSE))
