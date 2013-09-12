@@ -3,6 +3,10 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 
+#if LIBSBML_VERSION >= 50600
+#define USE_LAYOUT LIBSBML_HAS_PACKAGE_LAYOUT
+#endif
+
 // Layout stuff
 #ifdef USE_LAYOUT
 #if LIBSBML_VERSION >= 50000
