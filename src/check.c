@@ -139,10 +139,10 @@ rsbml_check_doc(SBMLDocument_t *doc)
 {
   #ifdef LIBSBML3
   SBMLDocument_checkConsistency(doc); /* memory leaks in 2.3.4? */
-  return !SBMLDocument_getNumErrors(doc);
+  return SBMLDocument_getNumErrors(doc) == 0;
   #else
-  return !SBMLDocument_getNumWarnings(doc) && !SBMLDocument_getNumErrors(doc) &&
-    !SBMLDocument_getNumFatals(doc);
+  return (SBMLDocument_getNumWarnings(doc) + SBMLDocument_getNumErrors(doc) +
+          SBMLDocument_getNumFatals(doc)) == 0;
   #endif
 }
 

@@ -1,6 +1,7 @@
 ### FIXME: may need a 'verbose' argument here that prints info messages
 rsbml_read <- 
-function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE)
+function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE,
+         check = TRUE)
 {
   if (!missing(filename)) {
     filename <- path.expand(filename)
@@ -11,7 +12,9 @@ function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE)
     obj <- .Call("rsbml_R_read_doc_from_string", as.character(text), 
       as.logical(schema), PACKAGE="rsbml")
   else stop("You must supply either 'filename' or 'text'")
-  rsbml_check(obj, strict)
+  if (check) {
+    rsbml_check(obj, strict)
+  }
   if (dom)
     rsbml_dom(obj)
   else obj
