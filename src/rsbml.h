@@ -3,7 +3,8 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 
-#if LIBSBML_VERSION >= 50600
+// Rectify cmake and autotools based libsbml configurations
+#ifdef LIBSBML_HAS_PACKAGE_LAYOUT
 #define USE_LAYOUT LIBSBML_HAS_PACKAGE_LAYOUT
 #endif
 
