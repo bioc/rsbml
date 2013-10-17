@@ -1,7 +1,7 @@
 ### FIXME: may need a 'verbose' argument here that prints info messages
 rsbml_read <- 
 function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE,
-         check = TRUE)
+         consistency = TRUE)
 {
   if (!missing(filename)) {
     filename <- path.expand(filename)
@@ -12,9 +12,7 @@ function(filename, text, dom = TRUE, strict = FALSE, schema = FALSE,
     obj <- .Call("rsbml_R_read_doc_from_string", as.character(text), 
       as.logical(schema), PACKAGE="rsbml")
   else stop("You must supply either 'filename' or 'text'")
-  if (check) {
-    rsbml_check(obj, strict)
-  }
+  rsbml_check(obj, strict, consistency)
   if (dom)
     rsbml_dom(obj)
   else obj
@@ -58,12 +56,12 @@ setMethod("rsbml_write", "SBML", function(object, filename) {
 ### wrapper around SBMLDocument and define a validity function on it,
 ### like we have for 'SBML'. But whatever.
 setGeneric("rsbml_check",
-           function(object, strict = FALSE)
+function(object, strict = FALSE, consistency = TRUE)
            standardGeneric("rsbml_check"))
 setMethod("rsbml_check", "SBMLDocument",
-          function(object, strict)
+          function(object, strict, consistency)
 {
-  problems <- rsbml_problems(object)
+  problems <- rsbml_problems(object, consistency)
   if (length(fatals(problems)) || length(errors(problems)) ||
       (strict && length(warns(problems))))
     {
@@ -72,14 +70,17 @@ setMethod("rsbml_check", "SBMLDocument",
     } else TRUE
 })
 
-setMethod("rsbml_check", "SBML", function(object, strict) {
-  rsbml_check(rsbml_doc(object), strict)
+setMethod("rsbml_check", "SBML", function(object, strict, consistency) {
+  rsbml_check(rsbml_doc(object), strict, consistency)
 })
 
-setGeneric("rsbml_problems", function(object) standardGeneric("rsbml_problems"))
+setGeneric("rsbml_problems", function(object, consistency = TRUE, ...)
+  standardGeneric("rsbml_problems"))
 setMethod("rsbml_problems", "SBMLDocument",
-          function(object) {
-            .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
+          function(object, consistency = TRUE) {
+            if (consistency) {
+              .Call("rsbml_R_check_doc", object, PACKAGE="rsbml")
+            }
             probs <- .Call("rsbml_R_problems", object, PACKAGE="rsbml")
 ### FIXME: these objects should be constructed C side
             classes <- c("SBMLInfo", "SBMLWarning", "SBMLError", "SBMLFatal")

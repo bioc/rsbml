@@ -26,12 +26,13 @@ Class \code{"\linkS4class{oldClass}"}, directly.
 \section{Methods}{
   \describe{
     \item{rsbml\_check}{\code{signature(object = "SBMLDocument")}:
-      \code{rsbml_check(object, quiet = FALSE, verbose = FALSE)}:
-      semantically validates the document. If \code{quiet} is
-      \code{TRUE}, emits warnings describing errors and fatal failures
-      encountered when the document was parsed. If \code{verbose} is
-      also \code{TRUE}, reports less critical warnings about problems in
-      the model, such as internal inconsistencies.}
+      \code{rsbml_check(object, strict = FALSE, consistency = TRUE)}:
+      Check for problems with the document and signal R conditions if
+      any errors are detected. If \code{strict} is
+      \code{TRUE}, libsbml warnings will be emitted as R warnings
+      (these are often too pedantic). If \code{consistency} is
+      also \code{TRUE}, reports problems regarding internal model
+      inconsistencies. This can be time consuming.}
     \item{rsbml\_dom}{\code{signature(doc = "SBMLDocument")}: Constructs an S4 
       object model from a libsbml document. }
     \item{rsbml\_graph}{\code{signature(doc = "SBMLDocument")}: Converts a 

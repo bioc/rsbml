@@ -3,7 +3,7 @@
 \title{Read in an SBML file (start here)}
 \description{Read an SBML file into R.}
 \usage{rsbml_read(filename, text, dom = TRUE, strict = FALSE, schema = FALSE,
-                  check = TRUE)}
+                  consistency = TRUE)}
 \arguments{
   \item{filename}{the name of the SBML file to parse}
   \item{text}{a string of SBML text to parse (instead of file)}
@@ -12,7 +12,7 @@
   \item{strict}{whether to report warnings in addition to
     errors or not (\code{FALSE}, the default).}
   \item{schema}{whether to perform XML schema validation}
-  \item{check}{whether to perform consistency checks; recommended but
+  \item{consistency}{whether to perform consistency checks; recommended but
     might cause performance deficiencies.}
 }
 \value{a \code{\linkS4class{SBML}} object, or a
