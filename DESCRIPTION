@@ -1,14 +1,15 @@
 Package: rsbml
-Version: 2.21.2
+Version: 2.21.3
 Title: R support for SBML, using libsbml
-Author:  Michael Lawrence <michafla@gene.com>
+Author: Michael Lawrence <michafla@gene.com>
 Depends: R (>= 2.6.0), BiocGenerics (>= 0.3.2), methods, utils
 Imports: BiocGenerics, graph, utils
 SystemRequirements: libsbml (>=3.0.3)
 Maintainer: Michael Lawrence <michafla@gene.com>
-Description: Links R to libsbml for SBML parsing, validating output, 
-  provides an S4 SBML DOM, converts SBML to R graph objects. Optionally 
-  links to the SBML ODE Solver Library (SOSLib) for simulating models.
+Description: Links R to libsbml for SBML parsing, validating output,
+        provides an S4 SBML DOM, converts SBML to R graph objects.
+        Optionally links to the SBML ODE Solver Library (SOSLib) for
+        simulating models.
 License: Artistic-2.0
-URL:  http://www.sbml.org
-biocViews: GraphsAndNetworks, Pathways, NetworkAnalysis
+URL: http://www.sbml.org
+biocViews: GraphAndNetwork, Pathways, Network
