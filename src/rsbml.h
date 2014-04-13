@@ -79,6 +79,7 @@ extern "C" {
 }
 #endif
 /* libsbml includes this only for C++ */
+#if LIBSBML_VERSION < 51000
 #ifndef __cplusplus
 typedef enum
   {
@@ -96,6 +97,7 @@ typedef enum
     , SBML_LAYOUT_SPECIESREFERENCEGLYPH = 111
     , SBML_LAYOUT_TEXTGLYPH             = 112
   } SBMLLayoutTypeCode_t;
+#endif
 #endif
 #endif
 #endif
