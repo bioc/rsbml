@@ -31,7 +31,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_H_1" species="H+">
+        <speciesGlyph id="glyph_H_1" species="H_">
           <boundingBox id="bb_04">
             <position x="380" y="140">
             </position>
@@ -39,7 +39,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_G6P" species="Glucose-6-phosphate">
+        <speciesGlyph id="glyph_G6P" species="Glucose_6_phosphate">
           <boundingBox id="bb_05">
             <position x="50" y="190">
             </position>
@@ -47,7 +47,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_F6P" species="Fructose-6-phosphate">
+        <speciesGlyph id="glyph_F6P" species="Fructose_6_phosphate">
           <boundingBox id="bb_06">
             <position x="50" y="360">
             </position>
@@ -71,7 +71,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_H_2" species="H+">
+        <speciesGlyph id="glyph_H_2" species="H_">
           <boundingBox id="bb_09">
             <position x="380" y="480">
             </position>
@@ -79,7 +79,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_F16BP" species="Fructose-1_6-bisphosphate">
+        <speciesGlyph id="glyph_F16BP" species="Fructose_1_6_bisphosphate">
           <boundingBox id="bb_10">
             <position x="20" y="530">
             </position>
@@ -95,7 +95,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_GAP" species="Glyceraldehyd-3-phosphate">
+        <speciesGlyph id="glyph_GAP" species="Glyceraldehyd_3_phosphate">
           <boundingBox id="bb_12">
             <position x="20" y="700">
             </position>
@@ -103,7 +103,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_NAD_1" species="NAD+">
+        <speciesGlyph id="glyph_NAD_1" species="NAD_">
           <boundingBox id="bb_13">
             <position x="270" y="750">
             </position>
@@ -127,7 +127,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_H_5" species="H+">
+        <speciesGlyph id="glyph_H_5" species="H_">
           <boundingBox id="bb_16">
             <position x="390" y="820">
             </position>
@@ -135,7 +135,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_BPG" species="1_3-Bisphosphoglycerate">
+        <speciesGlyph id="glyph_BPG" species="_1_3_Bisphosphoglycerate">
           <boundingBox id="bb_17">
             <position x="30" y="870">
             </position>
@@ -151,7 +151,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_H_3" species="H+">
+        <speciesGlyph id="glyph_H_3" species="H_">
           <boundingBox id="bb_19">
             <position x="380" y="920">
             </position>
@@ -167,7 +167,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_3PG" species="3-Phosphoglycerate">
+        <speciesGlyph id="glyph_3PG" species="_3_Phosphoglycerate">
           <boundingBox id="bb_21">
             <position x="50" y="1040">
             </position>
@@ -175,7 +175,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_2PG" species="2-Phosphoglycerate">
+        <speciesGlyph id="glyph_2PG" species="_2_Phosphoglycerate">
           <boundingBox id="bb_22">
             <position x="50" y="1210">
             </position>
@@ -207,7 +207,7 @@
             </dimensions>
           </boundingBox>
         </speciesGlyph>
-        <speciesGlyph id="glyph_H_4" species="H+">
+        <speciesGlyph id="glyph_H_4" species="H_">
           <boundingBox id="bb_26">
             <position x="370" y="1430">
             </position>
@@ -393,7 +393,7 @@
                 </listOfCurveSegments>
               </curve>
             </speciesReferenceGlyph>
-            <speciesReferenceGlyph id="SpeciesReferenceGlyph_24" speciesReference="ref_ADP_2" speciesGlyph="glyph_ADP_2" role="4">
+            <speciesReferenceGlyph id="SpeciesReferenceGlyph_24_" speciesReference="ref_ADP_2" speciesGlyph="glyph_ADP_2" role="4">
               <curve>
                 <listOfCurveSegments>
                   <curveSegment xsi:type="CubicBezier">
@@ -847,7 +847,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_04" graphicalObject="glyph_H_1" originOfText="H+">
+        <textGlyph id="TextGlyph_04" graphicalObject="glyph_H_1" originOfText="H_">
           <boundingBox id="bbT_04">
             <position x="390" y="140">
             </position>
@@ -855,7 +855,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_05" graphicalObject="glyph_G6P" originOfText="Glucose-6-phosphate">
+        <textGlyph id="TextGlyph_05" graphicalObject="glyph_G6P" originOfText="Glucose_6_phosphate">
           <boundingBox id="bbT_05">
             <position x="60" y="190">
             </position>
@@ -863,7 +863,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_06" graphicalObject="glyph_F6P" originOfText="Fructose-6-phosphate">
+        <textGlyph id="TextGlyph_06" graphicalObject="glyph_F6P" originOfText="Fructose_6_phosphate">
           <boundingBox id="bbT_06">
             <position x="60" y="360">
             </position>
@@ -895,7 +895,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_09" graphicalObject="glyph_H_2" originOfText="H+">
+        <textGlyph id="TextGlyph_09" graphicalObject="glyph_H_2" originOfText="H_">
           <boundingBox id="bbT_09">
             <position x="390" y="480">
             </position>
@@ -903,7 +903,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_10" graphicalObject="glyph_F16BP" originOfText="Fructose-1_6-bisphosphate">
+        <textGlyph id="TextGlyph_10" graphicalObject="glyph_F16BP" originOfText="Fructose_1_6_bisphosphate">
           <boundingBox id="bbT_10">
             <position x="30" y="530">
             </position>
@@ -919,7 +919,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_12" graphicalObject="glyph_GAP" originOfText="Glyceraldehyd-3-phosphate">
+        <textGlyph id="TextGlyph_12" graphicalObject="glyph_GAP" originOfText="Glyceraldehyd_3_phosphate">
           <boundingBox id="bbT_12">
             <position x="30" y="700">
             </position>
@@ -927,7 +927,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_13" graphicalObject="glyph_NAD_1" originOfText="NAD+">
+        <textGlyph id="TextGlyph_13" graphicalObject="glyph_NAD_1" originOfText="NAD_">
           <boundingBox id="bbT_13">
             <position x="280" y="750">
             </position>
@@ -959,15 +959,15 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_p_06" text="+">
-          <boundingBox id="bb_p_06">
+        <textGlyph id="TextGlyph_p_06_" text="+">
+          <boundingBox id="bb_p_06_">
             <position x="365" y="820">
             </position>
             <dimensions width="20" height="20">
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_16" graphicalObject="glyph_H_5" originOfText="H+">
+        <textGlyph id="TextGlyph_16" graphicalObject="glyph_H_5" originOfText="H_">
           <boundingBox id="bbT_16">
             <position x="400" y="820">
             </position>
@@ -975,7 +975,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_17" graphicalObject="glyph_BPG" originOfText="1_3-Bisphosphoglycerate">
+        <textGlyph id="TextGlyph_17" graphicalObject="glyph_BPG" originOfText="_1_3_Bisphosphoglycerate">
           <boundingBox id="bbT_17">
             <position x="40" y="870">
             </position>
@@ -999,7 +999,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_19" graphicalObject="glyph_H_3" originOfText="H+">
+        <textGlyph id="TextGlyph_19" graphicalObject="glyph_H_3" originOfText="H_">
           <boundingBox id="bbT_19">
             <position x="390" y="920">
             </position>
@@ -1015,7 +1015,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_21" graphicalObject="glyph_3PG" originOfText="3-Phosphoglycerate">
+        <textGlyph id="TextGlyph_21" graphicalObject="glyph_3PG" originOfText="_3_Phosphoglycerate">
           <boundingBox id="bbT_21">
             <position x="60" y="1040">
             </position>
@@ -1023,7 +1023,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_22" graphicalObject="glyph_2PG" originOfText="2-Phosphoglycerate">
+        <textGlyph id="TextGlyph_22" graphicalObject="glyph_2PG" originOfText="_2_Phosphoglycerate">
           <boundingBox id="bbT_22">
             <position x="60" y="1210">
             </position>
@@ -1063,7 +1063,7 @@
             </dimensions>
           </boundingBox>
         </textGlyph>
-        <textGlyph id="TextGlyph_26" graphicalObject="glyph_H_4" originOfText="H+">
+        <textGlyph id="TextGlyph_26" graphicalObject="glyph_H_4" originOfText="H_">
           <boundingBox id="bbT_26">
             <position x="380" y="1430">
             </position>
