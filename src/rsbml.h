@@ -74,7 +74,7 @@ extern "C" {
   Layout_t *LayoutModelPlugin_getLayout(LayoutModelPlugin_t *plugin,
                                         unsigned int index);
   int SBase_enablePackage(SBase_t *sbase, const char *pkgURI,
-                          const char *pkgPrefix, int flag);
+                          const char *pkgPrefix, Rboolean flag);
 #ifdef __cplusplus
 }
 #endif

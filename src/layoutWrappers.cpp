@@ -17,7 +17,7 @@ Layout_t *LayoutModelPlugin_getLayout(LayoutModelPlugin_t *plugin,
 }
 
 int SBase_enablePackage(SBase_t *sbase, const char *pkgURI,
-                        const char *pkgPrefix, int flag)
+                        const char *pkgPrefix, Rboolean flag)
 {
   return sbase->enablePackage(pkgURI, pkgPrefix, flag);
 }
