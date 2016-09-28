@@ -1,0 +1,4 @@
+To build rsbml on Windows, please download and unpack libsbml 5.10.0
+and point to the extracted directory with the LIBSBML_PATH environment
+variable. It might work with some other versions, but we have only
+really tested 5.10.0.
