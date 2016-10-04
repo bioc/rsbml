@@ -8,6 +8,11 @@
 #define USE_LAYOUT LIBSBML_HAS_PACKAGE_LAYOUT
 #endif
 
+// The Windows binaries do not include the layout extension, so we disable it
+#ifdef WIN32
+#undef USE_LAYOUT
+#endif
+
 // Layout stuff
 #ifdef USE_LAYOUT
 #if LIBSBML_VERSION >= 50000
