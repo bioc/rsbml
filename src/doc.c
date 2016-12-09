@@ -9,8 +9,6 @@
 #define rsbml_build_doc_unit_kind(x) UnitKind_forName(STRING(x))
 #define rsbml_build_doc_rule_type(x) RuleType_forName(STRING(x))
 
-#ifdef LIBSBML3
-
 #if LIBSBML_VERSION >= 50000
 /* Global variables because we're lazy. Otherwise, we would have to
    pass the version/level from the R document (SBML) to every function. */
@@ -113,15 +111,7 @@ static XMLNode_t *rsbml_build_doc_xml_node(SEXP r_node)
   return XMLNode_convertStringToXMLNode(STRING(r_node), NULL);
 }
 
-#endif
-
-#ifdef LIBSBML3
 #define CLEANUP_MEMORY 1
-#else
-#define CLEANUP_MEMORY 0
-/* dummy free function for Rule_t, never invoked */
-static void Rule_free(Rule_t *rule) { }
-#endif
 
 #define ADD_LIST_NOCHECK(class, var, Child, child, ParamType, func)     \
   ({                                                                    \
@@ -195,7 +185,6 @@ static void Rule_free(Rule_t *rule) { }
 #define ADD_LIST ADD_LIST_NOCHECK
 #endif
 
-#ifdef LIBSBML3
 static CVTerm_t *
 rsbml_build_doc_cvterm(SEXP r_cvterm)
 {
@@ -221,24 +210,17 @@ rsbml_build_doc_cvterm(SEXP r_cvterm)
   
   return cvterm;
 }
-#endif
 
 static void
 rsbml_build_doc_s_base(SBase_t *s_base, SEXP r_s_base)
 {
   SET_XML_ATTR(SBase, s_base, MetaId, metaId, STRING);
-  #ifdef LIBSBML3
   SET_XML_ATTR(SBase, s_base, AnnotationString, annotation, STRING);
   SET_XML_ATTR(SBase, s_base, NotesString, notes, STRING);
   SET_XML_ATTR(SBase, s_base, SBOTerm, sboTerm, INTEGER_SCALAR);
   ADD_LIST(SBase, s_base, CVTerm, cvTerms, CVTerm, cvterm);
-  #else
-  SET_XML_ATTR(SBase, s_base, Annotation, annotation, STRING);
-  SET_XML_ATTR(SBase, s_base, Notes, notes, STRING);
-  #endif
 }
 
-#ifdef LIBSBML3
 static SpeciesType_t *
 rsbml_build_doc_species_type(SEXP r_species_type)
 {
@@ -257,7 +239,6 @@ rsbml_build_doc_species_type(SEXP r_species_type)
   
   return species_type;
 }
-#endif
 
 static Species_t *
 rsbml_build_doc_species(SEXP r_species)
@@ -350,7 +331,6 @@ rsbml_build_doc_unit_definition(SEXP r_unit_definition)
   return unit_definition;
 }
 
-#ifdef LIBSBML3
 static CompartmentType_t *
 rsbml_build_doc_compartment_type(SEXP r_compartment_type)
 {
@@ -369,7 +349,6 @@ rsbml_build_doc_compartment_type(SEXP r_compartment_type)
   
   return compartment_type;
 }
-#endif
 
 static Compartment_t *
 rsbml_build_doc_compartment(SEXP r_compartment)
@@ -438,7 +417,6 @@ rsbml_build_doc_kinetic_law(SEXP r_kinetic_law)
   return kinetic_law;
 }
 
-#ifdef LIBSBML3
 static void
 rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_reference,
   SEXP r_simple_species_reference)
@@ -450,23 +428,9 @@ rsbml_build_doc_simple_species_reference(SpeciesReference_t *simple_species_refe
   if ((SBML_LEVEL == 2 && SBML_VERSION >= 2) || SBML_LEVEL > 2)
 #endif
     SET_XML_ATTR(SpeciesReference, simple_species_reference, Id, id, STRING);
-  SEXP tmp = GET_SLOT(r_simple_species_reference, install("species"));
   SET_XML_ATTR(SpeciesReference, simple_species_reference, Species, species, STRING);
 }
-#else
-static void
-rsbml_build_doc_simple_species_reference(SimpleSpeciesReference_t *simple_species_reference,
-  SEXP r_simple_species_reference)
-{
-  rsbml_build_doc_s_base((SBase_t *)simple_species_reference, r_simple_species_reference);
-  #ifdef USE_LAYOUT
-  SET_XML_ATTR(SimpleSpeciesReference, simple_species_reference, Id, id, STRING);
-  #endif
-  SET_XML_ATTR(SimpleSpeciesReference, simple_species_reference, Species, species, STRING);
-}
-#endif
 
-#ifdef LIBSBML3
 static StoichiometryMath_t *
 rsbml_build_doc_stoichiometry_math(SEXP r_stoichiometry_math)
 {
@@ -478,7 +442,6 @@ rsbml_build_doc_stoichiometry_math(SEXP r_stoichiometry_math)
   SET_XML_ATTR_OBJ(StoichiometryMath, stoichiometry_math, Math, math, ASTNode, ast_node);
   return stoichiometry_math;
 }
-#endif
 
 static SpeciesReference_t *
 rsbml_build_doc_species_reference(SEXP r_species_reference)
@@ -492,32 +455,19 @@ rsbml_build_doc_species_reference(SEXP r_species_reference)
   species_reference = SpeciesReference_create();
 #endif
   
-  #ifdef LIBSBML3
   rsbml_build_doc_simple_species_reference((SpeciesReference_t *)species_reference,
     r_species_reference);
-  #else
-  rsbml_build_doc_simple_species_reference((SimpleSpeciesReference_t *)species_reference,
-    r_species_reference);
-  #endif
   
   SET_XML_ATTR(SpeciesReference, species_reference, Stoichiometry, stoichiometry, REAL_SCALAR);
  
   {
-    #ifdef LIBSBML3
     SET_XML_ATTR_OBJ(SpeciesReference, species_reference, StoichiometryMath, stoichiometryMath,
       StoichiometryMath, stoichiometry_math);
-    #else
-    SEXP r_stoichiometry_math = GET_SLOT(r_species_reference, install("stoichiometryMath"));
-    SpeciesReference_t *stoichiometry_math = species_reference;
-    if (GET_LENGTH(r_stoichiometry_math))
-      SET_XML_ATTR_OBJ(SpeciesReference, stoichiometry_math, StoichiometryMath, math, ASTNode, ast_node);
-    #endif
   }
 
   return species_reference;
 }
 
-#ifdef LIBSBML3
 static SpeciesReference_t *
 rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
 {
@@ -534,24 +484,6 @@ rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
   
   return modifier_species_reference;
 }
-#else
-static ModifierSpeciesReference_t *
-rsbml_build_doc_modifier_species_reference(SEXP r_modifier_species_reference)
-{
-  ModifierSpeciesReference_t * modifier_species_reference;
-  
-#if LIBSBML_VERSION >= 40000
-  modifier_species_reference = ModifierSpeciesReference_create(SBML_LEVEL, SBML_VERSION);
-#else
-  modifier_species_reference = ModifierSpeciesReference_create();
-#endif
-  
-  rsbml_build_doc_simple_species_reference(
-    (SimpleSpeciesReference_t *)modifier_species_reference, r_modifier_species_reference);
-  
-  return modifier_species_reference;
-}
-#endif
 
 static Reaction_t *
 rsbml_build_doc_reaction(SEXP r_reaction)
@@ -570,11 +502,7 @@ rsbml_build_doc_reaction(SEXP r_reaction)
   SET_XML_ATTR(Reaction, reaction, Name, name, STRING);
   ADD_LIST(Reaction, reaction, Reactant, reactants, SpeciesReference, species_reference);
   ADD_LIST(Reaction, reaction, Product, products, SpeciesReference, species_reference);
-  #ifdef LIBSBML3
   ADD_LIST(Reaction, reaction, Modifier, modifiers, SpeciesReference, modifier_species_reference);
-  #else
-  ADD_LIST(Reaction, reaction, Modifier, modifiers, ModifierSpeciesReference, modifier_species_reference);
-  #endif
   SET_XML_ATTR_OBJ(Reaction, reaction, KineticLaw, kineticLaw, KineticLaw, kinetic_law);
   SET_XML_ATTR(Reaction, reaction, Reversible, reversible, LOGICAL_SCALAR);
   SET_XML_ATTR(Reaction, reaction, Fast, fast, LOGICAL_SCALAR);
@@ -587,7 +515,6 @@ rsbml_build_doc_rule(SEXP r_rule)
 {
   Rule_t * rule = NULL;
   
-  #ifdef LIBSBML3
   if (inherits(r_rule, "AlgebraicRule"))
 #if LIBSBML_VERSION >= 40000
     rule = Rule_createAlgebraic(SBML_LEVEL, SBML_VERSION);
@@ -614,33 +541,6 @@ rsbml_build_doc_rule(SEXP r_rule)
   if (inherits(r_rule, "ParameterRule")) {
     SET_XML_ATTR(Rule, rule, Units, units, STRING);
   }
-  #else
-  if (inherits(r_rule, "AlgebraicRule"))
-    rule = (Rule_t *)AlgebraicRule_create();
-  else if (inherits(r_rule, "RateRule")) {
-    rule = (Rule_t *)RateRule_create();
-    SET_XML_ATTR(RateRule, rule, Variable, variable, STRING);
-  } else if (inherits(r_rule, "CompartmentVolumeRule")) {
-    rule = (Rule_t *)CompartmentVolumeRule_create();
-    SET_XML_ATTR(CompartmentVolumeRule, rule, Compartment, compartment, STRING);
-  } else if (inherits(r_rule, "SpeciesConcentrationRule")) {
-    rule = (Rule_t *)SpeciesConcentrationRule_create();
-    SET_XML_ATTR(SpeciesConcentrationRule, rule, Species, species, STRING);
-  } else if (inherits(r_rule, "ParameterRule")) {
-    rule = (Rule_t *)ParameterRule_create();
-    SET_XML_ATTR(ParameterRule, rule, Name, name, STRING);
-    SET_XML_ATTR(ParameterRule, rule, Units, units, STRING);
-  } else if (inherits(r_rule, "AssignmentRule")) {
-    rule = (Rule_t *)AssignmentRule_create();
-    SET_XML_ATTR(AssignmentRule, rule, Variable, variable, STRING);
-  } else {
-    error("Unknown event type");
-  }
-  
-  if (inherits(r_rule, "AssignmentRule")) {
-    SET_XML_ATTR(AssignmentRule, rule, Type, type, rsbml_build_doc_rule_type);
-  } 
-  #endif
   
   rsbml_build_doc_s_base((SBase_t *)rule, r_rule);
   
@@ -668,7 +568,6 @@ rsbml_build_doc_event_assignment(SEXP r_event_assignment)
   return event_assignment;
 }
 
-#ifdef LIBSBML3
 static Trigger_t *
 rsbml_build_doc_trigger(SEXP r_trigger)
 {
@@ -703,7 +602,6 @@ rsbml_build_doc_delay(SEXP r_delay)
   
   return delay;
 }
-#endif
 
 static Event_t *
 rsbml_build_doc_event(SEXP r_event)
@@ -720,13 +618,8 @@ rsbml_build_doc_event(SEXP r_event)
   
   SET_XML_ATTR(Event, event, Id, id, STRING);
   SET_XML_ATTR(Event, event, Name, name, STRING);
-  #ifdef LIBSBML3
   SET_XML_ATTR_OBJ(Event, event, Delay, eventDelay, Delay, delay);
   SET_XML_ATTR_OBJ(Event, event, Trigger, trigger, Trigger, trigger);
-  #else
-  SET_XML_ATTR_OBJ(Event, event, Trigger, trigger, ASTNode, ast_node);
-  SET_XML_ATTR_OBJ(Event, event, Delay, eventDelay, ASTNode, ast_node);
-  #endif
   SET_XML_ATTR(Event, event, TimeUnits, timeUnits, STRING);
   ADD_LIST(Event, event, EventAssignment, eventAssignments, EventAssignment, event_assignment);
   
@@ -954,7 +847,6 @@ rsbml_build_doc_layout(SEXP r_layout, Model_t *model)
 }
 #endif
 
-#ifdef LIBSBML3
 static InitialAssignment_t *
 rsbml_build_doc_initial_assignment(SEXP r_initial_assignment)
 {
@@ -991,9 +883,7 @@ rsbml_build_doc_constraint(SEXP r_constraint)
   
   return constraint;
 }
-#endif
 
-#ifdef LIBSBML3
 static ModelCreator_t *
 rsbml_build_doc_model_creator(SEXP r_model_creator)
 {
@@ -1033,7 +923,6 @@ rsbml_build_doc_model_history(SEXP r_model_history)
   
   return model_history;
 }
-#endif
 
 static Model_t *
 rsbml_build_doc_model(SEXP r_model, SBMLDocument_t *doc)
@@ -1064,19 +953,15 @@ rsbml_build_doc_model(SEXP r_model, SBMLDocument_t *doc)
   ADD_LIST(Model, model, Rule, rules, Rule, rule);
   ADD_LIST(Model, model, Reaction, reactions, Reaction, reaction);
   ADD_LIST(Model, model, Event, events, Event, event);
-  #ifdef LIBSBML3
   ADD_LIST(Model, model, SpeciesType, speciesTypes, SpeciesType, species_type);
   ADD_LIST(Model, model, CompartmentType, compartmentTypes, CompartmentType,
            compartment_type);
   ADD_LIST(Model, model, InitialAssignment, initialAssignments,
            InitialAssignment, initial_assignment);
   ADD_LIST(Model, model, Constraint, constraints, Constraint, constraint);
-  #endif
 
-#ifdef LIBSBML3
   SET_XML_ATTR_OBJ(Model, model, ModelHistory, modelHistory, ModelHistory,
                    model_history);
-#endif
 
 #ifdef USE_LAYOUT
 #if LIBSBML_VERSION >= 50000
@@ -1099,7 +984,6 @@ rsbml_build_doc(SEXP r_doc)
   SBMLDocument_t *doc;
   
   
-#ifdef LIBSBML3
   SEXP r_level = GET_SLOT(r_doc, install("level"));
   SEXP r_version = GET_SLOT(r_doc, install("ver"));
   unsigned int level = 2, version = 3;
@@ -1114,11 +998,6 @@ rsbml_build_doc(SEXP r_doc)
 #endif
 
   doc = SBMLDocument_createWithLevelAndVersion(level, version);
-
-#else
-  SET_XML_ATTR(SBMLDocument, doc, Level, level, INTEGER_SCALAR);
-  SET_XML_ATTR(SBMLDocument, doc, Version, ver, INTEGER_SCALAR);
-#endif
 
   /* FIXME: if we had copious spare time and wanted to refactor, we
      could use this design for every element: pass the parent object

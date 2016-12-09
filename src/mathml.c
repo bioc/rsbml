@@ -53,7 +53,7 @@ SEXP rmathml_SEXP(const ASTNode_t *node) {
     break;
   case AST_LAMBDA:
     {
-      SEXP closure, pargs;
+      SEXP pargs;
       int i, num = ASTNode_getNumChildren(node);
       PROTECT(pargs = allocList(num - 1));
       for (i = 0; i < num - 1; i++) {

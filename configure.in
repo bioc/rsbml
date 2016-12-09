@@ -10,45 +10,11 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 
 # Try pkg-config, which only exists for libsbml >= 3.0.2
-# The legacy parameters override the pkg-config results
-PKG_CHECK_MODULES(LIBSBML3, [libsbml >= 3.0.2], [LIBSBML3="yes"], [LIBSBML3="no"])
+PKG_CHECK_MODULES(LIBSBML, [libsbml >= 3.0.2], [LIBSBML="yes"])
 
-AC_ARG_WITH(libsbml-include,
-            AC_HELP_STRING([--with-libsbml-include=PATH], 
-              [location of libsbml headers, directory containing 'sbml' directory]),
-            [LIBSBML_INCLUDE=$withval])
-AC_ARG_WITH(libsbml-lib, 
-            AC_HELP_STRING([--with-libsbml-lib=PATH], [location of libsbml library]),
-            [LIBSBML_LIBS=$withval])
-
-if test [ -n "${LIBSBML_INCLUDE}" ] ; then
-  LIBSBML_CPPFLAGS="-I${LIBSBML_INCLUDE}"
-elif test [ -n "${LIBSBML3_CFLAGS}" ]; then
-  LIBSBML_CPPFLAGS="${LIBSBML3_CFLAGS}"
-else LIBSBML_CPPFLAGS="-I/usr/local/include"
-fi
-CPPFLAGS="${CPPFLAGS} ${LIBSBML_CPPFLAGS}"
-
-if test [ -n "${LIBSBML_LIBS}" ] ; then
-  LIBS="${LIBSBML_LIBS} ${LIBS}"
-elif test [ -n "${LIBSBML3_LIBS}" ]; then
-  LIBS="${LIBSBML3_LIBS} ${LIBS}"
-fi
-
-if test "${LIBSBML3}" != "no"; then
-  RSBML_CPPFLAGS="-DLIBSBML3"
-else
-  AC_CHECK_HEADER([sbml/xml/ParseMessage.h],, 
-    AC_MSG_ERROR([Could not detect libsbml (>= 3.0) via pkg-config.
-      rsbml requires libsbml from http://www.sbml.org/software/libsbml/.
-      Please ensure that libsbml.pc is in PKG_CONFIG_PATH.
-      Also failed to find ParseMessage.h indicating that libsbml 2.x is
-      not installed. To specify the include path manually use
-      --with-libsbml-include or LIBSBML_INCLUDE.]))
-  AC_CHECK_LIB([sbml], [SBMLDocument_create],,
-    AC_MSG_ERROR([Could not link to libsbml: 
-      use --with-libsbml-lib or LIBSBML_LIBS to specify the lib path.]))
-fi
+LIBSBML_CPPFLAGS="${LIBSBML_CFLAGS}"
+CPPFLAGS="${CPPFLAGS} ${LIBSBML_CPPLAGS}"
+LIBS="${LIBSBML_LIBS} ${LIBS}"
 
 ## give user option of using SOSlib
 AC_ARG_ENABLE(soslib, [  --enable-soslib[=yes|no|system]          Enable SOSLib (simulation) support])

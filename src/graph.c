@@ -3,10 +3,8 @@
 
 #include <stdint.h>
 
-#ifdef LIBSBML3
 #define SimpleSpeciesReference_getSpecies(x) SpeciesReference_getSpecies(x)
 typedef SpeciesReference_t SimpleSpeciesReference_t;
-#endif
 
 SEXP
 rsbml_build_graph(SBMLDocument_t *doc)

@@ -5,10 +5,6 @@ static SBMLReader_t *
 rsbml_create_sbml_reader(Rboolean validate)
 {
   SBMLReader_t *reader = SBMLReader_create();
-  #ifndef LIBSBML3
-  if (validate)
-    SBMLReader_setSchemaValidationLevel(reader, XML_SCHEMA_VALIDATION_BASIC);
-  #endif
   return reader;
 }
 
