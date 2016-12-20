@@ -24,7 +24,7 @@ setReplaceMethod("name", "FunctionDefinition", function(object, value) {
 })
 
 setReplaceMethod("math", "FunctionDefinition", function(object, value) {
-  object@math <- as.expression(value)
+  object@math <- asMath(value)
   object
 })
 

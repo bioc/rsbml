@@ -5,7 +5,7 @@ setMethod("math", "Rule", function(object) object@math)
 
  setGeneric("math<-", function(object, value) standardGeneric("math<-"))
 setReplaceMethod("math", "Rule", function(object, value) {
-  object@math <- as.expression(value)
+  object@math <- asMath(value)
   object
 })
 

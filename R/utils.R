@@ -19,3 +19,9 @@ setMethod("describe", "list", function(object, max = NA) {
   }
   descs
 })
+
+asMath <- function(x) {
+    if (is.character(x))
+        parse(text=x)
+    else as.expression(x)
+}

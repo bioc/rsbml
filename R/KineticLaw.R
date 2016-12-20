@@ -23,7 +23,7 @@ setMethod("timeUnits", "KineticLaw", function(object) object@timeUnits)
 setMethod("substanceUnits", "KineticLaw", function(object) object@substanceUnits)
 
 setReplaceMethod("math", "KineticLaw", function(object, value) {
-  object@math <- as.expression(value)
+  object@math <- asMath(value)
   object
 })
 

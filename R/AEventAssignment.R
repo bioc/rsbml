@@ -16,7 +16,7 @@ setReplaceMethod("variable", "EventAssignment", function(object, value) {
 })
 
 setReplaceMethod("math", "EventAssignment", function(object, value) {
-  object@math <- as.expression(value)
+  object@math <- asMath(value)
   object
 })
 

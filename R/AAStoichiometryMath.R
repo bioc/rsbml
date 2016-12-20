@@ -6,7 +6,7 @@ setMethod("describe", "StoichiometryMath",
 setMethod("math", "StoichiometryMath", function(object) object@math)
 
 setReplaceMethod("math", "StoichiometryMath", function(object, value) {
-  object@math <- as.expression(value)
+  object@math <- asMath(value)
   object
 })
 
