@@ -1,5 +1,5 @@
 Package: rsbml
-Version: 2.38.0
+Version: 2.39.0
 Title: R support for SBML, using libsbml
 Author: Michael Lawrence <michafla@gene.com>
 Depends: R (>= 2.6.0), BiocGenerics (>= 0.3.2), methods, utils
