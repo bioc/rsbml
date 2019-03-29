@@ -111,10 +111,8 @@ setReplaceMethod("protocol", "Experiment", function(object, value) {
   object
 })
 
-setGeneric("design", function(object, ...) standardGeneric("design"))
 setMethod("design", "Experiment", function(object) object@design)
 
-setGeneric("design<-", function(object, value) standardGeneric("design<-"))
 setReplaceMethod("design", "Experiment", function(object, value) {
   object@design <- value
   object

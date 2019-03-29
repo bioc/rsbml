@@ -5,8 +5,7 @@ setMethod("describe", "Dimensions", function(object) {
   paste(width(object), height(object), depth(object), sep = "x")
 })
 
- setGeneric("width", function(object) standardGeneric("width"))
-setMethod("width", "Dimensions", function(object) object@width)
+setMethod("width", "Dimensions", function(x) x@width)
 
  setGeneric("height", function(object) standardGeneric("height"))
 setMethod("height", "Dimensions", function(object) object@height)
@@ -14,10 +13,9 @@ setMethod("height", "Dimensions", function(object) object@height)
  setGeneric("depth", function(object) standardGeneric("depth"))
 setMethod("depth", "Dimensions", function(object) object@depth)
 
- setGeneric("width<-", function(object, value) standardGeneric("width<-"))
-setReplaceMethod("width", "Dimensions", function(object, value) {
-  object@width <- value
-  object
+setReplaceMethod("width", "Dimensions", function(x, value) {
+  x@width <- value
+  x
 })
 
  setGeneric("height<-", function(object, value) standardGeneric("height<-"))

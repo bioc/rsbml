@@ -3,21 +3,17 @@ setClass("LineSegment", representation(start = "Point", end = "Point"), contains
 setMethod("describe", "LineSegment",
           function(object) paste(describe(start), "to", describe(end)))
 
- setGeneric("start", function(x, ...) standardGeneric("start"))
 setMethod("start", "LineSegment", function(x, ...) x@start)
 
- setGeneric("end", function(x, ...) standardGeneric("end"))
 setMethod("end", "LineSegment", function(x, ...) x@end)
 
- setGeneric("start<-", function(object, value) standardGeneric("start<-"))
-setReplaceMethod("start", "LineSegment", function(object, value) {
+setReplaceMethod("start", "LineSegment", function(x, value) {
   object@start <- value
   object
 })
 
- setGeneric("end<-", function(object, value) standardGeneric("end<-"))
-setReplaceMethod("end", "LineSegment", function(object, value) {
-  object@end <- value
+setReplaceMethod("end", "LineSegment", function(x, value) {
+  x@end <- value
   object
 })
 

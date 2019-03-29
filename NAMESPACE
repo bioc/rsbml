@@ -1,5 +1,5 @@
-importFrom(BiocGenerics, annotation, "annotation<-")
-importFrom(stats, as.ts, end, start, offset, simulate)
+import(BiocGenerics)
+importFrom(stats, as.ts, offset, simulate)
 importFrom(graphics, text)
 importClassesFrom(graph, graphNEL)
 

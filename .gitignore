@@ -1,0 +1,7 @@
+*.o
+*.so
+/config.log
+/config.status
+/inst/SBML_odeSolver-1.7.0beta/config.log
+/src/Makevars
+/R/.Rhistory
