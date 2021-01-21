@@ -4,15 +4,13 @@ setClass("AssignmentRule", representation(variable = "character", type = "charac
 setMethod("describe", "AssignmentRule",
           function(object) paste(variable(object), ":=", math(object)))
 
-setGeneric("type", function(object) standardGeneric("type"))
-setMethod("type", "AssignmentRule", function(object) object@type)
+setMethod("type", "AssignmentRule", function(x) x@type)
 
-setGeneric("type<-", function(object, value) standardGeneric("type<-"))
-setReplaceMethod("type", "AssignmentRule", function(object, value) {
+setReplaceMethod("type", "AssignmentRule", function(x, value) {
   if (!(type %in% c("rate", "scalar")))
     stop("Rule type must be either 'rate' or 'scalar', not ", type)
-  object@type <- value
-  object
+  x@type <- value
+  x
 })
 
 setMethod("variable", "AssignmentRule", function(object) object@variable)
