@@ -47,7 +47,7 @@
 #define Model_getNumLayouts(m) ({                                       \
       LayoutModelPlugin_t *mplugin =                                    \
         (LayoutModelPlugin_t *)(SBase_getPlugin((SBase_t *)m, "layout")); \
-      LayoutModelPlugin_getNumLayouts(mplugin);                         \
+      mplugin == NULL ? 0 : LayoutModelPlugin_getNumLayouts(mplugin);	\
 })
 #define Model_getLayout(m, i) ({                                        \
       LayoutModelPlugin_t *mplugin =                                    \
