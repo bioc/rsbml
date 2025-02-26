@@ -889,7 +889,7 @@ rsbml_build_doc_model_creator(SEXP r_model_creator)
 {
   ModelCreator_t * model_creator;
   
-#if LIBSBML_VERSION >= 40000
+#if LIBSBML_VERSION >= 40000 && LIBSBML_VERSION < 50000
   model_creator = ModelCreator_create(SBML_LEVEL, SBML_VERSION);
 #else
   model_creator = ModelCreator_create();
@@ -908,7 +908,7 @@ rsbml_build_doc_model_history(SEXP r_model_history)
 {
   ModelHistory_t * model_history;
   
-#if LIBSBML_VERSION >= 40000
+#if LIBSBML_VERSION >= 40000 && LIBSBML_VERSION < 50000
   model_history = ModelHistory_create(SBML_LEVEL, SBML_VERSION);
 #else
   model_history = ModelHistory_create();
