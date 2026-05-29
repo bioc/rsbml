@@ -13,3 +13,4 @@ Description: Links R to libsbml for SBML parsing, validating output,
 License: Artistic-2.0
 URL: http://www.sbml.org
 biocViews: GraphAndNetwork, Pathways, Network
+Config/Bioconductor/UnsupportedPlatforms: macosx
